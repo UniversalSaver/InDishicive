@@ -22,10 +22,11 @@ public class UserRecipeVisual extends JPanel {
 
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         this.setMaximumSize(new Dimension(600, 100));
+        this.setBorder(BorderFactory.createLineBorder(Color.black));
+
 
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
         infoPanel.setMaximumSize(new Dimension(550, 100));
-        infoPanel.setBorder(BorderFactory.createLineBorder(Color.black));
 
         infoPanelNames.setLayout(new BoxLayout(infoPanelNames, BoxLayout.Y_AXIS));
 
@@ -38,7 +39,6 @@ public class UserRecipeVisual extends JPanel {
 
 
         infoPanelData.setLayout(new BoxLayout(infoPanelData, BoxLayout.Y_AXIS));
-        infoPanelData.setBorder(BorderFactory.createLineBorder(Color.black));
 
         JLabel titleLabel = new JLabel(this.title);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);

@@ -9,6 +9,8 @@ import interface_adapter.view_recipes.ViewRecipesPresenter;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
 import use_case.view_recipes.ViewRecipesInteractor;
 import view.*;
+import view.user_recipe_view.UserRecipesView;
+import view.user_recipe_view.UserRecipesViewManager;
 import window.*;
 
 import java.awt.*;

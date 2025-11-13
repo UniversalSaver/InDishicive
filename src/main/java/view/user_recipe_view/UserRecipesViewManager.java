@@ -1,4 +1,4 @@
-package view;
+package view.user_recipe_view;
 
 import interface_adapter.UserRecipesViewManagerModel;
 

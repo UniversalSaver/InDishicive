@@ -3,7 +3,8 @@ package window;
 import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
 import interface_adapter.view_recipes.UserRecipesViewModel;
-import view.*;
+import view.user_recipe_view.UserRecipesView;
+import view.user_recipe_view.UserRecipesViewManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +28,8 @@ public class UserRecipesWindow extends JFrame implements PropertyChangeListener 
                              UserRecipesViewManagerModel userRecipesViewManagerModel,
                              UserRecipeWindowModel userRecipesWindowModel) {
         super("User Recipes");
+
+        this.setSize(600, 400);
 
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
