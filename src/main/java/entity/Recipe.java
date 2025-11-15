@@ -30,4 +30,29 @@ public class Recipe {
         this.youtubeLink = youtubeLink;
         this.category = category;
     }
+
+    // getters
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public String getSteps() {
+        return steps;
+    }
+
+    public String getImageLink() {
+        return imageLink;
+    }
+
+    public String getYoutubeLink() {
+        return youtubeLink;
+    }
+
+    public String getCategory() {
+        return category;
+    }
 }
