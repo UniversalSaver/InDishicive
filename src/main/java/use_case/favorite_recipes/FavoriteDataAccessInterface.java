@@ -1,16 +1,28 @@
-package main.java.use_case.favorite_recipes;
+package use_case.favorite_recipes;
 import entity.Recipe;
-import netscape.javascript.JSObject;
+import java.util.List;
 
 /**
- * DAO interface for the Favorite Use Case.
+ * Data Access Interface for managing favorite recipes.
  */
 public interface FavoriteDataAccessInterface {
-
+    
     /**
-     * saves the recipe as a Favorite
-     * @param recipe to save
+     * Saves a recipe to the favorites list.
+     * @param recipe the recipe to save
      */
     void saveFavorite(Recipe recipe);
-
+    
+    /**
+     * Retrieves all favorite recipes.
+     * @return list of all favorite recipes
+     */
+    List<Recipe> getFavorites();
+    
+    /**
+     * Checks if a recipe is already favorited.
+     * @param recipe the recipe to check
+     * @return true if the recipe is in favorites, false otherwise
+     */
+    boolean isFavorite(Recipe recipe);
 }
