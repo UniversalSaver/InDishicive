@@ -1,7 +1,6 @@
 package data_access;
 
 import entity.Recipe;
-import entity.Ingredient;
 import use_case.favorite_recipes.FavoriteDataAccessInterface;
 import java.io.*;
 import java.util.ArrayList;
@@ -74,9 +73,14 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
         try {
             String jsonContent = Files.readString(file.toPath());
             
+            if (jsonContent.isEmpty()){
+                favorites = new ArrayList<>();
+                return;
+            }
+            
             JSONArray jsonArray = new JSONArray(jsonContent);
             favorites = new ArrayList<>();
-            
+
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject recipeJson = jsonArray.getJSONObject(i);
                 Recipe recipe = jsonToRecipe(recipeJson);
@@ -99,7 +103,7 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
                 JSONObject recipeJson = recipeToJson(recipe);
                 jsonArray.put(recipeJson);
             }
-            
+
             writer.write(jsonArray.toString(4));
             
         } catch (IOException e) {
@@ -133,7 +137,7 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
         String title = json.getString("title");
         String category = json.getString("category");
         
-        // Create recipe with only the required feels I need
+        // Create recipe with only the required fields I need
         // steps, imageLink, youtubeLink, and ingredients will be empty!!!!!!!!
         // Use ViewRecipe use case to get complete recipe details.
         return new Recipe(

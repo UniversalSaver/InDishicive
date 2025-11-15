@@ -18,7 +18,7 @@ public class AddFavoriteInteractor implements AddFavoriteInputBoundary{
     }
 
     @Override
-    public void execute(AddFavoriteInputBoundary, inputData){
+    public void execute(AddFavoriteInputData inputData){
         Recipe recipe = inputData.getRecipe();
         if (favoriteDataAccess.isFavorite(recipe)){
             presenter.prepareFailView("Already in Favorites!");
@@ -28,7 +28,5 @@ public class AddFavoriteInteractor implements AddFavoriteInputBoundary{
         favoriteDataAccess.saveFavorite(recipe);
         presenter.prepareSuccessView();
     }
-
-
 
 }
