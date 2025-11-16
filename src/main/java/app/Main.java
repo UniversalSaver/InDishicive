@@ -10,6 +10,8 @@ public class Main {
 
         MemoryDataAccessObject memoryDataAccessObject = new MemoryDataAccessObject();
 
+        memoryDataAccessObject.updateUserRecipes();
+
         JFrame application = appBuilder
                 .addIndishisiveDAO(memoryDataAccessObject)
 

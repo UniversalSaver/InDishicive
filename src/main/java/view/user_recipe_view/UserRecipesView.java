@@ -36,6 +36,7 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
         recipes.setLayout(new BoxLayout(recipes, BoxLayout.Y_AXIS));
 
         scrollPane = new JScrollPane(recipes);
+        scrollPane.setPreferredSize(new Dimension(600, 350));
 
         this.add(scrollPane);
 
