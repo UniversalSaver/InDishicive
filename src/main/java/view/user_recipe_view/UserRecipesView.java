@@ -14,11 +14,13 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
     private final JScrollPane scrollPane;
 
+    private final JPanel recipes = new JPanel();
+
     private final UserRecipesViewModel userRecipesViewModel;
 
     private final JButton addRecipeButton;
 
-    private JLabel numberOfRecipesLabel;
+    private JLabel numberOfRecipesLabel = new JLabel();
 
     public UserRecipesView(UserRecipesViewModel userRecipesViewModel) {
         this.userRecipesViewModel = userRecipesViewModel;
@@ -31,7 +33,6 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         this.add(new JLabel(viewName));
 
-        JPanel recipes = new JPanel();
         recipes.setLayout(new BoxLayout(recipes, BoxLayout.Y_AXIS));
 
         scrollPane = new JScrollPane(recipes);
@@ -57,12 +58,12 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
             ViewRecipesState summaryState = (ViewRecipesState) evt.getNewValue();
 
             this.numberOfRecipesLabel.setText("Currently have " + summaryState.getNumberOfRecipes() + " recipes");
-            this.scrollPane.removeAll();
+            this.recipes.removeAll();
             for (RecipeSummary recipeSummary : summaryState.getRecipeSummaries()) {
-                this.scrollPane.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
+                this.recipes.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
             }
-            this.scrollPane.revalidate();
-            this.scrollPane.repaint();
+            this.recipes.revalidate();
+            this.recipes.repaint();
         }
     }
 }
