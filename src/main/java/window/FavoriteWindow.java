@@ -13,8 +13,6 @@ public class FavoriteWindow extends JFrame implements PropertyChangeListener {
     public FavoriteWindow(FavoriteView favoritesView, ViewFavoriteViewModel viewModel) {
         super("My Favorites");
 
-        viewModel.addPropertyChangeListener(this);
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 500);
         setLocationRelativeTo(null);
