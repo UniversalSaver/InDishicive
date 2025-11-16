@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An entity representing a recipe from MealDB. Uses only possible attributes from an API call
@@ -65,11 +66,11 @@ public class Recipe {
             return false;
         }
         Recipe recipe = (Recipe) obj;
-        return title.equals(recipe.title);
+        return Objects.equals(title, recipe.title);
     }
 
     @Override
     public int hashCode() {
-        return title.hashCode();
+        return Objects.hashCode(title);
     }
 }
