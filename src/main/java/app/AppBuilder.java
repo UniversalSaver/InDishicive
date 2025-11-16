@@ -8,7 +8,18 @@ import interface_adapter.view_recipes.ViewRecipesViewModel;
 import use_case.view_recipes.ViewRecipesInteractor;
 import view.*;
 import window.*;
-
+import data_access.MealDbRecipeDetailsGateway;
+import data_access.InMemoryInventoryReader;
+import data_access.MealDbRecipeGateway;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
+import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
+import use_case.generate_with_inventory.GenerateWithInventoryInteractor;
+import use_case.generate_with_inventory.RecipeGateway;
+import use_case.generate_with_inventory.GenerateWithInventoryOutputBoundary;
+import interface_adapter.view_recipe_details.*;
+import use_case.view_recipe_details.*;
 /**
  * An object that will build the app given what windows to include
  */
@@ -20,6 +31,10 @@ public class AppBuilder {
     private MainView mainView;
     private UserRecipesView userRecipesView;
     private ViewRecipesViewModel viewRecipesViewModel;
+
+    private ViewRecipeDetailsViewModel viewRecipeDetailsViewModel;
+    private ViewRecipeDetailsController viewRecipeDetailsController;
+    private RecipeDetailsWindow recipeDetailsWindow;
 
     public AppBuilder addUserRecipesView() {
         userRecipesView = new UserRecipesView();
@@ -72,5 +87,61 @@ public class AppBuilder {
         mainWindow.add(mainView);
 
         return mainWindow;
+    }
+
+    public AppBuilder addGenerateWithInventoryUseCase() {
+        RecipeGateway recipeGateway = new MealDbRecipeGateway();
+
+        // Used for testing UC1; replace with real inventory once implemented.
+        InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
+        inMemoryInventoryReader.add("");
+        inMemoryInventoryReader.add("cheese");
+
+        GenerateWithInventoryViewModel generateWithInventoryViewModel = new GenerateWithInventoryViewModel();
+
+        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(generateWithInventoryViewModel, inMemoryInventoryReader, recipeGateway);
+
+        this.mainView.addGenerateByInventoryPanel(panel);
+
+        return this;
+    }
+
+    private GenerateByInventoryPanel getGenerateByInventoryPanel(
+            GenerateWithInventoryViewModel generateWithInventoryViewModel,
+            InMemoryInventoryReader inMemoryInventoryReader,
+            RecipeGateway recipeGateway) {
+
+        GenerateWithInventoryOutputBoundary presenter =
+                new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
+
+        GenerateWithInventoryInputBoundary interactor =
+                new GenerateWithInventoryInteractor(inMemoryInventoryReader, recipeGateway, presenter);
+
+        GenerateWithInventoryController generateWithInventoryController =
+                new GenerateWithInventoryController(interactor);
+
+        return new GenerateByInventoryPanel(
+                generateWithInventoryController,
+                generateWithInventoryViewModel,
+                viewRecipeDetailsController
+        );
+    }
+
+    public AppBuilder addViewRecipeDetailsUseCase() {
+        viewRecipeDetailsViewModel = new ViewRecipeDetailsViewModel();
+        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel);
+
+        ViewRecipeDetailsOutputBoundary outputBoundary =
+                new ViewRecipeDetailsPresenter(viewRecipeDetailsViewModel);
+
+        ViewRecipeDetailsInputBoundary interactor =
+                new ViewRecipeDetailsInteractor(
+                        new MealDbRecipeDetailsGateway(),
+                        outputBoundary
+                );
+
+        viewRecipeDetailsController = new ViewRecipeDetailsController(interactor);
+
+        return this;
     }
 }
