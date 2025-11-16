@@ -55,4 +55,21 @@ public class Recipe {
     public String getCategory() {
         return category;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Recipe recipe = (Recipe) obj;
+        return title.equals(recipe.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return title.hashCode();
+    }
 }

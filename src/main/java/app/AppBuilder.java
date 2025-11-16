@@ -1,31 +1,31 @@
 package app;
 
-import javax.swing.*;
+import java.awt.CardLayout;
 
-import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.view_recipes.ViewRecipesController;
-import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.ViewRecipesViewModel;
-import use_case.view_recipes.ViewRecipesInteractor;
-import view.*;
-import window.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-//Favorites use case
 import data_access.FavoriteDataAccessObject;
+import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.add_favorite.AddFavoriteController;
 import interface_adapter.add_favorite.AddFavoritePresenter;
 import interface_adapter.add_favorite.AddFavoriteViewModel;
 import interface_adapter.view_favorite.ViewFavoriteController;
 import interface_adapter.view_favorite.ViewFavoritePresenter;
 import interface_adapter.view_favorite.ViewFavoriteViewModel;
+import interface_adapter.view_recipes.ViewRecipesController;
+import interface_adapter.view_recipes.ViewRecipesPresenter;
+import interface_adapter.view_recipes.ViewRecipesViewModel;
 import use_case.add_favorite.AddFavoriteInteractor;
-import use_case.view_favorite.ViewFavoritesInteractor;
+import use_case.view_favorite.ViewFavoriteInteractor;
+import use_case.view_recipes.ViewRecipesInteractor;
 import view.FavoriteView;
+import view.MainView;
+import view.UserRecipesView;
+import view.UserRecipesViewManager;
 import window.FavoriteWindow;
-// end
-
-
-import java.awt.*;
+import window.MainWindow;
+import window.UserRecipesWindow;
 
 /**
  * An object that will build the app given what windows to include
@@ -105,6 +105,7 @@ public class AppBuilder {
         this.userRecipesViewManager = new UserRecipesViewManager(this.userRecipeCardLayout,
                 this.userRecipeCardPanel, this.userRecipesViewManagerModel);
 
+        this.userRecipesView = new UserRecipesView();
 
         userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
                 userRecipesViewManager, userRecipesViewManagerModel);
@@ -159,10 +160,10 @@ public class AppBuilder {
         ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
                 this.viewFavoriteViewModel);
 
-        ViewFavoritesInteractor viewFavoritesInteractor = new ViewFavoritesInteractor(
+        ViewFavoriteInteractor viewFavoriteInteractor = new ViewFavoriteInteractor(
                 this.favoriteDataAccess, viewFavoritePresenter);
 
-        this.viewFavoriteController = new ViewFavoriteController(viewFavoritesInteractor);
+        this.viewFavoriteController = new ViewFavoriteController(viewFavoriteInteractor);
 
         return this;
     }

@@ -3,11 +3,11 @@ import entity.Recipe;
 import use_case.favorite_recipes.FavoriteDataAccessInterface;
 import java.util.List;
 
-public class ViewFavoritesInteractor implements ViewFavoriteInputBoundary{
+public class ViewFavoriteInteractor implements ViewFavoriteInputBoundary{
     private final FavoriteDataAccessInterface favoriteDataAccess;
     private final ViewFavoriteOutputBoundary presenter;
 
-    public ViewFavoritesInteractor(FavoriteDataAccessInterface favoriteDataAccess,
+    public ViewFavoriteInteractor(FavoriteDataAccessInterface favoriteDataAccess,
                                 ViewFavoriteOutputBoundary presenter){
         this.favoriteDataAccess = favoriteDataAccess;
         this.presenter = presenter;
