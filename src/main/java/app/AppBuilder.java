@@ -172,6 +172,7 @@ public class AppBuilder {
     public AppBuilder addFavoritesView() {
         this.favoriteView = new FavoriteView(this.viewFavoriteViewModel);
         this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
+        this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
 
         return this;
     }
