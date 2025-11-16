@@ -3,11 +3,14 @@ package app;
 import javax.swing.*;
 
 import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.ViewRecipesViewModel;
+import interface_adapter.view_recipes.UserRecipeWindowModel;
 import use_case.view_recipes.ViewRecipesInteractor;
 import view.*;
+import view.user_recipe_view.UserRecipesView;
+import view.user_recipe_view.UserRecipesViewManager;
 import window.*;
 
 import java.awt.*;
@@ -27,10 +30,11 @@ public class AppBuilder {
      */
 
     private UserRecipesWindow userRecipesWindow;
+    private UserRecipeWindowModel userRecipeWindowModel;
 
 
     private UserRecipesView userRecipesView;
-    private final ViewRecipesViewModel viewRecipesViewModel = new ViewRecipesViewModel();
+    private UserRecipesViewModel userRecipesViewModel;
 
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
     private UserRecipesViewManager userRecipesViewManager;
@@ -71,24 +75,30 @@ public class AppBuilder {
         this.userRecipesViewManager = new UserRecipesViewManager(this.userRecipeCardLayout,
                 this.userRecipeCardPanel, this.userRecipesViewManagerModel);
 
+        this.userRecipeWindowModel = new UserRecipeWindowModel();
 
         userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
-                userRecipesViewManager, userRecipesViewManagerModel);
+                userRecipesViewManager, userRecipesViewManagerModel, userRecipeWindowModel);
+
 
         return this;
     }
 
     public AppBuilder addUserRecipesView() {
-        this.userRecipeCardPanel.add(this.userRecipesView);
-        this.viewRecipesViewModel.addPropertyChangeListener(this.userRecipesWindow);
+        this.userRecipesViewModel = new UserRecipesViewModel();
 
-        userRecipesWindow.addUserRecipesView(userRecipesView, viewRecipesViewModel);
+        userRecipesView = new UserRecipesView(userRecipesViewModel);
+
+        this.userRecipeCardPanel.add(this.userRecipesView, userRecipesView.getViewName());
+        this.userRecipeWindowModel.addPropertyChangeListener(this.userRecipesWindow);
+
+        userRecipesWindow.addUserRecipesView(userRecipesView, userRecipesViewModel);
         return this;
     }
 
     public AppBuilder addViewRecipesUseCase() {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
-                this.viewRecipesViewModel, this.userRecipesViewManagerModel);
+                this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
         ViewRecipesInteractor viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);

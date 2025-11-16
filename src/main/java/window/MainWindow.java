@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import interface_adapter.view_recipes.ViewRecipesController;
 import view.MainView;
-import view.UserRecipesView;
 
 public class MainWindow extends JFrame {
 
