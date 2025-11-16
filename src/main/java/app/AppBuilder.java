@@ -17,24 +17,18 @@ import interface_adapter.view_favorite.ViewFavoritePresenter;
 import interface_adapter.view_favorite.ViewFavoriteViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.ViewRecipesViewModel;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.view_favorite.ViewFavoriteInteractor;
 import use_case.view_recipes.ViewRecipesInteractor;
 import view.FavoriteView;
 import view.MainView;
-import view.UserRecipesView;
-import view.UserRecipesViewManager;
 import window.FavoriteWindow;
 import window.MainWindow;
 import window.UserRecipesWindow;
 
 //View recipe
 import interface_adapter.view_recipes.UserRecipesViewModel;
-import interface_adapter.view_recipes.ViewRecipesController;
-import interface_adapter.view_recipes.ViewRecipesPresenter;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
-import use_case.view_recipes.ViewRecipesInteractor;
 import view.*;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
