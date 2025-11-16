@@ -4,7 +4,7 @@ import interface_adapter.ViewModel;
 
 public class ViewRecipesViewModel extends ViewModel<Boolean> {
 
-    public ViewRecipesViewModel(String viewName) {
-        super(viewName);
+    public ViewRecipesViewModel() {
+        super("view_recipes");
     }
 }

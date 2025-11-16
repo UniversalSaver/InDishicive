@@ -12,8 +12,6 @@ public class MainWindow extends JFrame {
 
     private ViewRecipesController viewRecipesController;
 
-    private UserRecipesWindow userRecipesWindow;
-
     public MainWindow(String title) {
         super(title);
         optionsMenuBar = new JMenuBar();
@@ -22,15 +20,11 @@ public class MainWindow extends JFrame {
         this.setJMenuBar(optionsMenuBar);
     }
 
-    public void addUserRecipesWindow(UserRecipesWindow userRecipesWindow) {
-        this.userRecipesWindow = userRecipesWindow;
-    }
-
     public void addViewRecipesUseCase(ViewRecipesController viewRecipesController) {
         this.viewRecipesController = viewRecipesController;
     }
 
-    public void addProfileMenu(UserRecipesView userRecipesView) {
+    public void addProfileMenu() {
         JMenu profile = new JMenu("Profile");
 
         optionsMenuBar.add(profile);
