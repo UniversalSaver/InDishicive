@@ -5,7 +5,6 @@ import javax.swing.*;
 import interface_adapter.view_favorite.ViewFavoriteController;
 import interface_adapter.view_recipes.ViewRecipesController;
 import view.MainView;
-import view.UserRecipesView;
 
 import java.awt.*;
 
