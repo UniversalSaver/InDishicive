@@ -10,6 +10,21 @@ import use_case.view_recipes.ViewRecipesInteractor;
 import view.*;
 import window.*;
 
+//Favorites use case
+import data_access.FavoriteDataAccessObject;
+import interface_adapter.add_favorite.AddFavoriteController;
+import interface_adapter.add_favorite.AddFavoritePresenter;
+import interface_adapter.add_favorite.AddFavoriteViewModel;
+import interface_adapter.view_favorite.ViewFavoriteController;
+import interface_adapter.view_favorite.ViewFavoritePresenter;
+import interface_adapter.view_favorite.ViewFavoriteViewModel;
+import use_case.add_favorite.AddFavoriteInteractor;
+import use_case.view_favorite.ViewFavoritesInteractor;
+import view.FavoriteView;
+import window.FavoriteWindow;
+// end
+
+
 import java.awt.*;
 
 /**
