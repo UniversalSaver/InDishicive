@@ -57,6 +57,25 @@ public class AppBuilder {
     End of UserRecipes Variables
      */
 
+    /*
+    Start of Favorites Variables
+     */
+
+    private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
+
+    private final AddFavoriteViewModel addFavoriteViewModel = new AddFavoriteViewModel();
+    private final ViewFavoriteViewModel viewFavoriteViewModel = new ViewFavoriteViewModel();
+
+    private AddFavoriteController addFavoriteController;
+    private ViewFavoriteController viewFavoriteController;
+
+    private FavoriteView favoriteView;
+    private FavoriteWindow favoriteWindow;
+
+    /*
+    End of Favorites Variables
+     */
+
 
     public AppBuilder addMainView() {
         mainView = new MainView();
@@ -116,6 +135,66 @@ public class AppBuilder {
     /*
     End of UserRecipe methods
      */
+
+
+
+    /**
+    Start of Favorites Methods
+     */
+
+
+    public AppBuilder addAddFavoriteUseCase() {
+        AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
+
+        AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
+                this.favoriteDataAccess, addFavoritePresenter);
+
+        this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
+
+        return this;
+    }
+
+
+    public AppBuilder addViewFavoritesUseCase() {
+        ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
+                this.viewFavoriteViewModel);
+
+        ViewFavoritesInteractor viewFavoritesInteractor = new ViewFavoritesInteractor(
+                this.favoriteDataAccess, viewFavoritePresenter);
+
+        this.viewFavoriteController = new ViewFavoriteController(viewFavoritesInteractor);
+
+        return this;
+    }
+
+
+    public AppBuilder addFavoritesView() {
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel);
+        this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
+
+        return this;
+    }
+
+
+    public AppBuilder addViewFavoritesButton() {
+        mainWindow.addViewFavoriteButton(this.viewFavoriteController);
+        return this;
+    }
+
+
+    public AddFavoriteController getAddFavoriteController() {
+        return addFavoriteController;
+    }
+
+
+    public ViewFavoriteController getViewFavoritesController() {
+        return viewFavoriteController;
+    }
+
+    /**
+    End of Favorites Methods
+     */
+
 
     public JFrame build() {
         mainWindow.add(mainView);

@@ -16,6 +16,13 @@ public class Main {
 
 
                 .addViewRecipesUseCase()
+
+                .addAddFavoriteUseCase()
+                .addViewFavoritesUseCase()
+                .addFavoritesView()
+                .addViewFavoritesButton()
+
+
                 .build();
 
         application.pack();

@@ -41,9 +41,9 @@ public class UserRecipesWindow extends JFrame implements PropertyChangeListener 
         this.viewRecipesViewModel = viewRecipesViewModel;
     }
 
-    public void addCreateRecipeView(CreateRecipeView createRecipeView) {
-        this.add(createRecipeView);
-    }
+//    public void addCreateRecipeView(CreateRecipeView createRecipeView) {
+//        this.add(createRecipeView);
+//    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
