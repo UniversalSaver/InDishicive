@@ -1,6 +1,8 @@
 package view.user_recipe_view;
 
+import interface_adapter.view_recipes.RecipeSummary;
 import interface_adapter.view_recipes.UserRecipesViewModel;
+import interface_adapter.view_recipes.ViewRecipesState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +18,11 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
     private final JButton addRecipeButton;
 
+    private JLabel numberOfRecipesLabel;
+
     public UserRecipesView(UserRecipesViewModel userRecipesViewModel) {
         this.userRecipesViewModel = userRecipesViewModel;
+        this.userRecipesViewModel.addPropertyChangeListener(this);
         viewName = UserRecipesViewModel.VIEW_NAME;
 
         this.addRecipeButton = new JButton("Add Recipe");
@@ -31,18 +36,12 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         scrollPane = new JScrollPane(recipes);
 
-        recipes.add(new UserRecipeVisual("MacCheese", "A Macaroni and Cheese, mmmmalskjfpawoijefpalksjpdfiajwsodfkjlawiojefpklawjsdfoiajwpkefljapsoidfjapwlkefjapwoidfjpaksjdfpiawjpofjiawfm"));
-        recipes.add(new UserRecipeVisual("Lasagna", "Cool recipe"));
-        recipes.add(new UserRecipeVisual("Pasta", "Hot Pasta"));
-        recipes.add(new UserRecipeVisual("Pizza", "That's right the lasagna is cold"));
-        recipes.add(new UserRecipeVisual("Stroganoff", "What a neat word"));
-
         this.add(scrollPane);
 
         JPanel addRecipesPanel = new JPanel();
         addRecipesPanel.setLayout(new BorderLayout());
 
-        addRecipesPanel.add(new JLabel("Have 3 recipes"), BorderLayout.LINE_START);
+        addRecipesPanel.add(numberOfRecipesLabel, BorderLayout.LINE_START);
         addRecipesPanel.add(addRecipeButton, BorderLayout.LINE_END);
 
         this.add(addRecipesPanel);
@@ -54,6 +53,16 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(UserRecipesViewModel.SET_SUMMARIES)) {
+            ViewRecipesState summaryState = (ViewRecipesState) evt.getNewValue();
 
+            this.numberOfRecipesLabel.setText("Currently have " + summaryState.getNumberOfRecipes() + " recipes");
+            this.scrollPane.removeAll();
+            for (RecipeSummary recipeSummary : summaryState.getRecipeSummaries()) {
+                this.scrollPane.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
+            }
+            this.scrollPane.revalidate();
+            this.scrollPane.repaint();
+        }
     }
 }
