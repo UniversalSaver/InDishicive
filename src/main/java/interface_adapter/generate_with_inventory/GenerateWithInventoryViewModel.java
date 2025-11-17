@@ -44,4 +44,11 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    public void setRecipes(List<String> titles) {
+        this.allTitles = new ArrayList<>(titles);
+        this.offset = 0;
+        setState(new ArrayList<>(titles));
+        firePropertyChange("recipes");
+    }
 }
