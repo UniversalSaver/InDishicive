@@ -21,4 +21,20 @@ public class Ingredient {
         this.amount = amount;
     }
 
+    /**
+     * Gets the name of this ingredient
+     * @return the ingredient name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the amount of this ingredient
+     * @return the ingredient amount
+     */
+    public String getAmount() {
+        return amount;
+    }
+
 }
