@@ -8,6 +8,10 @@ import javax.swing.JPanel;
 
 import data_access.FavoriteDataAccessObject;
 import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.add_recipe.AddRecipeViewModel;
+import interface_adapter.add_recipe.SwitchViewController;
+import interface_adapter.add_recipe.ViewCreatorPresenter;
+import interface_adapter.view_recipes.UserRecipesViewModel;
 
 //favorites
 import interface_adapter.add_favorite.AddFavoriteController;
@@ -18,6 +22,8 @@ import interface_adapter.view_favorite.ViewFavoritePresenter;
 import interface_adapter.view_favorite.ViewFavoriteViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
+import interface_adapter.view_recipes.UserRecipeWindowModel;
+import use_case.view_recipe_creator.ViewCreatorInteractor;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.view_favorite.ViewFavoriteInteractor;
 import use_case.view_recipes.ViewRecipesInteractor;
@@ -31,6 +37,7 @@ import window.UserRecipesWindow;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
 import view.*;
+import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
 import window.*;
@@ -70,6 +77,10 @@ public class AppBuilder {
 
     private UserRecipesView userRecipesView;
     private UserRecipesViewModel userRecipesViewModel;
+
+	private AddRecipeView addRecipeView;
+	private AddRecipeViewModel addRecipeViewModel;
+
 
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
     private UserRecipesViewManager userRecipesViewManager;
@@ -170,6 +181,28 @@ public class AppBuilder {
 
         return this;
     }
+
+	public AppBuilder addAddRecipeView() {
+		this.addRecipeViewModel = new AddRecipeViewModel();
+
+		this.addRecipeView = new AddRecipeView(addRecipeViewModel);
+
+		this.userRecipeCardPanel.add(this.addRecipeView, AddRecipeViewModel.VIEW_NAME);
+
+		return this;
+	}
+
+	public AppBuilder addViewCreatorUseCase() {
+		ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(this.userRecipesViewManagerModel,
+				this.addRecipeViewModel);
+
+		ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
+		SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
+
+		userRecipesView.addViewCreatorUseCase(switchViewController);
+
+		return this;
+	}
 
     /*
     End of UserRecipe methods

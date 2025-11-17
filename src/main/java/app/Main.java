@@ -14,30 +14,28 @@ public class Main {
 
         JFrame application = appBuilder
                 .addIndishisiveDAO(memoryDataAccessObject)
-
                 .addMainWindow()
                 .addUserRecipesWindow()
-
                 .addProfileMenu()
 
                 .addMainView()
                 .addUserRecipesView()
+                .addAddRecipeView()
+
 
                 .addViewRecipeDetailsUseCase()
                 .addGenerateWithInventoryUseCase()
-
                 .addViewRecipesUseCase()
-
                 .addAddFavoriteUseCase()
                 .addViewFavoritesUseCase()
                 .addFavoritesView()
                 .addViewFavoritesButton()
-
-
+				.addViewCreatorUseCase()
                 .build();
 
         application.pack();
         application.setLocationRelativeTo(null);
         application.setVisible(true);
     }
+
 }
