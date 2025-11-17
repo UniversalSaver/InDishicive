@@ -47,7 +47,7 @@ public class UserRecipesWindow extends JFrame implements PropertyChangeListener 
     }
 
 
-    // TODO
+// TODO
 //    public void addCreateRecipeView(CreateRecipeView createRecipeView) {
 //        this.add(createRecipeView);
 //    }

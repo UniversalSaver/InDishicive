@@ -27,6 +27,13 @@ public class Main {
                 .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
+
+                .addAddFavoriteUseCase()
+                .addViewFavoritesUseCase()
+                .addFavoritesView()
+                .addViewFavoritesButton()
+
+
                 .build();
 
         application.pack();

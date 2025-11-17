@@ -1,14 +1,35 @@
 package app;
 
-import javax.swing.*;
+import java.awt.CardLayout;
 
 import data_access.MemoryDataAccessObject;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import data_access.FavoriteDataAccessObject;
 import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.view_recipes.UserRecipesViewModel;
+
+//favorites
+import interface_adapter.add_favorite.AddFavoriteController;
+import interface_adapter.add_favorite.AddFavoritePresenter;
+import interface_adapter.add_favorite.AddFavoriteViewModel;
+import interface_adapter.view_favorite.ViewFavoriteController;
+import interface_adapter.view_favorite.ViewFavoritePresenter;
+import interface_adapter.view_favorite.ViewFavoriteViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.UserRecipeWindowModel;
+import use_case.add_favorite.AddFavoriteInteractor;
+import use_case.view_favorite.ViewFavoriteInteractor;
 import use_case.view_recipes.ViewRecipesInteractor;
+import view.fav_view.FavoriteView;
+import view.MainView;
+import window.FavoriteWindow;
+import window.MainWindow;
+import window.UserRecipesWindow;
+
+//View recipe
+import interface_adapter.view_recipes.UserRecipesViewModel;
+import interface_adapter.view_recipes.UserRecipeWindowModel;
 import view.*;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
@@ -61,6 +82,25 @@ public class AppBuilder {
 
     /*
     End of UserRecipes Variables
+     */
+
+    /*
+    Start of Favorites Variables
+     */
+
+    private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
+
+    private final AddFavoriteViewModel addFavoriteViewModel = new AddFavoriteViewModel();
+    private final ViewFavoriteViewModel viewFavoriteViewModel = new ViewFavoriteViewModel();
+
+    private AddFavoriteController addFavoriteController;
+    private ViewFavoriteController viewFavoriteController;
+
+    private FavoriteView favoriteView;
+    private FavoriteWindow favoriteWindow;
+
+    /*
+    End of Favorites Variables
      */
 
 
@@ -134,6 +174,67 @@ public class AppBuilder {
     /*
     End of UserRecipe methods
      */
+
+
+
+    /**
+    Start of Favorites Methods
+     */
+
+
+    public AppBuilder addAddFavoriteUseCase() {
+        AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
+
+        AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
+                this.favoriteDataAccess, addFavoritePresenter);
+
+        this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
+
+        return this;
+    }
+
+
+    public AppBuilder addViewFavoritesUseCase() {
+        ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
+                this.viewFavoriteViewModel);
+
+        ViewFavoriteInteractor viewFavoriteInteractor = new ViewFavoriteInteractor(
+                this.favoriteDataAccess, viewFavoritePresenter);
+
+        this.viewFavoriteController = new ViewFavoriteController(viewFavoriteInteractor);
+
+        return this;
+    }
+
+
+    public AppBuilder addFavoritesView() {
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel);
+        this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
+        this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
+
+        return this;
+    }
+
+
+    public AppBuilder addViewFavoritesButton() {
+        mainWindow.addViewFavoriteButton(this.viewFavoriteController);
+        return this;
+    }
+
+
+    public AddFavoriteController getAddFavoriteController() {
+        return addFavoriteController;
+    }
+
+
+    public ViewFavoriteController getViewFavoritesController() {
+        return viewFavoriteController;
+    }
+
+    /**
+    End of Favorites Methods
+     */
+
 
     public JFrame build() {
         mainWindow.add(mainView);
