@@ -8,16 +8,18 @@ public class Main {
         JFrame application = appBuilder
                 .addMainWindow()
                 .addUserRecipesWindow()
-
+                .addDietResWindow()
                 .addProfileMenu()
 
                 .addMainView()
                 .addUserRecipesView()
+                .addDietResView()
 
                 .addViewRecipeDetailsUseCase()
                 .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
+                .addViewRestrictionsUseCase()
                 .build();
 
         application.pack();
