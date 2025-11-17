@@ -18,8 +18,7 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
         this.presenter = presenter;
     }
 
-    @Override
-    public void execute(GenerateWithInventoryInputData inputData) {
+    public void execute() {
         List<String> titles = recipeGateway.findByInventory(inventoryReader.getAll())
                 .stream()
                 .map(Recipe::getTitle)

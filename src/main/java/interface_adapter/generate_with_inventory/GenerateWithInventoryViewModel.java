@@ -14,11 +14,17 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
 
     public GenerateWithInventoryViewModel() {
         super("generate_with_inventory");
+        setState(List.of());
     }
 
     public void resetTitles(List<String> titles) {
         this.allTitles = new ArrayList<>(titles);
         this.offset = 0;
+        setState(new ArrayList<>(titles));
+    }
+
+    public List<String> getAllTitles() {
+        return new ArrayList<>(allTitles);
     }
 
     public List<String> getNextPage(int pageSize) {
@@ -37,9 +43,5 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
 
     public String getErrorMessage() {
         return errorMessage;
-    }
-
-    public boolean isInitialized() {
-        return !allTitles.isEmpty();
     }
 }

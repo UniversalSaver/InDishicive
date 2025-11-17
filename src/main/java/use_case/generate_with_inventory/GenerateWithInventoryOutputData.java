@@ -2,5 +2,14 @@ package use_case.generate_with_inventory;
 
 import java.util.List;
 
-public record GenerateWithInventoryOutputData(List<String> recipeTitles) {
+public class GenerateWithInventoryOutputData {
+    private final List<String> recipeTitles;
+
+    public GenerateWithInventoryOutputData(List<String> recipeTitles) {
+        this.recipeTitles = recipeTitles;
+    }
+
+    public List<String> getRecipeTitles() {
+        return recipeTitles;
+    }
 }

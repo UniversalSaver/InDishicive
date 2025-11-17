@@ -15,31 +15,32 @@ public class GenerateWithInventoryPresenter implements GenerateWithInventoryOutp
 
     @Override
     public void present(GenerateWithInventoryOutputData outputData) {
-        List<String> allTitlesFromUseCase = outputData.recipeTitles();
+        List<String> allTitlesFromUseCase = outputData.getRecipeTitles();
 
         if (allTitlesFromUseCase.isEmpty()) {
             viewModel.resetTitles(List.of());
             viewModel.setErrorMessage("Please add more ingredients!");
             viewModel.setState(List.of());
             viewModel.firePropertyChange("error");
-            return;
         }
 
-        if (!viewModel.isInitialized()) {
-            viewModel.resetTitles(allTitlesFromUseCase);
+        else {
+            List<String> previousTitles = viewModel.getAllTitles();
+            if (!previousTitles.equals(allTitlesFromUseCase)) {
+                viewModel.resetTitles(allTitlesFromUseCase);
+            }
+
+            List<String> page = viewModel.getNextPage(3);
+
+            if (page.isEmpty()) {
+                viewModel.setErrorMessage("No more recipes to show. Please add more ingredients!");
+                viewModel.setState(List.of());
+                viewModel.firePropertyChange("error");
+            } else {
+                viewModel.setErrorMessage("");
+                viewModel.setState(page);
+                viewModel.firePropertyChange("recipes");
+            }
         }
-
-        List<String> page = viewModel.getNextPage(3);
-
-        if (page.isEmpty()) {
-            viewModel.setErrorMessage("No more recipes to show. Please add more ingredients!");
-            viewModel.setState(List.of());
-            viewModel.firePropertyChange("error");
-            return;
-        }
-
-        viewModel.setErrorMessage("");
-        viewModel.setState(page);
-        viewModel.firePropertyChange("recipes");
     }
 }
