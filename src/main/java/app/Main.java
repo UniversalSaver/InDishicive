@@ -17,19 +17,22 @@ public class Main {
 
                 .addMainWindow()
                 .addUserRecipesWindow()
-
+                .addDietResWindow()
                 .addProfileMenu()
 
                 .addMainView()
                 .addUserRecipesView()
+                .addDietResView()
 
+                .addViewRecipeDetailsUseCase()
+                .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
+                .addViewRestrictionsUseCase()
                 .build();
 
         application.pack();
         application.setLocationRelativeTo(null);
         application.setVisible(true);
     }
-
 }

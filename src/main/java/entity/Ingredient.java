@@ -20,5 +20,10 @@ public class Ingredient {
         this.name = name;
         this.amount = amount;
     }
-
+    public String getName() {
+        return name;
+    }
+    public String getAmount(){
+        return amount;
+    }
 }
