@@ -73,15 +73,4 @@ public class Recipe {
     public int hashCode() {
         return Objects.hashCode(title);
     }
-    public String getTitle() {
-        return title;
-    }
-
-    public List<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public String getSteps() {
-        return steps;
-    }
 }
