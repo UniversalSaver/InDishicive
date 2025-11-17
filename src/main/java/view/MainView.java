@@ -13,4 +13,7 @@ public class MainView extends JPanel {
         this.add(tabbedPane);
 
     }
+    public void addGenerateByInventoryPanel(JPanel panel) {
+        tabbedPane.addTab("Generate with inventory", panel);
+    }
 }
