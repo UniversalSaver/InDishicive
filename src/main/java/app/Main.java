@@ -8,12 +8,15 @@ public class Main {
         JFrame application = appBuilder
                 .addMainWindow()
                 .addUserRecipesWindow()
-
+                .addDietResWindow()
                 .addProfileMenu()
 
                 .addMainView()
                 .addUserRecipesView()
+                .addDietResView()
 
+                .addViewRecipeDetailsUseCase()
+                .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
 
@@ -23,11 +26,11 @@ public class Main {
                 .addViewFavoritesButton()
 
 
+                .addViewRestrictionsUseCase()
                 .build();
 
         application.pack();
         application.setLocationRelativeTo(null);
         application.setVisible(true);
     }
-
 }
