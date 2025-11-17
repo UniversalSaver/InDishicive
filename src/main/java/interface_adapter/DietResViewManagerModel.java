@@ -1,10 +1,11 @@
 package interface_adapter;
 
-public class UserRecipesViewManagerModel extends ViewModel<String> {
+public class DietResViewManagerModel extends ViewModel<String>{
 
     public static final String CHANGE_VIEW = "change_view";
 
-    public UserRecipesViewManagerModel() {
+    public DietResViewManagerModel() {
         super("manager model");
+
     }
 }
