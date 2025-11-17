@@ -7,10 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import data_access.FavoriteDataAccessObject;
+import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.add_recipe.AddRecipeViewModel;
 import interface_adapter.add_recipe.SwitchViewController;
 import interface_adapter.add_recipe.ViewCreatorPresenter;
+import interface_adapter.view_diet_res.DietResViewModel;
+import interface_adapter.view_diet_res.DietResWindowModel;
+import interface_adapter.view_diet_res.ViewRestrictionsController;
+import interface_adapter.view_diet_res.ViewRestrictionsPresenter;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 
 //favorites
@@ -36,8 +41,12 @@ import window.UserRecipesWindow;
 //View recipe
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
+import use_case.view_restrictions.ViewRestrictionsInteractor;
+import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
 import view.*;
 import view.user_recipe_view.AddRecipeView;
+import view.diet_res_view.DietResView;
+import view.diet_res_view.DietResViewManager;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
 import window.*;
@@ -95,6 +104,25 @@ public class AppBuilder {
     End of UserRecipes Variables
      */
 
+    /*
+    Start of DietRes variables
+     */
+    private DietResWindow dietResWindow;
+    private DietResWindowModel dietResWindowModel;
+
+
+    private DietResView dietResView;
+    private DietResViewModel dietResViewModel;
+
+    private final DietResViewManagerModel dietResViewManagerModel = new DietResViewManagerModel();
+    private DietResViewManager dietResViewManager;
+
+    private final JPanel dietResCardPanel = new JPanel();
+    private final CardLayout dietResCardLayout = new CardLayout();
+
+    /*
+    End of DietRes variables
+     */
     /*
     Start of Favorites Variables
      */
@@ -206,6 +234,51 @@ public class AppBuilder {
 
     /*
     End of UserRecipe methods
+     */
+
+    /*
+    Start of DietRes Methods
+     */
+    public AppBuilder addDietResWindow() {
+        this.dietResCardPanel.setLayout(dietResCardLayout);
+
+        this.dietResViewManager = new DietResViewManager(this.dietResCardLayout,
+                this.dietResCardPanel, this.dietResViewManagerModel);
+
+        this.dietResWindowModel = new DietResWindowModel();
+
+        dietResWindow = new DietResWindow(dietResCardPanel, dietResCardLayout,
+                dietResViewManager, dietResViewManagerModel, dietResWindowModel);
+
+
+        return this;
+    }
+
+    public AppBuilder addDietResView() {
+        this.dietResViewModel = new DietResViewModel();
+
+        dietResView = new DietResView(dietResViewModel);
+
+        this.dietResCardPanel.add(this.dietResView, dietResView.getViewName());
+        this.dietResWindowModel.addPropertyChangeListener(this.dietResWindow);
+
+        dietResWindow.addDietResView(dietResView, dietResViewModel);
+        return this;
+    }
+
+    public AppBuilder addViewRestrictionsUseCase() {
+        ViewRestrictionsPresenter viewRestrictionsPresenter = new ViewRestrictionsPresenter(
+                this.dietResWindowModel, this.dietResViewManagerModel, this.dietResViewModel);
+
+        ViewRestrictionsInteractor viewRestrictionsInteractor = new ViewRestrictionsInteractor(viewRestrictionsPresenter);
+        ViewRestrictionsController viewRestrictionsController = new ViewRestrictionsController(viewRestrictionsInteractor);
+
+        mainWindow.addViewRestrictionsUseCase(viewRestrictionsController);
+
+        return this;
+    }
+    /*
+    End of DietRes methods
      */
 
 

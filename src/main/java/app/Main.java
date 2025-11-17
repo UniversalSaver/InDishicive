@@ -16,12 +16,13 @@ public class Main {
                 .addIndishisiveDAO(memoryDataAccessObject)
                 .addMainWindow()
                 .addUserRecipesWindow()
+                .addDietResWindow()
                 .addProfileMenu()
 
                 .addMainView()
                 .addUserRecipesView()
                 .addAddRecipeView()
-
+                .addDietResView()
 
                 .addViewRecipeDetailsUseCase()
                 .addGenerateWithInventoryUseCase()
@@ -31,6 +32,7 @@ public class Main {
                 .addFavoritesView()
                 .addViewFavoritesButton()
 				.addViewCreatorUseCase()
+                .addViewRestrictionsUseCase()
                 .build();
 
         application.pack();
