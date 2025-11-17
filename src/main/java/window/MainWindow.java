@@ -46,13 +46,12 @@ public class MainWindow extends JFrame {
      */
 
     public void addViewFavoriteButton(ViewFavoriteController controller) {
-        JButton favoriteButton = new JButton("View Favorites");
-        favoriteButton.addActionListener(e -> controller.execute());
+        JMenu viewMenu = new JMenu("View");
+        JMenuItem favoritesMenuItem = new JMenuItem("View Favorites");
+        favoritesMenuItem.addActionListener(e -> controller.execute());
 
-        JPanel  favoritePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        favoritePanel.add(favoriteButton);
-
-        add(favoritePanel, BorderLayout.NORTH);
+        viewMenu.add(favoritesMenuItem);
+        optionsMenuBar.add(viewMenu);
     }
     /**
      * End of favorite use case

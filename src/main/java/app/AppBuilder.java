@@ -20,7 +20,7 @@ import interface_adapter.view_recipes.ViewRecipesPresenter;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.view_favorite.ViewFavoriteInteractor;
 import use_case.view_recipes.ViewRecipesInteractor;
-import view.FavoriteView;
+import view.fav_view.FavoriteView;
 import view.MainView;
 import window.FavoriteWindow;
 import window.MainWindow;
