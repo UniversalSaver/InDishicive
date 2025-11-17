@@ -27,4 +27,15 @@ public class Recipe {
         this.imageLink = imageLink;
         this.youtubeLink = youtubeLink;
     }
+    public String getTitle() {
+        return title;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public String getSteps() {
+        return steps;
+    }
 }

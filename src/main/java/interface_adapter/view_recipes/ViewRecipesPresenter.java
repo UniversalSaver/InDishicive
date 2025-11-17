@@ -2,20 +2,26 @@ package interface_adapter.view_recipes;
 
 import interface_adapter.*;
 import use_case.view_recipes.ViewRecipesOutputBoundary;
-import window.UserRecipesWindow;
 
 public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
 
-    private final ViewRecipesViewModel viewRecipesViewModel;
+    private final UserRecipeWindowModel userRecipeWindowModel;
     private final UserRecipesViewManagerModel userRecipesViewManagerModel;
+    private final UserRecipesViewModel userRecipesViewModel;
 
-    public ViewRecipesPresenter(ViewRecipesViewModel viewRecipesViewModel,
-                                UserRecipesViewManagerModel userRecipesViewManagerModel) {
-        this.viewRecipesViewModel = viewRecipesViewModel;
+    public ViewRecipesPresenter(UserRecipeWindowModel userRecipeWindowModel,
+                                UserRecipesViewManagerModel userRecipesViewManagerModel,
+                                UserRecipesViewModel userRecipesViewModel) {
+        this.userRecipeWindowModel = userRecipeWindowModel;
         this.userRecipesViewManagerModel = userRecipesViewManagerModel;
+        this.userRecipesViewModel = userRecipesViewModel;
     }
 
     public void prepareSuccessView() {
-        viewRecipesViewModel.firePropertyChange(UserRecipesWindow.SET_VISIBLE);
+
+        userRecipeWindowModel.firePropertyChange(UserRecipeWindowModel.SET_VISIBLE);
+
+        userRecipesViewManagerModel.setState(UserRecipesViewModel.VIEW_NAME);
+        userRecipesViewManagerModel.firePropertyChange(UserRecipesViewManagerModel.CHANGE_VIEW);
     }
 }

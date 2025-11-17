@@ -1,4 +1,4 @@
-package view;
+package view.user_recipe_view;
 
 import interface_adapter.UserRecipesViewManagerModel;
 
@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
 
 public class UserRecipesViewManager implements PropertyChangeListener {
 
-    public static final String CHANGE_VIEW = "change_view";
+    public final String changeView;
 
     private final CardLayout cardLayout;
     private final JPanel views;
@@ -21,11 +21,13 @@ public class UserRecipesViewManager implements PropertyChangeListener {
         this.userRecipesViewManagerModel = userRecipesViewManagerModel;
 
         userRecipesViewManagerModel.addPropertyChangeListener(this);
+
+        changeView = UserRecipesViewManagerModel.CHANGE_VIEW;
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        if (CHANGE_VIEW.equals(event.getPropertyName())) {
+        if (event.getPropertyName().equals(changeView)) {
             this.cardLayout.show(views, (String) event.getNewValue());
         }
 
