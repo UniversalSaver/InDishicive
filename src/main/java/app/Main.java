@@ -13,9 +13,10 @@ public class Main {
 
                 .addMainView()
                 .addUserRecipesView()
-
+				.addAddRecipeView()
 
                 .addViewRecipesUseCase()
+				.addViewCreatorUseCase()
                 .build();
 
         application.pack();
