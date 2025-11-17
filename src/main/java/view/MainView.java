@@ -7,10 +7,10 @@ public class MainView extends JPanel {
 
     public MainView() {
         tabbedPane = new JTabbedPane();
-
-        tabbedPane.add(new JTextArea("hihello"));
-
         this.add(tabbedPane);
+    }
 
+    public void addInventoryTab(InventoryView inventoryView) {
+        tabbedPane.addTab("Inventory", inventoryView);
     }
 }

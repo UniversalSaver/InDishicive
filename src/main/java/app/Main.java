@@ -7,13 +7,14 @@ public class Main {
         AppBuilder appBuilder = new AppBuilder();
         JFrame application = appBuilder
                 .addMainWindow()
-                .addUserRecipesWindow()
+//                .addUserRecipesWindow()
 
                 .addProfileMenu()
 
                 .addMainView()
-                .addUserRecipesView()
+//                .addUserRecipesView()
 
+                .addInventoryView()
 
                 .addViewRecipesUseCase()
                 .build();
