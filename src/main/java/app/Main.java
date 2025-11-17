@@ -15,6 +15,9 @@ public class Main {
                 .addUserRecipesView()
                 .addDietResView()
 
+                .addViewRecipeDetailsUseCase()
+                .addGenerateWithInventoryUseCase()
+
                 .addViewRecipesUseCase()
                 .addViewRestrictionsUseCase()
                 .build();
@@ -23,5 +26,4 @@ public class Main {
         application.setLocationRelativeTo(null);
         application.setVisible(true);
     }
-
 }
