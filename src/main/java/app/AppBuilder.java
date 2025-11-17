@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 
 import data_access.FavoriteDataAccessObject;
 import interface_adapter.DietResViewManagerModel;
+import data_access.MealDBIngredientDataAccess;
+import entity.Ingredient;
+import entity.Inventory;
 import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.add_recipe.AddRecipeViewModel;
 import interface_adapter.add_recipe.SwitchViewController;
@@ -25,8 +28,21 @@ import interface_adapter.add_favorite.AddFavoriteViewModel;
 import interface_adapter.view_favorite.ViewFavoriteController;
 import interface_adapter.view_favorite.ViewFavoritePresenter;
 import interface_adapter.view_favorite.ViewFavoriteViewModel;
+import interface_adapter.add_ingredient.AddIngredientController;
+import interface_adapter.add_ingredient.AddIngredientPresenter;
+import interface_adapter.add_ingredient.AddIngredientViewModel;
+import interface_adapter.remove_ingredient.RemoveIngredientController;
+import interface_adapter.remove_ingredient.RemoveIngredientPresenter;
+import interface_adapter.remove_ingredient.RemoveIngredientViewModel;
+import interface_adapter.search_ingredients.SearchIngredientsController;
+import interface_adapter.search_ingredients.SearchIngredientsPresenter;
+import interface_adapter.search_ingredients.SearchIngredientsViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
+import interface_adapter.view_recipes.ViewRecipesViewModel;
+import use_case.add_ingredient.AddIngredientInteractor;
+import use_case.remove_ingredient.RemoveIngredientInteractor;
+import use_case.search_ingredients.SearchIngredientsInteractor;
 import interface_adapter.view_recipes.UserRecipeWindowModel;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
 import use_case.add_favorite.AddFavoriteInteractor;
@@ -64,6 +80,7 @@ import interface_adapter.view_recipe_details.*;
 import use_case.view_recipe_details.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * An object that will build the app given what windows to include
@@ -140,6 +157,20 @@ public class AppBuilder {
 
     /*
     End of Favorites Variables
+     */
+
+    /*
+    Start of Inventory Variables
+     */
+
+    private InventoryView inventoryView;
+    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
+    private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
+    private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+
+    /*
+    End of Inventory Variables
      */
 
 
@@ -341,6 +372,37 @@ public class AppBuilder {
     End of Favorites Methods
      */
 
+
+    /*
+    Start of Inventory Methods
+     */
+
+    public AppBuilder addInventoryView() {
+        MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+
+        SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);
+        SearchIngredientsInteractor searchInteractor = new SearchIngredientsInteractor(searchPresenter, dataAccess);
+        SearchIngredientsController searchController = new SearchIngredientsController(searchInteractor);
+
+        AddIngredientPresenter addPresenter = new AddIngredientPresenter(addIngredientViewModel);
+        AddIngredientInteractor addInteractor = new AddIngredientInteractor(addPresenter, inventory);
+        AddIngredientController addController = new AddIngredientController(addInteractor);
+
+        RemoveIngredientPresenter removePresenter = new RemoveIngredientPresenter(removeIngredientViewModel);
+        RemoveIngredientInteractor removeInteractor = new RemoveIngredientInteractor(removePresenter, inventory);
+        RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
+
+        inventoryView = new InventoryView(searchController, addController, removeController,
+                                          searchIngredientsViewModel, inventory);
+
+        mainView.addInventoryTab(inventoryView);
+
+        return this;
+    }
+
+    /*
+    End of Inventory Methods
+     */
 
     public JFrame build() {
         mainWindow.add(mainView);

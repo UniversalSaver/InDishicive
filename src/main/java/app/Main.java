@@ -17,12 +17,16 @@ public class Main {
                 .addMainWindow()
                 .addUserRecipesWindow()
                 .addDietResWindow()
+//               .addUserRecipesWindow()
+
                 .addProfileMenu()
 
                 .addMainView()
+//               .addUserRecipesView()
                 .addUserRecipesView()
                 .addAddRecipeView()
                 .addDietResView()
+                .addInventoryView()
 
                 .addViewRecipeDetailsUseCase()
                 .addGenerateWithInventoryUseCase()
