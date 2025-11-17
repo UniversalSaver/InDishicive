@@ -2,6 +2,7 @@ package window;
 
 import javax.swing.*;
 
+import interface_adapter.view_diet_res.ViewRestrictionsController;
 import interface_adapter.view_recipes.ViewRecipesController;
 import view.MainView;
 
@@ -10,6 +11,7 @@ public class MainWindow extends JFrame {
     private final JMenuBar optionsMenuBar;
 
     private ViewRecipesController viewRecipesController;
+    private ViewRestrictionsController viewRestrictionsController;
 
     public MainWindow(String title) {
         super(title);
@@ -21,6 +23,10 @@ public class MainWindow extends JFrame {
 
     public void addViewRecipesUseCase(ViewRecipesController viewRecipesController) {
         this.viewRecipesController = viewRecipesController;
+    }
+
+    public void addViewRestrictionsUseCase(ViewRestrictionsController viewRestrictionsController) {
+        this.viewRestrictionsController = viewRestrictionsController;
     }
 
     public void addProfileMenu() {
@@ -35,6 +41,16 @@ public class MainWindow extends JFrame {
         evt -> {
                 viewRecipesController.execute();
             }
+        );
+
+
+        JMenuItem dietRestrictionsMenu = new JMenuItem("Dietary Restrictions");
+        profile.add(dietRestrictionsMenu);
+
+        dietRestrictionsMenu.addActionListener(
+                evt -> {
+                    viewRestrictionsController.execute();
+                }
         );
     }
 
