@@ -8,7 +8,7 @@ import interface_adapter.ViewModel;
 
 public class ViewFavoriteViewModel extends ViewModel<List<Recipe>> {
 
-    public static final String FAV_LOADED = "favorites_loaded";
+    public static final String FAVORITE_LOADED = "favorites_loaded";
     public static final String SET_VISIBLE = "setVisible";
 
     public ViewFavoriteViewModel() {

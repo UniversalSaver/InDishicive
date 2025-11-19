@@ -13,14 +13,14 @@ public class ViewFavoritePresenter implements ViewFavoriteOutputBoundary{
     @Override
     public void prepareSuccessView(ViewFavoriteOutputData outputData){
         viewModel.setState(outputData.getFavoriteRecipes());
-        viewModel.firePropertyChange(ViewFavoriteViewModel.FAV_LOADED);
+        viewModel.firePropertyChange(ViewFavoriteViewModel.FAVORITE_LOADED);
         viewModel.firePropertyChange(ViewFavoriteViewModel.SET_VISIBLE);
     }
 
     @Override
     public void prepareEmptyView() {
         viewModel.setState(new ArrayList<>());
-        viewModel.firePropertyChange(ViewFavoriteViewModel.FAV_LOADED);
+        viewModel.firePropertyChange(ViewFavoriteViewModel.FAVORITE_LOADED);
         viewModel.firePropertyChange(ViewFavoriteViewModel.SET_VISIBLE);
     }
 }
