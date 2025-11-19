@@ -9,6 +9,7 @@ import data_access.FavoriteDataAccessObject;
 import data_access.InMemoryInventoryReader;
 import data_access.MealDbRecipeDetailsGateway;
 import data_access.MealDbRecipeGateway;
+import data_access.MemoryDataAccessObject;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.add_favorite.AddFavoriteController;
@@ -64,6 +65,7 @@ public class AppBuilder {
 
     private MainView mainView;
 
+    private MemoryDataAccessObject memoryDataAccessObject;
 
     /*
     Start of the UserRecipe variables
@@ -145,6 +147,11 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addIndishisiveDAO(MemoryDataAccessObject memoryDataAccessObject) {
+        this.memoryDataAccessObject = memoryDataAccessObject;
+        return this;
+    }
+
     /*
     Start of UserRecipe Methods
      */
@@ -181,7 +188,8 @@ public class AppBuilder {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        ViewRecipesInteractor viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter);
+        ViewRecipesInteractor viewRecipesInteractor =
+                new ViewRecipesInteractor(viewRecipesPresenter, this.memoryDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);

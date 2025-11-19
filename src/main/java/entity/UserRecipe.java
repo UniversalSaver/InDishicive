@@ -24,4 +24,12 @@ public class UserRecipe {
         this.steps = steps;
         this.description = description;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

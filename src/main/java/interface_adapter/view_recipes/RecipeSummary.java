@@ -1,11 +1,10 @@
-package use_case.view_recipes;
+package interface_adapter.view_recipes;
 
-public class ViewRecipesOutputData {
-
+public class RecipeSummary {
     private final String title;
     private final String description;
 
-    ViewRecipesOutputData(String title, String description) {
+    RecipeSummary(String title, String description) {
         this.title = title;
         this.description = description;
     }
@@ -13,6 +12,7 @@ public class ViewRecipesOutputData {
     public String getTitle() {
         return title;
     }
+
     public String getDescription() {
         return description;
     }
