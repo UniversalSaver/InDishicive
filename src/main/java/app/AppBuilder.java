@@ -1,41 +1,60 @@
 package app;
 
-import javax.swing.*;
+import java.awt.CardLayout;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import data_access.FavoriteDataAccessObject;
+import data_access.InMemoryInventoryReader;
+import data_access.MealDbRecipeDetailsGateway;
+import data_access.MealDbRecipeGateway;
 import data_access.MemoryDataAccessObject;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.add_favorite.AddFavoriteController;
+import interface_adapter.add_favorite.AddFavoritePresenter;
+import interface_adapter.add_favorite.AddFavoriteViewModel;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
 import interface_adapter.view_diet_res.DietResViewModel;
 import interface_adapter.view_diet_res.DietResWindowModel;
 import interface_adapter.view_diet_res.ViewRestrictionsController;
 import interface_adapter.view_diet_res.ViewRestrictionsPresenter;
+import interface_adapter.view_favorite.ViewFavoriteController;
+import interface_adapter.view_favorite.ViewFavoritePresenter;
+import interface_adapter.view_favorite.ViewFavoriteViewModel;
+import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
+import interface_adapter.view_recipe_details.ViewRecipeDetailsPresenter;
+import interface_adapter.view_recipe_details.ViewRecipeDetailsViewModel;
+import interface_adapter.view_recipes.UserRecipeWindowModel;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.UserRecipeWindowModel;
-import use_case.view_recipes.ViewRecipesInteractor;
-import use_case.view_restrictions.ViewRestrictionsInteractor;
-import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
-import view.*;
-import view.diet_res_view.DietResView;
-import view.diet_res_view.DietResViewManager;
-import view.user_recipe_view.UserRecipesView;
-import view.user_recipe_view.UserRecipesViewManager;
-import window.*;
-import data_access.MealDbRecipeDetailsGateway;
-import data_access.InMemoryInventoryReader;
-import data_access.MealDbRecipeGateway;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
+import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import use_case.generate_with_inventory.GenerateWithInventoryInteractor;
-import use_case.generate_with_inventory.RecipeGateway;
 import use_case.generate_with_inventory.GenerateWithInventoryOutputBoundary;
-import interface_adapter.view_recipe_details.*;
-import use_case.view_recipe_details.*;
-
-import java.awt.*;
+import use_case.generate_with_inventory.RecipeGateway;
+import use_case.view_favorite.ViewFavoriteInteractor;
+import use_case.view_recipe_details.ViewRecipeDetailsInputBoundary;
+import use_case.view_recipe_details.ViewRecipeDetailsInteractor;
+import use_case.view_recipe_details.ViewRecipeDetailsOutputBoundary;
+import use_case.view_recipes.ViewRecipesInteractor;
+import use_case.view_restrictions.ViewRestrictionsInteractor;
+import view.GenerateByInventoryPanel;
+import view.MainView;
+import view.diet_res_view.DietResView;
+import view.diet_res_view.DietResViewManager;
+import view.fav_view.FavoriteView;
+import view.user_recipe_view.UserRecipesView;
+import view.user_recipe_view.UserRecipesViewManager;
+import window.DietResWindow;
+import window.FavoriteWindow;
+import window.MainWindow;
+import window.RecipeDetailsWindow;
+import window.UserRecipesWindow;
 
 /**
  * An object that will build the app given what windows to include
@@ -73,8 +92,26 @@ public class AppBuilder {
      */
 
     /*
-    Start of DietRes variables
+    Start of Favorites Variables
      */
+
+    private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
+
+    private final AddFavoriteViewModel addFavoriteViewModel = new AddFavoriteViewModel();
+    private final ViewFavoriteViewModel viewFavoriteViewModel = new ViewFavoriteViewModel();
+
+    private AddFavoriteController addFavoriteController;
+    private ViewFavoriteController viewFavoriteController;
+
+    private FavoriteView favoriteView;
+    private FavoriteWindow favoriteWindow;
+
+    /*
+    End of Favorites Variables
+     */
+    /*
+    Start of DietRes variables
+    */
     private DietResWindow dietResWindow;
     private DietResWindowModel dietResWindowModel;
 
@@ -125,6 +162,7 @@ public class AppBuilder {
         this.userRecipesViewManager = new UserRecipesViewManager(this.userRecipeCardLayout,
                 this.userRecipeCardPanel, this.userRecipesViewManagerModel);
 
+
         this.userRecipeWindowModel = new UserRecipeWindowModel();
 
         userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
@@ -163,7 +201,68 @@ public class AppBuilder {
     End of UserRecipe methods
      */
 
-    /*
+
+
+    /**
+    Start of Favorites Methods
+     */
+
+
+    public AppBuilder addAddFavoriteUseCase() {
+        AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
+
+        AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
+                this.favoriteDataAccess, addFavoritePresenter);
+
+        this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
+
+        return this;
+    }
+    
+
+
+    public AppBuilder addViewFavoritesUseCase() {
+        ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
+                this.viewFavoriteViewModel);
+
+        ViewFavoriteInteractor viewFavoriteInteractor = new ViewFavoriteInteractor(
+                this.favoriteDataAccess, viewFavoritePresenter);
+
+        this.viewFavoriteController = new ViewFavoriteController(viewFavoriteInteractor);
+
+        return this;
+    }
+
+
+    public AppBuilder addFavoritesView() {
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel);
+        this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
+        this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
+
+        return this;
+    }
+
+
+    public AppBuilder addViewFavoritesButton() {
+        mainWindow.addViewFavoriteButton(this.viewFavoriteController);
+        return this;
+    }
+
+
+    public AddFavoriteController getAddFavoriteController() {
+        return addFavoriteController;
+    }
+
+
+    public ViewFavoriteController getViewFavoritesController() {
+        return viewFavoriteController;
+    }
+
+    /**
+    End of Favorites Methods
+     */
+    
+     /*
     Start of DietRes Methods
      */
     public AppBuilder addDietResWindow() {

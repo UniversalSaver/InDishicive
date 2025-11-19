@@ -2,9 +2,12 @@ package window;
 
 import javax.swing.*;
 
+import interface_adapter.view_favorite.ViewFavoriteController;
 import interface_adapter.view_diet_res.ViewRestrictionsController;
 import interface_adapter.view_recipes.ViewRecipesController;
 import view.MainView;
+
+import java.awt.*;
 
 public class MainWindow extends JFrame {
 
@@ -53,6 +56,22 @@ public class MainWindow extends JFrame {
                 }
         );
     }
+
+    /**
+     * Start of favorite use case
+     */
+
+    public void addViewFavoriteButton(ViewFavoriteController controller) {
+        JMenu viewMenu = new JMenu("View");
+        JMenuItem favoritesMenuItem = new JMenuItem("View Favorites");
+        favoritesMenuItem.addActionListener(e -> controller.execute());
+
+        viewMenu.add(favoritesMenuItem);
+        optionsMenuBar.add(viewMenu);
+    }
+    /**
+     * End of favorite use case
+     */
 
     public void addMainView(MainView mainView) {
         this.add(mainView);
