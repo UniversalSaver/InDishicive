@@ -2,6 +2,10 @@ package interface_adapter.view_recipes;
 
 import interface_adapter.*;
 import use_case.view_recipes.ViewRecipesOutputBoundary;
+import use_case.view_recipes.ViewRecipesOutputData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
 
@@ -17,7 +21,17 @@ public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
         this.userRecipesViewModel = userRecipesViewModel;
     }
 
-    public void prepareSuccessView() {
+    @Override
+    public void prepareSuccessView(List<ViewRecipesOutputData> recipeInformation) {
+
+        List<RecipeSummary> recipeSummaries = new ArrayList<>();
+
+        for (ViewRecipesOutputData recipe : recipeInformation) {
+            recipeSummaries.add(new RecipeSummary(recipe.getTitle(), recipe.getDescription()));
+        }
+
+        userRecipesViewModel.setState(new ViewRecipesState(recipeSummaries, recipeSummaries.size()));
+        userRecipesViewModel.firePropertyChange(UserRecipesViewModel.SET_SUMMARIES);
 
         userRecipeWindowModel.firePropertyChange(UserRecipeWindowModel.SET_VISIBLE);
 
