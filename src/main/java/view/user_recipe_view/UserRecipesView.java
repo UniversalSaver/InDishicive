@@ -1,5 +1,6 @@
 package view.user_recipe_view;
 
+import interface_adapter.add_recipe.SwitchViewController;
 import interface_adapter.view_recipes.RecipeSummary;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesState;
@@ -31,7 +32,6 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.add(new JLabel(viewName));
 
         recipes.setLayout(new BoxLayout(recipes, BoxLayout.Y_AXIS));
 
@@ -47,6 +47,12 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         this.add(addRecipesPanel);
     }
+
+	public void addViewCreatorUseCase(SwitchViewController switchViewController) {
+		this.addRecipeButton.addActionListener(e -> {
+			switchViewController.execute();
+		});
+	}
 
     public String getViewName() {
         return viewName;

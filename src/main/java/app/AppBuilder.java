@@ -12,6 +12,9 @@ import data_access.MealDbRecipeGateway;
 import data_access.MemoryDataAccessObject;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.add_recipe.AddRecipeViewModel;
+import interface_adapter.add_recipe.SwitchViewController;
+import interface_adapter.add_recipe.ViewCreatorPresenter;
 import interface_adapter.add_favorite.AddFavoriteController;
 import interface_adapter.add_favorite.AddFavoritePresenter;
 import interface_adapter.add_favorite.AddFavoriteViewModel;
@@ -32,6 +35,11 @@ import interface_adapter.view_recipes.UserRecipeWindowModel;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
+import use_case.view_recipe_creator.ViewCreatorInteractor;
+import use_case.view_restrictions.ViewRestrictionsInteractor;
+import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
+import view.*;
+import view.user_recipe_view.AddRecipeView;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import use_case.generate_with_inventory.GenerateWithInventoryInteractor;
@@ -42,7 +50,6 @@ import use_case.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import use_case.view_recipe_details.ViewRecipeDetailsInteractor;
 import use_case.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import use_case.view_recipes.ViewRecipesInteractor;
-import use_case.view_restrictions.ViewRestrictionsInteractor;
 import view.GenerateByInventoryPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
@@ -77,6 +84,10 @@ public class AppBuilder {
 
     private UserRecipesView userRecipesView;
     private UserRecipesViewModel userRecipesViewModel;
+
+    private AddRecipeView addRecipeView;
+    private AddRecipeViewModel addRecipeViewModel;
+
 
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
     private UserRecipesViewManager userRecipesViewManager;
@@ -196,6 +207,28 @@ public class AppBuilder {
 
         return this;
     }
+
+	public AppBuilder addAddRecipeView() {
+		this.addRecipeViewModel = new AddRecipeViewModel();
+
+		this.addRecipeView = new AddRecipeView(addRecipeViewModel);
+
+		this.userRecipeCardPanel.add(this.addRecipeView, AddRecipeViewModel.VIEW_NAME);
+
+		return this;
+	}
+
+	public AppBuilder addViewCreatorUseCase() {
+		ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(this.userRecipesViewManagerModel,
+				this.addRecipeViewModel);
+
+		ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
+		SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
+
+		userRecipesView.addViewCreatorUseCase(switchViewController);
+
+		return this;
+	}
 
     /*
     End of UserRecipe methods

@@ -20,6 +20,10 @@ public class Main {
 
                 .addMainView()
                 .addUserRecipesView()
+                .addAddRecipeView()
+
+                .addViewRecipesUseCase()
+                .addViewCreatorUseCase()
                 .addDietResView()
 
                 .addViewRecipeDetailsUseCase()
