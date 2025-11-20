@@ -1,7 +1,6 @@
 package use_case.search_ingredients;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SearchIngredientsInteractor implements SearchIngredientsInputBoundary {
 
@@ -25,7 +24,7 @@ public class SearchIngredientsInteractor implements SearchIngredientsInputBounda
                 String query = searchQuery.toLowerCase().trim();
                 List<String> filteredIngredients = allIngredients.stream()
                         .filter(ingredient -> ingredient.toLowerCase().contains(query))
-                        .collect(Collectors.toList());
+                        .toList();
                 searchIngredientsPresenter.prepareSuccessView(filteredIngredients);
             }
         } catch (Exception e) {

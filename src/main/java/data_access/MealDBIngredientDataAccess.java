@@ -1,8 +1,10 @@
 package data_access;
 
+import org.jetbrains.annotations.NotNull;
 import use_case.search_ingredients.SearchIngredientsDataAccessInterface;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -21,19 +23,7 @@ public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessIn
         
         try {
             URI uri = URI.create(API_URL);
-            HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
-            connection.setRequestMethod("GET");
-            
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            reader.close();
-            
-            String jsonResponse = response.toString();
+            String jsonResponse = getString(uri);
             Pattern pattern = Pattern.compile("\"strIngredient\":\"([^\"]+)\"");
             Matcher matcher = pattern.matcher(jsonResponse);
             
@@ -43,10 +33,33 @@ public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessIn
             }
             
         } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch ingredients from API: " + e.getMessage());
+            throw new APIFailException("Failed to fetch ingredients from API: " + e.getMessage());
         }
         
         return ingredients;
+    }
+
+    @NotNull
+    private static String getString(URI uri) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) uri.toURL().openConnection();
+        connection.setRequestMethod("GET");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+        reader.close();
+
+        return response.toString();
+    }
+
+    static class APIFailException extends RuntimeException {
+        public APIFailException(String message) {
+            super(message);
+        }
     }
 }
 
