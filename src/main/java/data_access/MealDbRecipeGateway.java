@@ -70,7 +70,7 @@ public class MealDbRecipeGateway implements RecipeGateway {
                     String thumb = m.optString("strMealThumb", "");
 
                     if (!unique.containsKey(title)) {
-                        Recipe r = new Recipe(title, List.of(), "", thumb, "");
+                        Recipe r = new Recipe(title, List.of(), "", thumb, "", "");
                         unique.put(title, r);
                     }
                 }
@@ -118,6 +118,7 @@ public class MealDbRecipeGateway implements RecipeGateway {
         String instructions = m.optString("strInstructions", "");
         String image = m.optString("strMealThumb", "");
         String youtube = m.optString("strYoutube", "");
+        String category = m.optString("strCategory", "");
 
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 1; i <= 20; i++) {
@@ -129,6 +130,6 @@ public class MealDbRecipeGateway implements RecipeGateway {
             ingredients.add(new Ingredient(ing, measure));
         }
 
-        return new Recipe(title, ingredients, instructions, image, youtube);
+        return new Recipe(title, ingredients, instructions, image, youtube, category);
     }
 }
