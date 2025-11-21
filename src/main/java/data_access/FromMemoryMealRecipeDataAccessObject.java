@@ -15,10 +15,11 @@ public class FromMemoryMealRecipeDataAccessObject implements RecipeDetailsGatewa
 
         recipes.add(new Recipe("Bolognese",
                 createIngredients(new String[] {"Cheese", "5 tbsp"}, new String[] {"Beef", "5 lbs"}),
-                "Turn on oven, and cook", "BologneseImage", "BologneseYoutube"));
+                "Turn on oven, and cook", "BologneseImage",
+				"BologneseYoutube", "Italian"));
         recipes.add(new Recipe("Pizza",
                 createIngredients(new String[] {"Dough", "1 handful"}, new String[] {"Tomato Sauce", "A good amount"}),
-                "Spread Sauce on dough", "PizzaImage", "PizzaYoutube"));
+                "Spread Sauce on dough", "PizzaImage", "PizzaYoutube", "Italian"));
     }
 
     @NotNull
