@@ -102,4 +102,8 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 			stepsTextArea.setText("Insert Steps of Recipe");
 		}
 	}
+
+    public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
+        cancelButton.addActionListener(e -> viewRecipesController.execute());
+    }
 }
