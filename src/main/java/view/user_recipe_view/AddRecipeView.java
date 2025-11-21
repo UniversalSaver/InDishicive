@@ -126,4 +126,8 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
             recipeCreatorPanel.repaint();
 		}
 	}
+
+    public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
+        cancelButton.addActionListener(e -> viewRecipesController.execute());
+    }
 }

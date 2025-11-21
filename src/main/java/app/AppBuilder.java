@@ -36,9 +36,9 @@ import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
+import use_case.view_recipes.ViewRecipesInputBoundary;
 import use_case.view_restrictions.ViewRestrictionsInteractor;
 import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
-import view.*;
 import view.user_recipe_view.AddRecipeView;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
@@ -192,6 +192,19 @@ public class AppBuilder {
         this.userRecipeWindowModel.addPropertyChangeListener(this.userRecipesWindow);
 
         userRecipesWindow.addUserRecipesView(userRecipesView, userRecipesViewModel);
+        return this;
+    }
+
+    public AppBuilder addUserRecipesCancelButtonUseCase() {
+        ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
+                this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
+
+        ViewRecipesInteractor viewRecipesInteractor =
+                new ViewRecipesInteractor(viewRecipesPresenter, this.memoryDataAccessObject);
+        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
+
+        addRecipeView.addCancelButtonUseCase(viewRecipesController);
+
         return this;
     }
 
