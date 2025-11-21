@@ -44,6 +44,7 @@ public class MealDbRecipeDetailsGateway implements RecipeDetailsGateway {
             String instructions = meal.optString("strInstructions", "");
             String image = meal.optString("strMealThumb", "");
             String youtube = meal.optString("strYoutube", "");
+            String category = meal.optString("strCategory", "");
 
             List<Ingredient> ingredients = new ArrayList<>();
             for (int i = 1; i <= 20; i++) {
@@ -53,7 +54,7 @@ public class MealDbRecipeDetailsGateway implements RecipeDetailsGateway {
                 ingredients.add(new Ingredient(ingName, ingMeasure));
             }
 
-            return new Recipe(mealTitle, ingredients, instructions, image, youtube);
+            return new Recipe(mealTitle, ingredients, instructions, image, youtube, category);
 
         } catch (IOException e) {
             return null;
