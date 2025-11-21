@@ -13,19 +13,14 @@ import java.beans.PropertyChangeListener;
 public class UserRecipesView extends JPanel implements PropertyChangeListener {
     private final String viewName;
 
-    private final JScrollPane scrollPane;
-
     private final JPanel recipes = new JPanel();
-
-    private final UserRecipesViewModel userRecipesViewModel;
 
     private final JButton addRecipeButton;
 
     private JLabel numberOfRecipesLabel = new JLabel();
 
     public UserRecipesView(UserRecipesViewModel userRecipesViewModel) {
-        this.userRecipesViewModel = userRecipesViewModel;
-        this.userRecipesViewModel.addPropertyChangeListener(this);
+        userRecipesViewModel.addPropertyChangeListener(this);
         viewName = UserRecipesViewModel.VIEW_NAME;
 
         this.addRecipeButton = new JButton("Add Recipe");
@@ -35,7 +30,9 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         recipes.setLayout(new BoxLayout(recipes, BoxLayout.Y_AXIS));
 
-        scrollPane = new JScrollPane(recipes);
+        JScrollPane scrollPane = new JScrollPane(recipes);
+
+        scrollPane.setPreferredSize(new Dimension(600, 350));
 
         this.add(scrollPane);
 
@@ -49,9 +46,9 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
     }
 
 	public void addViewCreatorUseCase(SwitchViewController switchViewController) {
-		this.addRecipeButton.addActionListener(e -> {
-			switchViewController.execute();
-		});
+		this.addRecipeButton.addActionListener(e ->
+			switchViewController.execute()
+        );
 	}
 
     public String getViewName() {
