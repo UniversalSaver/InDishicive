@@ -25,6 +25,7 @@ public class Main {
                 .addAddRecipeView()
 
                 .addUserRecipesCancelButtonUseCase()
+				.addIngredientUseCase()
                 .addViewRecipesUseCase()
                 .addViewCreatorUseCase()
                 .addDietResView()

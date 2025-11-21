@@ -1,27 +1,30 @@
 package view.user_recipe_view;
 
+import interface_adapter.add_recipe.AddIngredientController;
 import interface_adapter.add_recipe.AddRecipeViewModel;
+import interface_adapter.view_recipes.ViewRecipesController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class AddRecipeView extends JPanel implements PropertyChangeListener {
 
-	private JButton cancelButton = new JButton("Cancel");
+	private final JButton cancelButton = new JButton("Cancel");
 	private JButton addRecipeButton = new JButton("Add Recipe");
 
-	private JTextField nameTextField = new JTextField();
-	private JTextArea descriptionTextArea = new JTextArea();
-	private JTextArea stepsTextArea = new JTextArea();
+	private final JTextField nameTextField = new JTextField();
+	private final JTextArea descriptionTextArea = new JTextArea();
+	private final JTextArea stepsTextArea = new JTextArea();
 
-	private JPanel ingredientSelectPanel = new JPanel();
-	private JButton addIngredientButton = new JButton("Add Ingredient");
+	private final JPanel ingredientSelectPanel = new JPanel();
+	private final JButton addIngredientButton = new JButton("Add Ingredient");
+	private final JLabel databaseNotFoundLabel = new JLabel();
 
-	private JPanel recipeCreatorPanel;
-    private JScrollPane scrollPane;
+	private final JPanel recipeCreatorPanel;
 
 	public AddRecipeView(AddRecipeViewModel addRecipeViewModel) {
 		addRecipeViewModel.addPropertyChangeListener(this);
@@ -29,9 +32,7 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         recipeCreatorPanel = createRecipeCreator();
-
-        scrollPane = new JScrollPane(recipeCreatorPanel);
-
+		JScrollPane scrollPane = new JScrollPane(recipeCreatorPanel);
 		this.add(scrollPane);
 
 		JPanel buttonsPanel = new JPanel();
@@ -42,21 +43,45 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 
 		this.add(buttonsPanel);
 
-        addIngredientButton.addActionListener(e -> addIngredient());
+		databaseNotFoundLabel.setText("Database could not be accessed. Try again later");
 	}
 
-    private void addIngredient() {
-        IngredientChoice ingredientChoice = new IngredientChoice();
+    private void addIngredient(java.util.List<String> ingredientList) {
+        IngredientChoice ingredientChoice = new IngredientChoice(ingredientList);
         ingredientChoice.setAlignmentX(Component.CENTER_ALIGNMENT);
         ingredientSelectPanel.add(ingredientChoice, ingredientSelectPanel.getComponentCount() - 3);
 
-        recipeCreatorPanel.setPreferredSize(new Dimension(550, 350 +
-                ingredientSelectPanel.getPreferredSize().height));
-        recipeCreatorPanel.revalidate();
-        recipeCreatorPanel.repaint();
-        ingredientSelectPanel.revalidate();
-        ingredientSelectPanel.repaint();
-    }
+		removeWarningLabel();
+
+		resizeIngredientPanel();
+	}
+
+	private void removeWarningLabel() {
+		if (ingredientSelectPanel.getComponent(ingredientSelectPanel.getComponentCount() - 1) ==
+				databaseNotFoundLabel) {
+			ingredientSelectPanel.remove(ingredientSelectPanel.getComponent(
+					ingredientSelectPanel.getComponentCount() - 1));
+		}
+	}
+
+	private void resizeIngredientPanel() {
+		recipeCreatorPanel.setPreferredSize(new Dimension(550, 350 +
+				ingredientSelectPanel.getPreferredSize().height));
+		recipeCreatorPanel.revalidate();
+		recipeCreatorPanel.repaint();
+		ingredientSelectPanel.revalidate();
+		ingredientSelectPanel.repaint();
+	}
+
+	private void addIngredientWarning() {
+		ingredientSelectPanel.add(databaseNotFoundLabel);
+
+		resizeIngredientPanel();
+	}
+
+	public void addIngredientUseCase(AddIngredientController addIngredientController) {
+		addIngredientButton.addActionListener(e -> addIngredientController.execute());
+	}
 
     private JPanel createRecipeCreator() {
         JPanel result = new JPanel();
@@ -107,27 +132,34 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
     }
 
     @Override
+	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(AddRecipeViewModel.WIPE_VIEW)) {
-			nameTextField.setText("Insert Name of Recipe");
-			descriptionTextArea.setText("Insert Description of Recipe");
-
-			ingredientSelectPanel.removeAll();
-            ingredientSelectPanel.add(Box.createHorizontalGlue());
-			ingredientSelectPanel.add(addIngredientButton);
-            ingredientSelectPanel.add(Box.createVerticalGlue());
-
-			stepsTextArea.setText("Insert Steps of Recipe");
-
-            recipeCreatorPanel.setPreferredSize(new Dimension(550, 350 +
-                    ingredientSelectPanel.getPreferredSize().height));
-
-            recipeCreatorPanel.revalidate();
-            recipeCreatorPanel.repaint();
+		switch (evt.getPropertyName()) {
+			case AddRecipeViewModel.WIPE_VIEW -> wipeView();
+			case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
+			case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
 		}
 	}
 
-    public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
+	private void wipeView() {
+		nameTextField.setText("Insert Name of Recipe");
+		descriptionTextArea.setText("Insert Description of Recipe");
+
+		ingredientSelectPanel.removeAll();
+		ingredientSelectPanel.add(Box.createHorizontalGlue());
+		ingredientSelectPanel.add(addIngredientButton);
+		ingredientSelectPanel.add(Box.createVerticalGlue());
+
+		stepsTextArea.setText("Insert Steps of Recipe");
+
+		recipeCreatorPanel.setPreferredSize(new Dimension(550, 350 +
+				ingredientSelectPanel.getPreferredSize().height));
+
+		recipeCreatorPanel.revalidate();
+		recipeCreatorPanel.repaint();
+	}
+
+	public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
         cancelButton.addActionListener(e -> viewRecipesController.execute());
     }
 }

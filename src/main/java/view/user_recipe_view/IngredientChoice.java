@@ -9,17 +9,12 @@ public class IngredientChoice extends JPanel {
     private final JComboBox<String> ingredientSelectComboBox;
     private final JTextField amountTextField;
 
-    public IngredientChoice() {
-        List<String> ingredientList = new ArrayList<>();
-        ingredientList.add("Pasta");
-        ingredientList.add("Fish");
-        ingredientList.add("Beef");
-        ingredientList.add("Peanuts");
-        ingredientList.add("Diamonds");
+    public IngredientChoice(List<String> ingredientList) {
 
-        this.add(new JLabel("Name:"));
+		this.add(new JLabel("Name:"));
 
         ingredientSelectComboBox = new JComboBox<>(ingredientList.toArray(new String[0]));
+		ingredientSelectComboBox.setEditable(true);
         this.add(ingredientSelectComboBox);
 
         this.add(new JLabel("Amount:"));
