@@ -5,30 +5,29 @@ import entity.UserRecipe;
 import use_case.view_recipes.ViewRecipesDataAccessInterface;
 
 import java.io.*;
+import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MemoryDataAccessObject implements ViewRecipesDataAccessInterface {
+public class FileDataAccessObject implements ViewRecipesDataAccessInterface {
 
-    private final String userRecipeFilepath = "user_recipes.tsv";
-    private final String userRecipeFileHeader = "title\tingredients\tsteps\tdescription";
-    private final int headerLength = 4;
-    private List<UserRecipe> userRecipes = new ArrayList<>();
-
+    static final String USER_RECIPE_FILE_PATH = "user_recipes.tsv";
+    static final String USER_RECIPE_FILE_HEADER = "title\tingredients\tsteps\tdescription";
+    static final int HEADER_LENGTH = 4;
+    private final List<UserRecipe> userRecipes = new ArrayList<>();
 
     public void updateUserRecipes() {
-        BufferedReader userRecipeFileReader = new BufferedReader(getFileReader(userRecipeFilepath,
-                userRecipeFileHeader));
 
         userRecipes.clear();
 
-        try {
+        try (BufferedReader userRecipeFileReader =
+                     new BufferedReader(getFileReader(USER_RECIPE_FILE_PATH, USER_RECIPE_FILE_HEADER))) {
             String header = userRecipeFileReader.readLine();
 
-            if (!header.equals(userRecipeFileHeader)) {
+            if (!header.equals(USER_RECIPE_FILE_HEADER)) {
 
-                throw new CorruptDataException("File " + userRecipeFilepath + " is corrupted. Please fix, then try again.");
+                throw new CorruptDataException("File " + USER_RECIPE_FILE_PATH + " is corrupted. Please fix, then try again.");
             }
 
             String currentTabbedRecipe;
@@ -36,8 +35,8 @@ public class MemoryDataAccessObject implements ViewRecipesDataAccessInterface {
             while ((currentTabbedRecipe = userRecipeFileReader.readLine()) != null) {
                 String[] separatedRecipe = currentTabbedRecipe.split("\t");
 
-                if (separatedRecipe.length != headerLength) {
-                    throw new CorruptDataException("File " + userRecipeFilepath + " is corrupted. " +
+                if (separatedRecipe.length != HEADER_LENGTH) {
+                    throw new CorruptDataException("File " + USER_RECIPE_FILE_PATH + " is corrupted. " +
                             "User Recipe data is not consistent with header\n" + Arrays.toString(separatedRecipe));
                 }
 
@@ -71,12 +70,13 @@ public class MemoryDataAccessObject implements ViewRecipesDataAccessInterface {
      */
     private FileReader getFileReader(String filepath, String initialMessage) {
         FileReader fileReader;
+        Logger logger = Logger.getLogger(getClass().getName());
 
         try {
             fileReader = new FileReader(filepath);
         } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-            System.err.println("Creating new file, and using that");
+            logger.info(e.getMessage());
+            logger.info("Creating new file, and using that");
 
             try (FileWriter fileWriter = new FileWriter(filepath)) {
                 fileWriter.write(initialMessage);
@@ -87,7 +87,7 @@ public class MemoryDataAccessObject implements ViewRecipesDataAccessInterface {
             try {
                 fileReader = new FileReader(filepath);
             } catch (FileNotFoundException ex) {
-                System.err.println("This is an error that should never appear");
+                logger.severe("This is an error that should never appear");
 
                 throw new InaccessibleFileException(ex.getMessage());
             }
@@ -98,24 +98,6 @@ public class MemoryDataAccessObject implements ViewRecipesDataAccessInterface {
 
     @Override
     public List<UserRecipe> getUserRecipes() {
-//        List<UserRecipe> recipes = new ArrayList<>();
-//
-//        ArrayList<Ingredient> ingredients = new ArrayList<>();
-//        ingredients.add(new Ingredient("Pasta", "5 tablespoons"));
-//        recipes.add(new UserRecipe("Bolognese", ingredients, "Add pasta lol", "This is pasta you know?"));
-//
-//        ingredients = new ArrayList<>();
-//        ingredients.add(new Ingredient("Cheese", "5 Cups"));
-//        recipes.add(new UserRecipe("CHEESE", ingredients, "Add cheese", "This is cheese you know?"));
-//
-//        ingredients = new ArrayList<>();
-//        ingredients.add(new Ingredient("water", "50 gallons"));
-//        recipes.add(new UserRecipe("water",  ingredients, "Add water", "A LOT OF WATER AAAAAAAAAA"));
-//
-//        recipes.add(new UserRecipe("water", ingredients, "Add water", "A LOT OF WATER AAAAAAAAAA"));
-
-
-//        return recipes;
         return this.userRecipes;
     }
 }

@@ -1,6 +1,6 @@
 package app;
 
-import data_access.MemoryDataAccessObject;
+import data_access.FileDataAccessObject;
 
 import javax.swing.*;
 
@@ -8,12 +8,12 @@ public class Main {
     public static void main(String[] args) {
         AppBuilder appBuilder = new AppBuilder();
 
-        MemoryDataAccessObject memoryDataAccessObject = new MemoryDataAccessObject();
+        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
 
-        memoryDataAccessObject.updateUserRecipes();
+        fileDataAccessObject.updateUserRecipes();
 
         JFrame application = appBuilder
-                .addIndishisiveDAO(memoryDataAccessObject)
+                .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
                 .addUserRecipesWindow()
