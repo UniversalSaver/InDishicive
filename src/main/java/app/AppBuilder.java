@@ -9,7 +9,7 @@ import data_access.FavoriteDataAccessObject;
 import data_access.InMemoryInventoryReader;
 import data_access.MealDbRecipeDetailsGateway;
 import data_access.MealDbRecipeGateway;
-import data_access.MemoryDataAccessObject;
+import data_access.FileDataAccessObject;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
 import interface_adapter.add_recipe.AddRecipeViewModel;
@@ -72,7 +72,7 @@ public class AppBuilder {
 
     private MainView mainView;
 
-    private MemoryDataAccessObject memoryDataAccessObject;
+    private FileDataAccessObject fileDataAccessObject;
 
     /*
     Start of the UserRecipe variables
@@ -158,8 +158,8 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addIndishisiveDAO(MemoryDataAccessObject memoryDataAccessObject) {
-        this.memoryDataAccessObject = memoryDataAccessObject;
+    public AppBuilder addIndishisiveDAO(FileDataAccessObject memoryDataAccessObject) {
+        this.fileDataAccessObject = memoryDataAccessObject;
         return this;
     }
 
@@ -200,7 +200,7 @@ public class AppBuilder {
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
         ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.memoryDataAccessObject);
+                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
@@ -251,7 +251,7 @@ public class AppBuilder {
 
         return this;
     }
-    
+
 
 
     public AppBuilder addViewFavoritesUseCase() {
@@ -294,7 +294,7 @@ public class AppBuilder {
     /**
     End of Favorites Methods
      */
-    
+
      /*
     Start of DietRes Methods
      */
