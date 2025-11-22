@@ -14,4 +14,8 @@ public class AddFavoriteController{
         AddFavoriteInputData inputData = new AddFavoriteInputData(recipe);
         interactor.execute(inputData);
     }
+
+    public void execute(String recipeTitle){
+        interactor.execute(recipeTitle);
+    }
 }

@@ -23,11 +23,11 @@ public class Main {
                 .addDietResView()
 
                 .addViewRecipeDetailsUseCase()
+                .addAddFavoriteUseCase()
                 .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
 
-                .addAddFavoriteUseCase()
                 .addViewFavoritesUseCase()
                 .addFavoritesView()
                 .addViewFavoritesButton()
