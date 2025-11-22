@@ -44,6 +44,7 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		this.add(buttonsPanel);
 
 		databaseNotFoundLabel.setText("Database could not be accessed. Try again later");
+		databaseNotFoundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
 
     private void addIngredient(java.util.List<String> ingredientList) {
