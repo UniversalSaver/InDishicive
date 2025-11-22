@@ -257,8 +257,10 @@ public class AppBuilder {
     public AppBuilder addAddFavoriteUseCase() {
         AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
 
+        MealDbRecipeDetailsGateway recipeDetailsGateway = new MealDbRecipeDetailsGateway();
+
         AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
-                this.favoriteDataAccess, addFavoritePresenter);
+                this.favoriteDataAccess, addFavoritePresenter, recipeDetailsGateway);
 
         this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
 
@@ -281,7 +283,7 @@ public class AppBuilder {
 
 
     public AppBuilder addFavoritesView() {
-        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel);
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel, this.viewRecipeDetailsController);
         this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
         this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
 
@@ -393,7 +395,9 @@ public class AppBuilder {
         return new GenerateByInventoryPanel(
                 generateWithInventoryController,
                 generateWithInventoryViewModel,
-                viewRecipeDetailsController
+                viewRecipeDetailsController,
+                this.addFavoriteController,
+                this.addFavoriteViewModel
         );
     }
 
