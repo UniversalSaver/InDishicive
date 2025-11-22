@@ -5,16 +5,10 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import data_access.FavoriteDataAccessObject;
-import data_access.InMemoryInventoryReader;
-import data_access.MealDbRecipeDetailsGateway;
-import data_access.MealDbRecipeGateway;
-import data_access.MemoryDataAccessObject;
+import data_access.*;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.add_recipe.AddRecipeViewModel;
-import interface_adapter.add_recipe.SwitchViewController;
-import interface_adapter.add_recipe.ViewCreatorPresenter;
+import interface_adapter.add_recipe.*;
 import interface_adapter.add_favorite.AddFavoriteController;
 import interface_adapter.add_favorite.AddFavoritePresenter;
 import interface_adapter.add_favorite.AddFavoriteViewModel;
@@ -35,6 +29,7 @@ import interface_adapter.view_recipes.UserRecipeWindowModel;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
+import use_case.add_recipe.AddIngredientInteractor;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
 import use_case.view_recipes.ViewRecipesInputBoundary;
 import use_case.view_restrictions.ViewRestrictionsInteractor;
@@ -72,7 +67,7 @@ public class AppBuilder {
 
     private MainView mainView;
 
-    private MemoryDataAccessObject memoryDataAccessObject;
+    private FileDataAccessObject fileDataAccessObject;
 
     /*
     Start of the UserRecipe variables
@@ -158,8 +153,8 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addIndishisiveDAO(MemoryDataAccessObject memoryDataAccessObject) {
-        this.memoryDataAccessObject = memoryDataAccessObject;
+    public AppBuilder addIndishisiveDAO(FileDataAccessObject memoryDataAccessObject) {
+        this.fileDataAccessObject = memoryDataAccessObject;
         return this;
     }
 
@@ -195,12 +190,23 @@ public class AppBuilder {
         return this;
     }
 
+	public AppBuilder addIngredientUseCase() {
+		AddIngredientPresenter addIngredientPresenter = new AddIngredientPresenter(this.addRecipeViewModel);
+		AddIngredientInteractor addIngredientInteractor =
+				new AddIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
+		AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
+
+		this.addRecipeView.addIngredientUseCase(addIngredientController);
+
+		return this;
+	}
+
     public AppBuilder addUserRecipesCancelButtonUseCase() {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
         ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.memoryDataAccessObject);
+                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         addRecipeView.addCancelButtonUseCase(viewRecipesController);
@@ -213,7 +219,7 @@ public class AppBuilder {
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
         ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.memoryDataAccessObject);
+                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
@@ -266,7 +272,7 @@ public class AppBuilder {
 
         return this;
     }
-    
+
 
 
     public AppBuilder addViewFavoritesUseCase() {
@@ -309,7 +315,7 @@ public class AppBuilder {
     /**
     End of Favorites Methods
      */
-    
+
      /*
     Start of DietRes Methods
      */
