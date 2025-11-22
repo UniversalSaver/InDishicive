@@ -1,10 +1,8 @@
 package use_cases.add_ingredient;
 
 import data_access.FromMemoryMealRecipeDataAccessObject;
-import entity.Ingredient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import use_case.add_recipe.AddIngredientDataAccessInterface;
 import use_case.add_recipe.AddIngredientInteractor;
 import use_case.add_recipe.AddIngredientOutputBoundary;
 import use_case.add_recipe.AddIngredientOutputData;
@@ -32,17 +30,13 @@ public class AddIngredientInteractorTest {
 			}
 		}
 		);
+		addIngredientInteractor.execute();
 	}
 
 	@Test
 	void databaseUnaccessibleTest() {
 		AddIngredientInteractor addIngredientInteractor = new AddIngredientInteractor(
-				new AddIngredientDataAccessInterface() {
-					@Override
-					public List<Ingredient> listPossibleIngredients() {
-						return null;
-					}
-				}, new AddIngredientOutputBoundary() {
+				() -> null, new AddIngredientOutputBoundary() {
 
 			@Override
 			public void presentSuccessView(AddIngredientOutputData outputData) {
@@ -53,5 +47,6 @@ public class AddIngredientInteractorTest {
 			public void presentFailView() {
 			}
 		});
+		addIngredientInteractor.execute();
 	}
 }

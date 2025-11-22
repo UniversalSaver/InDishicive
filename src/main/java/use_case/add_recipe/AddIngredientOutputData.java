@@ -1,7 +1,5 @@
 package use_case.add_recipe;
 
-import entity.Ingredient;
-
 import java.util.List;
 
 /**
