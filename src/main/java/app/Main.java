@@ -16,6 +16,14 @@ public class Main {
                 .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
+//                .addUserRecipesWindow()
+
+                .addProfileMenu()
+
+                .addMainView()
+//                .addUserRecipesView()
+
+                .addInventoryView()
                 .addUserRecipesWindow()
                 .addDietResWindow()
                 .addProfileMenu()

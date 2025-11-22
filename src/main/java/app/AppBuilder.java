@@ -2,6 +2,25 @@ package app;
 
 import java.awt.CardLayout;
 
+import data_access.MealDBIngredientDataAccess;
+import entity.Ingredient;
+import entity.Inventory;
+import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.add_ingredient.AddIngredientController;
+import interface_adapter.add_ingredient.AddIngredientPresenter;
+import interface_adapter.add_ingredient.AddIngredientViewModel;
+import interface_adapter.remove_ingredient.RemoveIngredientController;
+import interface_adapter.remove_ingredient.RemoveIngredientPresenter;
+import interface_adapter.remove_ingredient.RemoveIngredientViewModel;
+import interface_adapter.search_ingredients.SearchIngredientsController;
+import interface_adapter.search_ingredients.SearchIngredientsPresenter;
+import interface_adapter.search_ingredients.SearchIngredientsViewModel;
+import interface_adapter.view_recipes.ViewRecipesController;
+import interface_adapter.view_recipes.ViewRecipesPresenter;
+import interface_adapter.view_recipes.ViewRecipesViewModel;
+import use_case.add_ingredient.AddIngredientInteractor;
+import use_case.remove_ingredient.RemoveIngredientInteractor;
+import use_case.search_ingredients.SearchIngredientsInteractor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -52,6 +71,22 @@ import view.diet_res_view.DietResViewManager;
 import view.fav_view.FavoriteView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
+import window.*;
+import data_access.MealDbRecipeDetailsGateway;
+import data_access.InMemoryInventoryReader;
+import data_access.MealDbRecipeGateway;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
+import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
+import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
+import use_case.generate_with_inventory.GenerateWithInventoryInteractor;
+import use_case.generate_with_inventory.RecipeGateway;
+import use_case.generate_with_inventory.GenerateWithInventoryOutputBoundary;
+import interface_adapter.view_recipe_details.*;
+import use_case.view_recipe_details.*;
+
+import java.awt.*;
+import java.util.ArrayList;
 import window.DietResWindow;
 import window.FavoriteWindow;
 import window.MainWindow;
@@ -98,8 +133,26 @@ public class AppBuilder {
      */
 
     /*
-    Start of Favorites Variables
+    Start of Inventory Variables
      */
+
+    private InventoryView inventoryView;
+    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
+    private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
+    private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+
+    /*
+    End of Inventory Variables
+     */
+     
+    /*
+    Start of DietRes variables
+    */
+  
+    /*
+    Start of Favorites variables
+    */
 
     private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
 
@@ -252,9 +305,38 @@ public class AppBuilder {
     /*
     End of UserRecipe methods
      */
+  
+    /*
+    Start of Inventory Methods
+     */
 
+    public AppBuilder addInventoryView() {
+        MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+        
+        SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);
+        SearchIngredientsInteractor searchInteractor = new SearchIngredientsInteractor(searchPresenter, dataAccess);
+        SearchIngredientsController searchController = new SearchIngredientsController(searchInteractor);
+        
+        AddIngredientPresenter addPresenter = new AddIngredientPresenter(addIngredientViewModel);
+        AddIngredientInteractor addInteractor = new AddIngredientInteractor(addPresenter, inventory);
+        AddIngredientController addController = new AddIngredientController(addInteractor);
+        
+        RemoveIngredientPresenter removePresenter = new RemoveIngredientPresenter(removeIngredientViewModel);
+        RemoveIngredientInteractor removeInteractor = new RemoveIngredientInteractor(removePresenter, inventory);
+        RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
+        
+        inventoryView = new InventoryView(searchController, addController, removeController, 
+                                          searchIngredientsViewModel, inventory);
+        
+        mainView.addInventoryTab(inventoryView);
+        
+        return this;
+    }
 
-
+    /*
+    End of Inventory Methods
+    */
+    
     /**
     Start of Favorites Methods
      */
