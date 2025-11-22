@@ -14,7 +14,6 @@ public class IngredientChoice extends JPanel {
 		this.add(new JLabel("Name:"));
 
         ingredientSelectComboBox = new JComboBox<>(ingredientList.toArray(new String[0]));
-		ingredientSelectComboBox.setEditable(true);
         this.add(ingredientSelectComboBox);
 
         this.add(new JLabel("Amount:"));
