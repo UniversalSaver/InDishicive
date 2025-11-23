@@ -3,7 +3,6 @@ package data_access;
 import entity.Ingredient;
 import entity.UserRecipe;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import use_case.add_recipe.AddRecipeDataAccessInterface;
 import use_case.view_recipes.ViewRecipesDataAccessInterface;
 
