@@ -8,7 +8,7 @@ public class ViewRestrictionsState {
     private String error = null;
 
     public ViewRestrictionsState(ViewRestrictionsState copy) {
-        this.restrictions = copy.restrictions;
+        this.restrictions = new ArrayList<>(copy.restrictions);
         this.error = copy.error;
     }
 
