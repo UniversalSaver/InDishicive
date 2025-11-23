@@ -162,4 +162,28 @@ public class FileDataAccessObjectTest {
 
 		assertEquals(expectedFile, actualFile);
 	}
+
+	@Test
+	void addExistingRecipeTest() {
+		try (FileWriter writer = new FileWriter("test_DAO_file.tsv")) {
+			writer.write("title\tingredients\tsteps\tdescription\n" +
+					"Hot Chocolate\tMilk=4 cups,Unsweetened cocoa powder=1/4 cup,Granulated sugar=1/4 cup," +
+					"Chocolate chips=1/4 cup,Vanilla Extract=1/2 cup\tMake it\tA cool hot chocolate recipe");
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+		UserRecipe userRecipe = new UserRecipe("Hot Chocolate",
+				Arrays.stream((new Ingredient[]
+						{new Ingredient("Milk", "4 cups"),
+								new Ingredient("Unsweetened cocoa powder", "1/4 cup"),
+								new Ingredient("Granulated sugar", "1/4 cup"),
+								new Ingredient("Chocolate chips", "1/4 cup"),
+								new Ingredient("Vanilla Extract", "1/2 cup")})).toList(),
+				"Make it", "A cool hot chocolate recipe");
+		String expectedErrorMessage = "Recipe with that name already exists";
+
+		FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("test_DAO_file.tsv");
+
+		assertEquals(expectedErrorMessage, fileDataAccessObject.addRecipe(userRecipe));
+	}
 }

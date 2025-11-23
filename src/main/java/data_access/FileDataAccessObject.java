@@ -3,6 +3,7 @@ package data_access;
 import entity.Ingredient;
 import entity.UserRecipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import use_case.add_recipe.AddRecipeDataAccessInterface;
 import use_case.view_recipes.ViewRecipesDataAccessInterface;
 
@@ -27,41 +28,25 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 
 	@Override
 	public String addRecipe(UserRecipe recipe) {
-		updateUserRecipes();
-
-		for (UserRecipe userRecipe : userRecipes) {
-			if (userRecipe.getTitle().equals(recipe.getTitle())) {
-				return "Recipe with that name already exists";
-			}
+		if (recipeExists(recipe)) {
+			return "Recipe with that name already exists";
 		}
 
 		try (BufferedWriter writer = new BufferedWriter(new  FileWriter(filePath, true))) {
-			StringBuilder builder = new StringBuilder();
+			String name = replaceWithEscapes(recipe.getTitle());
+			String description = replaceWithEscapes(recipe.getDescription());
+			String steps = replaceWithEscapes(recipe.getSteps());
+			String ingredients = getIngredientsString(recipe);
 
-			builder.append(replaceWithEscapes(recipe.getTitle()))
-					.append("\t");
-
-			for (Ingredient ingredient : recipe.getIngredients()) {
-				if (ingredient.getName().contains("=") || ingredient.getName().contains(",")) {
-					return "Please choose a name without special characters";
-				} else if (ingredient.getAmount().contains("=") ||  ingredient.getAmount().contains(",")) {
-					return "Please choose an amount without special characters";
-				}
-				builder.append(replaceWithEscapes(ingredient.getName()))
-						.append("=")
-						.append(replaceWithEscapes(ingredient.getAmount()))
-						.append(",");
+			if (ingredients.equals("Please choose a name without special characters") ||
+					ingredients.equals("Please choose an amount without special characters")) {
+				return ingredients;
 			}
-			builder.deleteCharAt(builder.length() - 1)
-					.append("\t");
 
-			builder.append(replaceWithEscapes(recipe.getSteps()))
-					.append("\t");
-
-			builder.append(replaceWithEscapes(recipe.getDescription()))
-					.append("\n");
-
-			String recipeString = builder.toString();
+			String recipeString = name + '\t' +
+					ingredients + '\t' +
+					steps + '\t' +
+					description + '\n';
 
 			writer.append(recipeString);
 		} catch (IOException e) {
@@ -75,6 +60,34 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 	public List<UserRecipe> getUserRecipes() {
 		this.updateUserRecipes();
 		return this.userRecipes;
+	}
+
+	private static String getIngredientsString(UserRecipe recipe) {
+		StringBuilder result = new StringBuilder();
+		for (Ingredient ingredient : recipe.getIngredients()) {
+			if (ingredient.getName().contains("=") || ingredient.getName().contains(",")) {
+				return "Please choose a name without special characters";
+			} else if (ingredient.getAmount().contains("=") ||  ingredient.getAmount().contains(",")) {
+				return "Please choose an amount without special characters";
+			}
+			result.append(replaceWithEscapes(ingredient.getName()))
+					.append("=")
+					.append(replaceWithEscapes(ingredient.getAmount()))
+					.append(",");
+		}
+		result.deleteCharAt(result.length() - 1);
+		return result.toString();
+	}
+
+	private boolean recipeExists(UserRecipe recipe) {
+		updateUserRecipes();
+
+		for (UserRecipe userRecipe : userRecipes) {
+			if (userRecipe.getTitle().equals(recipe.getTitle())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
     private void updateUserRecipes() {

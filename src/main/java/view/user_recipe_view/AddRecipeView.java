@@ -4,6 +4,7 @@ import interface_adapter.add_recipe.AddIngredientController;
 import interface_adapter.add_recipe.AddRecipeController;
 import interface_adapter.add_recipe.AddRecipeViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -73,21 +74,35 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 	}
 
 	private void addRecipe(AddRecipeController addRecipeController) {
-		List<String> ingredientNames = new ArrayList<>();
-		List<String> ingredientAmounts = new ArrayList<>();
-
-		for (Component component : ingredientSelectPanel.getComponents()) {
-			if (component instanceof IngredientChoice ingredientChoice) {
-				ingredientNames.add(ingredientChoice.getSelectedIngredient());
-				ingredientAmounts.add(ingredientChoice.getAmount());
-			}
-		}
-
+		List<String> ingredientNames = getIngredientNames();
+		List<String> ingredientAmounts = getIngredientAmounts();
 		String title = nameTextField.getText();
 		String description = descriptionTextArea.getText();
 		String steps = stepsTextArea.getText();
 
 		addRecipeController.execute(ingredientNames, ingredientAmounts, title, description, steps);
+	}
+
+	@NotNull
+	private List<String> getIngredientNames() {
+		List<String> ingredientNames = new ArrayList<>();
+
+		for (Component component : ingredientSelectPanel.getComponents()) {
+			if (component instanceof IngredientChoice ingredientChoice) {
+				ingredientNames.add(ingredientChoice.getSelectedIngredient());
+			}
+		}
+		return ingredientNames;
+	}
+
+	private List<String> getIngredientAmounts() {
+		List<String> result = new ArrayList<>();
+		for (Component component : ingredientSelectPanel.getComponents()) {
+			if (component instanceof IngredientChoice ingredientChoice) {
+				result.add(ingredientChoice.getAmount());
+			}
+		}
+		return result;
 	}
 
 	private void recipeFail(String message) {
