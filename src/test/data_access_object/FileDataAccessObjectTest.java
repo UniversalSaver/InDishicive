@@ -75,14 +75,11 @@ public class FileDataAccessObjectTest {
 		assertEquals(1, userRecipeList.size());
 		UserRecipe gottenUserRecipe = userRecipeList.get(0);
 		assertEquals(expectedUserRecipe, gottenUserRecipe);
-
-		File closeFile = new File("test_DAO_file.tsv");
-		closeFile.delete();
 	}
 
 	@Test
 	void badHeaderTest() {
-		try (FileWriter writer = new FileWriter("test_DAO_file.tsv");) {
+		try (FileWriter writer = new FileWriter("test_DAO_file.tsv")) {
 			writer.write("title\tingredients\tsteps\tdescripti\n" +
 					"Hot Chocolate\tMilk=4 cups,Unsweetened cocoa powder=1/4 cup,Granulated sugar=1/4 cup," +
 					"Chocolate chips=1/4 cup,Vanilla Extract=1/2 cup\tMake it\tA cool hot chocolate recipe");
