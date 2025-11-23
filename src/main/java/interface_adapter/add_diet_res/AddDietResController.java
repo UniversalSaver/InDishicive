@@ -17,8 +17,7 @@ public class AddDietResController {
     }
 
     public void execute(String ingredientName){
-        Ingredient tempIngredient = new Ingredient(ingredientName, "");
-        AddDietResInputData inputData = new AddDietResInputData(tempIngredient);
+        AddDietResInputData inputData = new AddDietResInputData(ingredientName);
         interactor.execute(inputData);
     }
 }
