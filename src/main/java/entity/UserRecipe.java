@@ -32,4 +32,23 @@ public class UserRecipe {
     public String getTitle() {
         return title;
     }
+
+	public String getSteps() {
+		return steps;
+	}
+
+	public List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof UserRecipe other) {
+
+			return getTitle().equals(other.getTitle()) && getIngredients().equals(other.getIngredients()) &&
+					getSteps().equals(other.getSteps()) && getDescription().equals(other.getDescription());
+		} else {
+			return false;
+		}
+	}
 }

@@ -2,73 +2,168 @@ package data_access;
 
 import entity.Ingredient;
 import entity.UserRecipe;
+import org.jetbrains.annotations.NotNull;
+import use_case.add_recipe.AddRecipeDataAccessInterface;
 import use_case.view_recipes.ViewRecipesDataAccessInterface;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileDataAccessObject implements ViewRecipesDataAccessInterface {
+public class FileDataAccessObject implements ViewRecipesDataAccessInterface, AddRecipeDataAccessInterface {
 
-    static final String USER_RECIPE_FILE_PATH = "user_recipes.tsv";
+	private final String filePath;
     static final String USER_RECIPE_FILE_HEADER = "title\tingredients\tsteps\tdescription";
     static final int HEADER_LENGTH = 4;
     private final List<UserRecipe> userRecipes = new ArrayList<>();
 
-    public void updateUserRecipes() {
+	public FileDataAccessObject(String filePath) {
+		this.filePath = Objects.requireNonNullElse(filePath, "user_recipes.tsv");
+		updateUserRecipes();
+	}
+
+	@Override
+	public String addRecipe(UserRecipe recipe) {
+		updateUserRecipes();
+
+		for (UserRecipe userRecipe : userRecipes) {
+			if (userRecipe.getTitle().equals(recipe.getTitle())) {
+				return "Recipe with that name already exists";
+			}
+		}
+
+		try (BufferedWriter writer = new BufferedWriter(new  FileWriter(filePath, true))) {
+			StringBuilder builder = new StringBuilder();
+
+			builder.append(replaceWithEscapes(recipe.getTitle()))
+					.append("\t");
+
+			for (Ingredient ingredient : recipe.getIngredients()) {
+				if (ingredient.getName().contains("=") || ingredient.getName().contains(",")) {
+					return "Please choose a name without special characters";
+				} else if (ingredient.getAmount().contains("=") ||  ingredient.getAmount().contains(",")) {
+					return "Please choose an amount without special characters";
+				}
+				builder.append(replaceWithEscapes(ingredient.getName()))
+						.append("=")
+						.append(replaceWithEscapes(ingredient.getAmount()))
+						.append(",");
+			}
+			builder.deleteCharAt(builder.length() - 1)
+					.append("\t");
+
+			builder.append(replaceWithEscapes(recipe.getSteps()))
+					.append("\t");
+
+			builder.append(replaceWithEscapes(recipe.getDescription()))
+					.append("\n");
+
+			String recipeString = builder.toString();
+
+			writer.append(recipeString);
+		} catch (IOException e) {
+			return "File corrupted";
+		}
+
+		return AddRecipeDataAccessInterface.ADDED_MESSAGE;
+	}
+
+	@Override
+	public List<UserRecipe> getUserRecipes() {
+		this.updateUserRecipes();
+		return this.userRecipes;
+	}
+
+    private void updateUserRecipes() {
 
         userRecipes.clear();
 
         try (BufferedReader userRecipeFileReader =
-                     new BufferedReader(getFileReader(USER_RECIPE_FILE_PATH, USER_RECIPE_FILE_HEADER))) {
-            String header = userRecipeFileReader.readLine();
+                     new BufferedReader(getFileReader(filePath))) {
+			checkHeader(userRecipeFileReader);
 
-            if (!header.equals(USER_RECIPE_FILE_HEADER)) {
+			addUserRecipes(userRecipeFileReader);
 
-                throw new CorruptDataException("File " + USER_RECIPE_FILE_PATH + " is corrupted. Please fix, then try again.");
-            }
-
-            String currentTabbedRecipe;
-
-            while ((currentTabbedRecipe = userRecipeFileReader.readLine()) != null) {
-                String[] separatedRecipe = currentTabbedRecipe.split("\t");
-
-                if (separatedRecipe.length != HEADER_LENGTH) {
-                    throw new CorruptDataException("File " + USER_RECIPE_FILE_PATH + " is corrupted. " +
-                            "User Recipe data is not consistent with header\n" + Arrays.toString(separatedRecipe));
-                }
-
-                String title = separatedRecipe[0];
-                String steps = separatedRecipe[2];
-                String description = separatedRecipe[3];
-
-                List<Ingredient> ingredients = new ArrayList<>();
-
-                for (String ingredient : separatedRecipe[1].split(",")) {
-                    String name = ingredient.split("=")[0];
-                    String quantity = ingredient.split("=")[1];
-
-                    ingredients.add(new Ingredient(name, quantity));
-                }
-
-                userRecipes.add(new UserRecipe(title, ingredients, steps, description));
-            }
-
-        } catch (IOException e) {
+		} catch (IOException e) {
             throw new InaccessibleFileException(e.getMessage());
         }
     }
 
-    /**
-     * Returns a file reader given a file name.
-     * If the file doesn't already exist, creates a new file with that name.
-     * @param filepath name of file to create
-     * @param initialMessage initial message to write if the file doesn't already exist
-     * @return FileReader with path of filepath
-     */
-    private FileReader getFileReader(String filepath, String initialMessage) {
+	private void checkHeader(BufferedReader userRecipeFileReader) throws IOException {
+		String header = userRecipeFileReader.readLine();
+
+		if (header == null || !header.equals(USER_RECIPE_FILE_HEADER)) {
+			throw new CorruptDataException("File " + filePath + " is corrupted. Please fix, then try again.");
+		}
+	}
+
+	private void addUserRecipes(BufferedReader userRecipeFileReader) throws IOException {
+		String currentTabbedRecipe;
+
+		while ((currentTabbedRecipe = userRecipeFileReader.readLine()) != null) {
+			String[] separatedRecipe = currentTabbedRecipe.split("\t");
+
+			if (separatedRecipe.length != HEADER_LENGTH) {
+				throw new CorruptDataException("File " + filePath + " is corrupted. " +
+						"User Recipe data is not consistent with header\n" + Arrays.toString(separatedRecipe));
+			}
+
+			String title = getTitle(separatedRecipe);
+			String steps = getSteps(separatedRecipe);
+			String description = getDescription(separatedRecipe);
+			List<Ingredient> ingredients = getIngredients(separatedRecipe);
+
+			userRecipes.add(new UserRecipe(title, ingredients, steps, description));
+		}
+	}
+
+	@NotNull
+	private static String getDescription(String[] separatedRecipe) {
+		return replaceEscapes(separatedRecipe[3].replace("\\\\", "\\"));
+	}
+
+	@NotNull
+	private static String getSteps(String[] separatedRecipe) {
+		return replaceEscapes(separatedRecipe[2].replace("\\\\", "\\"));
+	}
+
+	@NotNull
+	private static String getTitle(String[] separatedRecipe) {
+		return replaceEscapes(separatedRecipe[0]);
+	}
+
+	private static String replaceEscapes(String input) {
+		return input.replace("\\n", "\n").replace("\\t", "\t");
+	}
+
+	private static String replaceWithEscapes(String input) {
+		return input.replace("\n", "\\n").replace("\t", "\\t");
+	}
+
+	@NotNull
+	private static List<Ingredient> getIngredients(String[] separatedRecipe) {
+		List<Ingredient> ingredients = new ArrayList<>();
+
+		for (String ingredient : separatedRecipe[1].split(",")) {
+			String name = replaceEscapes(ingredient.split("=")[0]);
+			String quantity = replaceEscapes(ingredient.split("=")[1]);
+
+			ingredients.add(new Ingredient(name, quantity));
+		}
+		return ingredients;
+	}
+
+	/**
+	 * Returns a file reader given a file name.
+	 * If the file doesn't already exist, creates a new file with that name.
+	 *
+	 * @param filepath name of file to create
+	 * @return FileReader with path of filepath
+	 */
+    private FileReader getFileReader(String filepath) {
         FileReader fileReader;
         Logger logger = Logger.getLogger(getClass().getName());
 
@@ -79,7 +174,7 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface {
             logger.info("Creating new file, and using that");
 
             try (FileWriter fileWriter = new FileWriter(filepath)) {
-                fileWriter.write(initialMessage);
+                fileWriter.write(FileDataAccessObject.USER_RECIPE_FILE_HEADER + "\n");
             } catch (IOException ex) {
                 throw new InaccessibleFileException(ex.getMessage());
             }
@@ -94,10 +189,5 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface {
         }
 
         return fileReader;
-    }
-
-    @Override
-    public List<UserRecipe> getUserRecipes() {
-        return this.userRecipes;
     }
 }
