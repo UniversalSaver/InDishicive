@@ -80,7 +80,7 @@ public class DietResDataAccessObject implements DietResDataAccessInterface {
 
         try {
             String jsonContent = Files.readString(file.toPath());
-            if (jsonContent.isEmpty()){
+            if (jsonContent.isBlank()){
                 resIngredients = new ArrayList<>();
                 return;
             }
