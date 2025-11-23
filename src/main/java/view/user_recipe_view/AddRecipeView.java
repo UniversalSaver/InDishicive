@@ -1,6 +1,7 @@
 package view.user_recipe_view;
 
 import interface_adapter.add_recipe.AddIngredientController;
+import interface_adapter.add_recipe.AddRecipeController;
 import interface_adapter.add_recipe.AddRecipeViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 
@@ -9,12 +10,14 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddRecipeView extends JPanel implements PropertyChangeListener {
 
 	private final JButton cancelButton = new JButton("Cancel");
-	private JButton addRecipeButton = new JButton("Add Recipe");
+	private final JButton addRecipeButton = new JButton("Add Recipe");
+	private final JPanel buttonsPanel = new JPanel();
 
 	private final JTextField nameTextField = new JTextField();
 	private final JTextArea descriptionTextArea = new JTextArea();
@@ -35,7 +38,6 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		JScrollPane scrollPane = new JScrollPane(recipeCreatorPanel);
 		this.add(scrollPane);
 
-		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BorderLayout());
 
 		buttonsPanel.add(cancelButton, BorderLayout.LINE_START);
@@ -45,6 +47,57 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 
 		databaseNotFoundLabel.setText("Database could not be accessed. Try again later");
 		databaseNotFoundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	}
+
+	public void addIngredientUseCase(AddIngredientController addIngredientController) {
+		addIngredientButton.addActionListener(e -> addIngredientController.execute());
+	}
+
+	public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
+		cancelButton.addActionListener(e -> viewRecipesController.execute());
+	}
+
+	public void addAddRecipeUseCase(AddRecipeController addRecipeController) {
+		addRecipeButton.addActionListener(e -> addRecipe(addRecipeController));
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void propertyChange(PropertyChangeEvent evt) {
+		switch (evt.getPropertyName()) {
+			case AddRecipeViewModel.WIPE_VIEW -> wipeView();
+			case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
+			case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
+			case AddRecipeViewModel.ADD_RECIPE_FAIL -> recipeFail(((List<String>) evt.getNewValue()).get(0));
+		}
+	}
+
+	private void addRecipe(AddRecipeController addRecipeController) {
+		List<String> ingredientNames = new ArrayList<>();
+		List<String> ingredientAmounts = new ArrayList<>();
+
+		for (Component component : ingredientSelectPanel.getComponents()) {
+			if (component instanceof IngredientChoice ingredientChoice) {
+				ingredientNames.add(ingredientChoice.getSelectedIngredient());
+				ingredientAmounts.add(ingredientChoice.getAmount());
+			}
+		}
+
+		String title = nameTextField.getText();
+		String description = descriptionTextArea.getText();
+		String steps = stepsTextArea.getText();
+
+		addRecipeController.execute(ingredientNames, ingredientAmounts, title, description, steps);
+	}
+
+	private void recipeFail(String message) {
+		if (buttonsPanel.getComponent(1) instanceof JLabel label) {
+			label.setText(message);
+		} else {
+			buttonsPanel.add(new JLabel(message), 1);
+		}
+		buttonsPanel.revalidate();
+		buttonsPanel.repaint();
 	}
 
     private void addIngredient(java.util.List<String> ingredientList) {
@@ -78,10 +131,6 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		ingredientSelectPanel.add(databaseNotFoundLabel);
 
 		resizeIngredientPanel();
-	}
-
-	public void addIngredientUseCase(AddIngredientController addIngredientController) {
-		addIngredientButton.addActionListener(e -> addIngredientController.execute());
 	}
 
     private JPanel createRecipeCreator() {
@@ -132,16 +181,6 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
         return result;
     }
 
-    @Override
-	@SuppressWarnings("unchecked")
-	public void propertyChange(PropertyChangeEvent evt) {
-		switch (evt.getPropertyName()) {
-			case AddRecipeViewModel.WIPE_VIEW -> wipeView();
-			case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
-			case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
-		}
-	}
-
 	private void wipeView() {
 		nameTextField.setText("Insert Name of Recipe");
 		descriptionTextArea.setText("Insert Description of Recipe");
@@ -156,11 +195,15 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		recipeCreatorPanel.setPreferredSize(new Dimension(550, 350 +
 				ingredientSelectPanel.getPreferredSize().height));
 
+		removeButtonErrorLabel();
+
 		recipeCreatorPanel.revalidate();
 		recipeCreatorPanel.repaint();
 	}
 
-	public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
-        cancelButton.addActionListener(e -> viewRecipesController.execute());
-    }
+	private void removeButtonErrorLabel() {
+		if (buttonsPanel.getComponent(1) instanceof JLabel errorLabel) {
+			buttonsPanel.remove(errorLabel);
+		}
+	}
 }

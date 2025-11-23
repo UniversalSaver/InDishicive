@@ -30,10 +30,9 @@ import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
 import use_case.add_recipe.AddIngredientInteractor;
+import use_case.add_recipe.AddRecipeInteractor;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
-import use_case.view_recipes.ViewRecipesInputBoundary;
 import use_case.view_restrictions.ViewRestrictionsInteractor;
-import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
 import view.user_recipe_view.AddRecipeView;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
@@ -197,6 +196,23 @@ public class AppBuilder {
 		AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
 
 		this.addRecipeView.addIngredientUseCase(addIngredientController);
+
+		return this;
+	}
+
+	public AppBuilder addAddRecipeUseCase() {
+		ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
+				this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
+
+		ViewRecipesInteractor viewRecipesInteractor =
+				new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
+		ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
+
+		AddRecipePresenter addRecipePresenter = new AddRecipePresenter(viewRecipesController, addRecipeViewModel);
+		AddRecipeInteractor addRecipeInteractor = new AddRecipeInteractor(fileDataAccessObject, addRecipePresenter);
+		AddRecipeController addRecipeController = new AddRecipeController(addRecipeInteractor);
+
+		this.addRecipeView.addAddRecipeUseCase(addRecipeController);
 
 		return this;
 	}
