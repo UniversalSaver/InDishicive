@@ -100,7 +100,7 @@ public class AddRecipeInteractor implements AddRecipeInputBoundary {
 		for (String string : list) {
 			if (emptyString(string)) return true;
 		}
-		return false;
+		return list.isEmpty();
 	}
 
 	private static boolean emptyString(String string) {
