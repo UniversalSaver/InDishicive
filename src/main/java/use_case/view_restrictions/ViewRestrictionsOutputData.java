@@ -1,4 +1,15 @@
 package use_case.view_restrictions;
 
+import java.util.List;
+
 public class ViewRestrictionsOutputData {
+    private final List<String> restrictions;
+
+    public ViewRestrictionsOutputData(List<String> restrictions) {
+        this.restrictions = restrictions;
+    }
+
+    public List<String> getRestrictions() {
+        return restrictions;
+    }
 }
