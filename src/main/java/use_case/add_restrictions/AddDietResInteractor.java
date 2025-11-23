@@ -11,13 +11,20 @@ import use_case.diet_res_ingredients.DietResDataAccessInterface;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 public class AddDietResInteractor implements AddDietResInputBoundary {
     private final DietResDataAccessInterface dietResDataAccessInterface;
     private final AddDietResOutputBoundary addDietResOutputBoundary;
 
     private static final String BASE_URL = "https://themealdb.com/api/json/v1/1/filter.php?i=";
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)   // time to establish connection
+            .readTimeout(30, TimeUnit.SECONDS)      // time between bytes when reading responses
+            .writeTimeout(30, TimeUnit.SECONDS)     // time between bytes when sending request body
+            .callTimeout(60, TimeUnit.SECONDS)      // overall timeout for the entire call
+            .retryOnConnectionFailure(true)
+            .build();
 
     public AddDietResInteractor(DietResDataAccessInterface dietResDataAccessInterface,
                                 AddDietResOutputBoundary addDietResOutputBoundary) {
