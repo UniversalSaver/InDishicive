@@ -26,4 +26,13 @@ public class Ingredient {
     public String getAmount(){
         return amount;
     }
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Ingredient other) {
+			return this.name.equals(other.name) && this.amount.equals(other.amount);
+		} else {
+			return false;
+		}
+	}
 }
