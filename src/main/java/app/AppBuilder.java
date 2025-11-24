@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import data_access.*;
 import interface_adapter.DietResViewManagerModel;
 import interface_adapter.UserRecipesViewManagerModel;
+import interface_adapter.add_diet_res.AddDietResController;
+import interface_adapter.add_diet_res.AddDietResPresenter;
+import interface_adapter.add_diet_res.AddDietResViewModel;
 import interface_adapter.add_recipe.*;
 import interface_adapter.add_favorite.AddFavoriteController;
 import interface_adapter.add_favorite.AddFavoritePresenter;
@@ -15,6 +18,9 @@ import interface_adapter.add_favorite.AddFavoriteViewModel;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
+import interface_adapter.remove_diet_res.RemoveDietResController;
+import interface_adapter.remove_diet_res.RemoveDietResPresenter;
+import interface_adapter.remove_diet_res.RemoveDietResViewModel;
 import interface_adapter.view_diet_res.DietResViewModel;
 import interface_adapter.view_diet_res.DietResWindowModel;
 import interface_adapter.view_diet_res.ViewRestrictionsController;
@@ -30,10 +36,10 @@ import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
 import use_case.add_recipe.AddIngredientInteractor;
+import use_case.add_restrictions.AddDietResInteractor;
+import use_case.remove_restriction.RemoveDietResInteractor;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
-import use_case.view_recipes.ViewRecipesInputBoundary;
 import use_case.view_restrictions.ViewRestrictionsInteractor;
-import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
 import view.user_recipe_view.AddRecipeView;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
@@ -121,9 +127,16 @@ public class AppBuilder {
     private DietResWindow dietResWindow;
     private DietResWindowModel dietResWindowModel;
 
-
     private DietResView dietResView;
-    private DietResViewModel dietResViewModel;
+    private final DietResViewModel dietResViewModel = new DietResViewModel();
+    private final AddDietResViewModel addDietResViewModel = new AddDietResViewModel();
+    private final RemoveDietResViewModel removeDietResViewModel = new RemoveDietResViewModel();
+
+    private AddDietResController addDietResController;
+    private ViewRestrictionsController viewRestrictionsController;
+    private RemoveDietResController removeDietResController;
+
+    private final DietResDataAccessObject restrictionDataAccess = new DietResDataAccessObject();
 
     private final DietResViewManagerModel dietResViewManagerModel = new DietResViewManagerModel();
     private DietResViewManager dietResViewManager;
@@ -319,6 +332,30 @@ public class AppBuilder {
      /*
     Start of DietRes Methods
      */
+    //Adds "Add Dietary Restrictions" Use Case
+    public AppBuilder addAddDietResUseCase() {
+        AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
+
+        AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
+                this.restrictionDataAccess, addDietResPresenter);
+
+        this.addDietResController = new AddDietResController(addDietResInteractor);
+
+        return this;
+    }
+
+    //Adds "Remove Dietary Restrictions" Use Case
+    public AppBuilder addRemoveDietResUseCase() {
+        RemoveDietResPresenter removeDietResPresenter = new RemoveDietResPresenter(this.removeDietResViewModel);
+
+        RemoveDietResInteractor removeDietResInteractor = new RemoveDietResInteractor(
+                this.restrictionDataAccess, removeDietResPresenter);
+
+        this.removeDietResController = new RemoveDietResController(removeDietResInteractor);
+
+        return this;
+    }
+
     public AppBuilder addDietResWindow() {
         this.dietResCardPanel.setLayout(dietResCardLayout);
 
@@ -327,22 +364,24 @@ public class AppBuilder {
 
         this.dietResWindowModel = new DietResWindowModel();
 
-        dietResWindow = new DietResWindow(dietResCardPanel, dietResCardLayout,
-                dietResViewManager, dietResViewManagerModel, dietResWindowModel);
-
+        dietResWindow = new DietResWindow(dietResCardPanel, dietResWindowModel);
 
         return this;
     }
 
     public AppBuilder addDietResView() {
-        this.dietResViewModel = new DietResViewModel();
-
-        dietResView = new DietResView(dietResViewModel);
+        dietResView = new DietResView(
+                dietResViewModel,
+                addDietResViewModel,
+                removeDietResViewModel,
+                addDietResController,
+                viewRestrictionsController,
+                removeDietResController
+        );
 
         this.dietResCardPanel.add(this.dietResView, dietResView.getViewName());
         this.dietResWindowModel.addPropertyChangeListener(this.dietResWindow);
 
-        dietResWindow.addDietResView(dietResView, dietResViewModel);
         return this;
     }
 
@@ -350,8 +389,8 @@ public class AppBuilder {
         ViewRestrictionsPresenter viewRestrictionsPresenter = new ViewRestrictionsPresenter(
                 this.dietResWindowModel, this.dietResViewManagerModel, this.dietResViewModel);
 
-        ViewRestrictionsInteractor viewRestrictionsInteractor = new ViewRestrictionsInteractor(viewRestrictionsPresenter);
-        ViewRestrictionsController viewRestrictionsController = new ViewRestrictionsController(viewRestrictionsInteractor);
+        ViewRestrictionsInteractor viewRestrictionsInteractor = new ViewRestrictionsInteractor(this.restrictionDataAccess, viewRestrictionsPresenter);
+        this.viewRestrictionsController = new ViewRestrictionsController(viewRestrictionsInteractor);
 
         mainWindow.addViewRestrictionsUseCase(viewRestrictionsController);
 
