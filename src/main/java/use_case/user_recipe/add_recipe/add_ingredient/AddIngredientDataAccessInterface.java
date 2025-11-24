@@ -1,0 +1,16 @@
+package use_case.user_recipe.add_recipe.add_ingredient;
+
+import entity.Ingredient;
+
+import java.util.List;
+
+/**
+ * An interface that defines the ability to give back a sorted list of all ingredients.
+ */
+public interface AddIngredientDataAccessInterface {
+	/**
+	 * Returns a sorted list of all ingredients
+	 * @return a sorted ingredient list
+	 */
+	List<Ingredient> listPossibleIngredients();
+}

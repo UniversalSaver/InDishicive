@@ -1,7 +1,7 @@
 package window;
 
-import interface_adapter.view_recipe_details.ViewRecipeDetailsState;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsViewModel;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsState;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
 
 import javax.swing.*;
 import java.awt.*;

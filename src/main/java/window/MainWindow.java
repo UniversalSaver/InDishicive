@@ -2,12 +2,10 @@ package window;
 
 import javax.swing.*;
 
-import interface_adapter.view_favorite.ViewFavoriteController;
-import interface_adapter.view_diet_res.ViewRestrictionsController;
-import interface_adapter.view_recipes.ViewRecipesController;
+import interface_adapter.favorites.view_favorite.ViewFavoriteController;
+import interface_adapter.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import interface_adapter.user_recipe.view_recipes.ViewRecipesController;
 import view.MainView;
-
-import java.awt.*;
 
 public class MainWindow extends JFrame {
 

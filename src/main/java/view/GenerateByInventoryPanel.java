@@ -1,10 +1,10 @@
 package view;
 
-import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
-import interface_adapter.add_favorite.AddFavoriteController;
-import interface_adapter.add_favorite.AddFavoriteViewModel;
+import interface_adapter.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
+import interface_adapter.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import interface_adapter.favorites.add_favorite.AddFavoriteController;
+import interface_adapter.favorites.add_favorite.AddFavoriteViewModel;
 
 import javax.swing.*;
 

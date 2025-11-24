@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entity.Recipe;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 /**
  * A card component that displays a single recipe with its title, category, and a show button.
