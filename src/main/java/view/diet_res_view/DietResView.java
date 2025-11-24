@@ -1,14 +1,14 @@
 package view.diet_res_view;
 
-import interface_adapter.dietery_restriction.add_diet_res.AddDietResController;
-import interface_adapter.dietery_restriction.add_diet_res.AddDietResState;
-import interface_adapter.dietery_restriction.add_diet_res.AddDietResViewModel;
-import interface_adapter.dietery_restriction.remove_diet_res.RemoveDietResController;
-import interface_adapter.dietery_restriction.remove_diet_res.RemoveDietResState;
-import interface_adapter.dietery_restriction.remove_diet_res.RemoveDietResViewModel;
-import interface_adapter.dietery_restriction.view_diet_res.DietResViewModel;
-import interface_adapter.dietery_restriction.view_diet_res.ViewRestrictionsController;
-import interface_adapter.dietery_restriction.view_diet_res.ViewRestrictionsState;
+import interface_adapter.dietary_restriction.add_diet_res.AddDietResController;
+import interface_adapter.dietary_restriction.add_diet_res.AddDietResState;
+import interface_adapter.dietary_restriction.add_diet_res.AddDietResViewModel;
+import interface_adapter.dietary_restriction.remove_diet_res.RemoveDietResController;
+import interface_adapter.dietary_restriction.remove_diet_res.RemoveDietResState;
+import interface_adapter.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
+import interface_adapter.dietary_restriction.view_diet_res.DietResViewModel;
+import interface_adapter.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import interface_adapter.dietary_restriction.view_diet_res.ViewRestrictionsState;
 
 import javax.swing.*;
 import java.awt.*;

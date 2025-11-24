@@ -1,6 +1,6 @@
 package view.diet_res_view;
 
-import interface_adapter.dietery_restriction.remove_diet_res.RemoveDietResController;
+import interface_adapter.dietary_restriction.remove_diet_res.RemoveDietResController;
 
 import javax.swing.*;
 import java.awt.*;
