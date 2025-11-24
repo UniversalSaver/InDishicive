@@ -17,7 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 public class DietResView extends JPanel implements PropertyChangeListener {
-    public final String viewName;
+    private final String viewName;
 
     private final DietResViewModel dietResViewModel;
     private final AddDietResViewModel addDietResViewModel;
@@ -91,7 +91,9 @@ public class DietResView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource() == this.dietResViewModel) {
+        String propertyName = evt.getPropertyName();
+
+        if ("state".equals(propertyName)) {
             if (evt.getNewValue() instanceof ViewRestrictionsState) {
                 ViewRestrictionsState state = (ViewRestrictionsState) evt.getNewValue();
                 if (state.getError() != null) {
@@ -101,24 +103,20 @@ public class DietResView extends JPanel implements PropertyChangeListener {
                 refreshList(state.getRestrictions());
             }
         }
-
-        if (evt.getSource() == this.addDietResViewModel) {
-            if (AddDietResViewModel.RESTRICTION_ADDED.equals(evt.getPropertyName())) {
-                viewRestrictionsController.execute(); // Refresh list
-                JOptionPane.showMessageDialog(this, "Ingredient added successfully.");
-            } else if (AddDietResViewModel.RESTRICTION_ADD_FAILED.equals(evt.getPropertyName())) {
-                AddDietResState state = (AddDietResState) evt.getNewValue();
-                JOptionPane.showMessageDialog(this, state.getStatusMessage());
-            }
+        else if (AddDietResViewModel.RESTRICTION_ADDED.equals(propertyName)) {
+            viewRestrictionsController.execute();
+            JOptionPane.showMessageDialog(this, "Ingredient added successfully.");
         }
-
-        if (evt.getSource() == this.removeDietResViewModel) {
-            if (RemoveDietResViewModel.RESTRICTION_REMOVED.equals(evt.getPropertyName())) {
-                viewRestrictionsController.execute(); // Refresh list
-            } else if (RemoveDietResViewModel.RESTRICTION_REMOVE_FAILED.equals(evt.getPropertyName())) {
-                RemoveDietResState state = (RemoveDietResState) evt.getNewValue();
-                JOptionPane.showMessageDialog(this, state.getMessage());
-            }
+        else if (AddDietResViewModel.RESTRICTION_ADD_FAILED.equals(propertyName)) {
+            AddDietResState state = (AddDietResState) evt.getNewValue();
+            JOptionPane.showMessageDialog(this, state.getStatusMessage());
+        }
+        else if (RemoveDietResViewModel.RESTRICTION_REMOVED.equals(propertyName)) {
+            viewRestrictionsController.execute(); // Refresh list
+        }
+        else if (RemoveDietResViewModel.RESTRICTION_REMOVE_FAILED.equals(propertyName)) {
+            RemoveDietResState state = (RemoveDietResState) evt.getNewValue();
+            JOptionPane.showMessageDialog(this, state.getMessage());
         }
     }
 
@@ -131,5 +129,9 @@ public class DietResView extends JPanel implements PropertyChangeListener {
         }
         restIngrPanel.revalidate();
         restIngrPanel.repaint();
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

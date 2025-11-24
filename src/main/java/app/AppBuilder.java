@@ -39,9 +39,7 @@ import use_case.add_recipe.AddIngredientInteractor;
 import use_case.add_restrictions.AddDietResInteractor;
 import use_case.remove_restriction.RemoveDietResInteractor;
 import use_case.view_recipe_creator.ViewCreatorInteractor;
-import use_case.view_recipes.ViewRecipesInputBoundary;
 import use_case.view_restrictions.ViewRestrictionsInteractor;
-import use_case.view_restrictions.ViewRestrictionsOutputBoundary;
 import view.user_recipe_view.AddRecipeView;
 import use_case.add_favorite.AddFavoriteInteractor;
 import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
@@ -381,7 +379,7 @@ public class AppBuilder {
                 removeDietResController
         );
 
-        this.dietResCardPanel.add(this.dietResView, dietResView.viewName);
+        this.dietResCardPanel.add(this.dietResView, dietResView.getViewName());
         this.dietResWindowModel.addPropertyChangeListener(this.dietResWindow);
 
         return this;
