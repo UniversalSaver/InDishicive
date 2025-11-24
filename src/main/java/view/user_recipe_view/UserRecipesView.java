@@ -1,9 +1,9 @@
 package view.user_recipe_view;
 
-import interface_adapter.add_recipe.SwitchViewController;
-import interface_adapter.view_recipes.RecipeSummary;
-import interface_adapter.view_recipes.UserRecipesViewModel;
-import interface_adapter.view_recipes.ViewRecipesState;
+import interface_adapter.user_recipe.add_recipe.SwitchViewController;
+import interface_adapter.user_recipe.view_recipes.RecipeSummary;
+import interface_adapter.user_recipe.view_recipes.UserRecipesViewModel;
+import interface_adapter.user_recipe.view_recipes.ViewRecipesState;
 
 import javax.swing.*;
 import java.awt.*;
