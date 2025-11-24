@@ -1,8 +1,10 @@
 package window;
 
 import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.view_recipes.ViewRecipesViewModel;
-import view.*;
+import interface_adapter.view_recipes.UserRecipeWindowModel;
+import interface_adapter.view_recipes.UserRecipesViewModel;
+import view.user_recipe_view.UserRecipesView;
+import view.user_recipe_view.UserRecipesViewManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,43 +13,48 @@ import java.beans.PropertyChangeListener;
 
 public class UserRecipesWindow extends JFrame implements PropertyChangeListener {
 
-    public static final String SET_VISIBLE = "set_visible";
-
     private final JPanel cardPanel;
     private final CardLayout cardLayout;
+    private UserRecipeWindowModel userRecipeWindowModel;
 
     private UserRecipesView userRecipesView;
-    private ViewRecipesViewModel viewRecipesViewModel;
+    private UserRecipesViewModel userRecipesViewModel;
 
     private UserRecipesViewManagerModel userRecipesViewManagerModel;
     private UserRecipesViewManager userRecipesViewManager;
 
     public UserRecipesWindow(JPanel cardPanel, CardLayout cardLayout,
                              UserRecipesViewManager userRecipesViewManager,
-                             UserRecipesViewManagerModel userRecipesViewManagerModel) {
+                             UserRecipesViewManagerModel userRecipesViewManagerModel,
+                             UserRecipeWindowModel userRecipesWindowModel) {
         super("User Recipes");
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        this.setSize(600, 400);
 
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
         this.userRecipesViewManager = userRecipesViewManager;
         this.userRecipesViewManagerModel = userRecipesViewManagerModel;
+        this.userRecipeWindowModel = userRecipesWindowModel;
+
 
         this.add(cardPanel);
     }
 
-    public void addUserRecipesView(UserRecipesView userRecipesView, ViewRecipesViewModel viewRecipesViewModel) {
+    public void addUserRecipesView(UserRecipesView userRecipesView, UserRecipesViewModel userRecipesViewModel) {
         this.userRecipesView = userRecipesView;
-        this.viewRecipesViewModel = viewRecipesViewModel;
+        this.userRecipesViewModel = userRecipesViewModel;
     }
 
-    public void addCreateRecipeView(CreateRecipeView createRecipeView) {
-        this.add(createRecipeView);
-    }
+
+// TODO
+//    public void addCreateRecipeView(CreateRecipeView createRecipeView) {
+//        this.add(createRecipeView);
+//    }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if  (SET_VISIBLE.equals(evt.getPropertyName())) {
+        if  (evt.getPropertyName().equals(UserRecipeWindowModel.SET_VISIBLE)) {
             this.setVisible(true);
         }
     }

@@ -2,20 +2,40 @@ package interface_adapter.view_recipes;
 
 import interface_adapter.*;
 import use_case.view_recipes.ViewRecipesOutputBoundary;
-import window.UserRecipesWindow;
+import use_case.view_recipes.ViewRecipesOutputData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
 
-    private final ViewRecipesViewModel viewRecipesViewModel;
+    private final UserRecipeWindowModel userRecipeWindowModel;
     private final UserRecipesViewManagerModel userRecipesViewManagerModel;
+    private final UserRecipesViewModel userRecipesViewModel;
 
-    public ViewRecipesPresenter(ViewRecipesViewModel viewRecipesViewModel,
-                                UserRecipesViewManagerModel userRecipesViewManagerModel) {
-        this.viewRecipesViewModel = viewRecipesViewModel;
+    public ViewRecipesPresenter(UserRecipeWindowModel userRecipeWindowModel,
+                                UserRecipesViewManagerModel userRecipesViewManagerModel,
+                                UserRecipesViewModel userRecipesViewModel) {
+        this.userRecipeWindowModel = userRecipeWindowModel;
         this.userRecipesViewManagerModel = userRecipesViewManagerModel;
+        this.userRecipesViewModel = userRecipesViewModel;
     }
 
-    public void prepareSuccessView() {
-        viewRecipesViewModel.firePropertyChange(UserRecipesWindow.SET_VISIBLE);
+    @Override
+    public void prepareSuccessView(List<ViewRecipesOutputData> recipeInformation) {
+
+        List<RecipeSummary> recipeSummaries = new ArrayList<>();
+
+        for (ViewRecipesOutputData recipe : recipeInformation) {
+            recipeSummaries.add(new RecipeSummary(recipe.getTitle(), recipe.getDescription()));
+        }
+
+        userRecipesViewModel.setState(new ViewRecipesState(recipeSummaries, recipeSummaries.size()));
+        userRecipesViewModel.firePropertyChange(UserRecipesViewModel.SET_SUMMARIES);
+
+        userRecipeWindowModel.firePropertyChange(UserRecipeWindowModel.SET_VISIBLE);
+
+        userRecipesViewManagerModel.setState(UserRecipesViewModel.VIEW_NAME);
+        userRecipesViewManagerModel.firePropertyChange(UserRecipesViewManagerModel.CHANGE_VIEW);
     }
 }
