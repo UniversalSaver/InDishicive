@@ -17,6 +17,8 @@ public class AddRecipeViewModel extends ViewModel<List<String>> {
 
 	public static final String DATABASE_NOT_FOUND = "database_not_found";
 
+	public static final String ADD_RECIPE_FAIL = "add_recipe_fail";
+
 	public AddRecipeViewModel() {
 		super(VIEW_NAME);
 	}

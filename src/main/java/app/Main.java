@@ -8,9 +8,7 @@ public class Main {
     public static void main(String[] args) {
         AppBuilder appBuilder = new AppBuilder();
 
-        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject();
-
-        fileDataAccessObject.updateUserRecipes();
+        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
 
         JFrame application = appBuilder
                 .addIndishisiveDAO(fileDataAccessObject)
@@ -24,6 +22,7 @@ public class Main {
                 .addUserRecipesView()
                 .addAddRecipeView()
 
+				.addAddRecipeUseCase()
                 .addUserRecipesCancelButtonUseCase()
                 .addIngredientUseCase()
                 .addViewRecipesUseCase()
