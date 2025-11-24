@@ -397,13 +397,21 @@ public class AppBuilder {
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
+        MealDbCuisineDataAccessObject cuisineDao = new MealDbCuisineDataAccessObject();
+        interface_adapter.filter_by_cuisine.FilterByCuisinePresenter cuisinePresenter =
+                new interface_adapter.filter_by_cuisine.FilterByCuisinePresenter(generateWithInventoryViewModel);
+        use_case.filter_by_cuisine.FilterByCuisineInteractor cuisineInteractor =
+                new use_case.filter_by_cuisine.FilterByCuisineInteractor(cuisineDao, cuisinePresenter);
+        interface_adapter.filter_by_cuisine.FilterByCuisineController cuisineController =
+                new interface_adapter.filter_by_cuisine.FilterByCuisineController(cuisineInteractor);
 
         return new GenerateByInventoryPanel(
                 generateWithInventoryController,
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
                 this.addFavoriteController,
-                this.addFavoriteViewModel
+                this.addFavoriteViewModel,
+                cuisineController
         );
     }
 

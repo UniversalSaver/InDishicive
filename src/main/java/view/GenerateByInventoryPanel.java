@@ -1,19 +1,17 @@
 package view;
 
+import interface_adapter.add_favorite.AddFavoriteController;
+import interface_adapter.add_favorite.AddFavoriteViewModel;
+import interface_adapter.filter_by_cuisine.FilterByCuisineController;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
 import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
-import interface_adapter.add_favorite.AddFavoriteController;
-import interface_adapter.add_favorite.AddFavoriteViewModel;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
-
 
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
@@ -22,15 +20,27 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
     private final GenerateWithInventoryViewModel viewModel;
     private final AddFavoriteViewModel addFavoriteViewModel;
+    private final FilterByCuisineController filterController;
+    private final JComboBox<String> cuisineBox = new JComboBox<>(new String[]{
+            "Any",
+            "American", "British", "Canadian", "Chinese", "Croatian", "Dutch",
+            "Egyptian", "Filipino", "French", "Greek", "Indian", "Irish",
+            "Italian", "Jamaican", "Japanese", "Kenyan", "Malaysian", "Mexican",
+            "Moroccan", "Polish", "Portuguese", "Russian", "Spanish", "Thai",
+            "Tunisian", "Turkish", "Vietnamese"
+    });
+    private final JButton applyFilter = new JButton("Filter");
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel vm,
                                     ViewRecipeDetailsController detailsController,
                                     AddFavoriteController addFavoriteController,
-                                    AddFavoriteViewModel addFavoriteViewModel) {
+                                    AddFavoriteViewModel addFavoriteViewModel,
+                                    FilterByCuisineController filterController) {
 
         this.viewModel = vm;
         this.addFavoriteViewModel = addFavoriteViewModel;
+        this.filterController = filterController;
 
         setLayout(new BorderLayout());
 
@@ -40,7 +50,18 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         JPanel top = new JPanel(new BorderLayout());
         top.add(title, BorderLayout.CENTER);
         top.add(generate, BorderLayout.EAST);
-        add(top, BorderLayout.NORTH);
+
+        JPanel filterBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+        filterBar.add(new JLabel("Cuisine:"));
+        cuisineBox.setSelectedItem("Any");
+        filterBar.add(cuisineBox);
+        filterBar.add(applyFilter);
+
+        JPanel topContainer = new JPanel(new BorderLayout());
+        topContainer.add(top, BorderLayout.NORTH);
+        topContainer.add(filterBar, BorderLayout.SOUTH);
+
+        add(topContainer, BorderLayout.NORTH);
 
         add(new JScrollPane(list), BorderLayout.CENTER);
 
@@ -76,6 +97,12 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             if (selected != null) {
                 addFavoriteController.execute(selected);
             }
+        });
+
+        applyFilter.addActionListener(e -> {
+            Object choice = cuisineBox.getSelectedItem();
+            String cuisine = (choice == null) ? "Any" : choice.toString().trim();
+            filterController.execute(cuisine);
         });
 
         vm.addPropertyChangeListener(this);
@@ -121,5 +148,4 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             );
         }
     }
-
 }

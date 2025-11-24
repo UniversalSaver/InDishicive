@@ -17,9 +17,16 @@ public class FilterByCuisinePresenter implements FilterByCuisineOutputBoundary {
     @Override
     public void present(FilterByCuisineOutputData outputData) {
         List<String> titles = outputData.getRecipeTitles();
+        String cuisine = outputData.getCuisine();
+
+        if ("Any".equalsIgnoreCase(cuisine)) {
+            viewModel.setErrorMessage("");
+            viewModel.setRecipes(viewModel.getAllTitles());
+            return;
+        }
 
         if (titles == null || titles.isEmpty()) {
-            viewModel.setErrorMessage("No recipes found for cuisine: " + outputData.getCuisine());
+            viewModel.setErrorMessage("No recipes found for cuisine: " + cuisine);
             viewModel.setRecipes(List.of());
         } else {
             viewModel.setErrorMessage("");
