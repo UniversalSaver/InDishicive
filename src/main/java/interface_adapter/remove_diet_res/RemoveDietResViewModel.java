@@ -1,26 +1,26 @@
-package interface_adapter.view_diet_res;
+package interface_adapter.remove_diet_res;
 
 import interface_adapter.ViewModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class DietResViewModel extends ViewModel<ViewRestrictionsState> {
-    public static final String VIEW_NAME = "dietary_restrictions";
-    public static final String RESTRICTIONS_LABEL = "Current Restrictions";
+public class RemoveDietResViewModel extends ViewModel<RemoveDietResState> {
+    public static final String RESTRICTION_REMOVED = "restriction_removed";
+    public static final String RESTRICTION_REMOVE_FAILED = "restriction_remove_failed";
 
-    private ViewRestrictionsState state = new ViewRestrictionsState();
+    private RemoveDietResState state = new RemoveDietResState();
 
-    public DietResViewModel() {
-        super(VIEW_NAME);
+    public RemoveDietResViewModel() {
+        super("remove_restriction");
     }
 
     @Override
-    public void setState(ViewRestrictionsState state) {
+    public void setState(RemoveDietResState state) {
         this.state = state;
     }
 
     @Override
-    public ViewRestrictionsState getState() {
+    public RemoveDietResState getState() {
         return state;
     }
 
