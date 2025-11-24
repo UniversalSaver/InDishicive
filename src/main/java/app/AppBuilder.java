@@ -39,7 +39,6 @@ import interface_adapter.search_ingredients.SearchIngredientsPresenter;
 import interface_adapter.search_ingredients.SearchIngredientsViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.view_recipes.ViewRecipesViewModel;
 import use_case.add_ingredient.AddIngredientInteractor;
 import use_case.remove_ingredient.RemoveIngredientInteractor;
 import use_case.search_ingredients.SearchIngredientsInteractor;
@@ -66,8 +65,7 @@ import view.diet_res_view.DietResViewManager;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
 import window.*;
-import data_access.MealDbRecipeDetailsGateway;
-import data_access.InMemoryInventoryReader;
+import data_access.InventoryReaderFromInventory;
 import data_access.MealDbRecipeGateway;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
 import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
@@ -413,14 +411,11 @@ public class AppBuilder {
     public AppBuilder addGenerateWithInventoryUseCase() {
         RecipeGateway recipeGateway = new MealDbRecipeGateway();
 
-        // Used for testing UC1; replace with real inventory once implemented.
-        InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
-        inMemoryInventoryReader.add("");
-        inMemoryInventoryReader.add("cheese");
+        InventoryReaderFromInventory inventoryReader = new InventoryReaderFromInventory(this.inventory);
 
-        GenerateWithInventoryViewModel generateWithInventoryViewModel = new GenerateWithInventoryViewModel();
-
-        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(generateWithInventoryViewModel, inMemoryInventoryReader, recipeGateway);
+        GenerateWithInventoryViewModel vm = new GenerateWithInventoryViewModel();
+        GenerateByInventoryPanel panel =
+                getGenerateByInventoryPanel(vm, inventoryReader, recipeGateway);
 
         this.mainView.addGenerateByInventoryPanel(panel);
 
@@ -429,14 +424,14 @@ public class AppBuilder {
 
     private GenerateByInventoryPanel getGenerateByInventoryPanel(
             GenerateWithInventoryViewModel generateWithInventoryViewModel,
-            InMemoryInventoryReader inMemoryInventoryReader,
+            InventoryReaderFromInventory InventoryReader,
             RecipeGateway recipeGateway) {
 
         GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inMemoryInventoryReader, recipeGateway, presenter);
+                new GenerateWithInventoryInteractor(InventoryReader, recipeGateway, presenter);
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
@@ -457,7 +452,7 @@ public class AppBuilder {
 
         ViewRecipeDetailsInputBoundary interactor =
                 new ViewRecipeDetailsInteractor(
-                        new MealDbRecipeDetailsGateway(),
+                        new MealDbRecipeGateway(),
                         outputBoundary
                 );
 

@@ -1,8 +1,10 @@
 package use_case.view_recipe_details;
 
+import entity.Ingredient;
 import entity.Recipe;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBoundary {
 
@@ -24,17 +26,20 @@ public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBounda
         if (recipe == null) {
             presenter.present(new ViewRecipeDetailsOutputData(
                     "",
-                    java.util.List.of(),
+                    List.of(),
                     ""
             ));
             return;
         }
 
+        List<String> ingredientsList = new ArrayList<>();
+        for (Ingredient i : recipe.getIngredients()) {
+            ingredientsList.add(i.getName() + ": " + i.getAmount());
+        }
+
         presenter.present(new ViewRecipeDetailsOutputData(
                 recipe.getTitle(),
-                recipe.getIngredients().stream()
-                        .map(i -> i.getName() + ": " + i.getAmount())
-                        .collect(Collectors.toList()),
+                ingredientsList,
                 recipe.getSteps()
         ));
     }

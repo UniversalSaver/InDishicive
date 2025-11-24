@@ -8,21 +8,35 @@ import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import use_case.generate_with_inventory.RecipeGateway;
+import use_case.view_recipe_details.RecipeDetailsGateway;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class MealDbRecipeGateway implements RecipeGateway {
+public class MealDbRecipeGateway implements RecipeGateway, RecipeDetailsGateway {
 
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
+
+    // These five meals are the ONLY ones from TheMealDB that use fewer than four ingredients.
+    // I list them manually so they automatically pass the hit-count check.
+    // This avoids doing extra API calls for low-ingredient candidates.
+    private static final Set<String> SMALL_INGREDIENT_MEALS = Set.of(
+            "Padron peppers",
+            "Ugali – Kenyan cornmeal",
+            "Bread omelette",
+            "Choripán",
+            "Peanut Butter Cookies"
+    );
+
     private final OkHttpClient client = new OkHttpClient();
 
     private String get(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 return null;
@@ -31,26 +45,34 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
     }
 
+    //UC1
+
     @Override
     public List<Recipe> findByInventory(Set<String> have) {
-        Map<String, Recipe> unique = new LinkedHashMap<>();
-
         if (have == null || have.isEmpty()) {
             return List.of();
         }
 
+        Set<String> normalizedHave = new LinkedHashSet<>();
         for (String raw : have) {
             if (raw == null) {
                 continue;
             }
-            String ingredient = raw.trim();
-            if (ingredient.isEmpty()) {
-                continue;
+            String norm = normalizeIngredientName(raw);
+            if (!norm.isEmpty()) {
+                normalizedHave.add(norm);
             }
+        }
 
-            ingredient = ingredient.toLowerCase().replace(" ", "_");
+        if (normalizedHave.isEmpty()) {
+            return List.of();
+        }
 
-            String url = BASE_URL + "filter.php?i=" + ingredient;
+        Map<String, Candidate> candidates = new LinkedHashMap<>();
+
+        for (String normName : normalizedHave) {
+            String param = normName.replace(" ", "_");
+            String url = BASE_URL + "filter.php?i=" + param;
 
             try {
                 String body = get(url);
@@ -60,30 +82,76 @@ public class MealDbRecipeGateway implements RecipeGateway {
 
                 JSONObject root = new JSONObject(body);
                 JSONArray meals = root.optJSONArray("meals");
-                if (meals == null) {
+                if (meals == null || meals.isEmpty()) {
                     continue;
                 }
 
                 for (int i = 0; i < meals.length(); i++) {
                     JSONObject m = meals.getJSONObject(i);
-                    String title = m.getString("strMeal");
-                    String thumb = m.optString("strMealThumb", "");
-
-                    if (!unique.containsKey(title)) {
-                        Recipe r = new Recipe(title, List.of(), "", thumb, "", "");
-                        unique.put(title, r);
+                    String title = m.optString("strMeal", "").trim();
+                    if (title.isEmpty()) {
+                        continue;
                     }
+
+                    Candidate c = candidates.computeIfAbsent(title, Candidate::new);
+                    c.hitCount++;
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("Failed to call TheMealDB API", e);
+            }
+        }
+        Map<String, Recipe> uniqueRecipes = new LinkedHashMap<>();
+
+        for (Candidate c : candidates.values()) {
+            boolean shouldCheck =
+                    c.hitCount >= 4 || SMALL_INGREDIENT_MEALS.contains(c.title);
+
+            if (!shouldCheck) {
+                continue;
+            }
+
+            Optional<Recipe> fullOpt = fetchRecipeByTitleInternal(c.title);
+            if (fullOpt.isEmpty()) {
+                continue;
+            }
+
+            Recipe fullRecipe = fullOpt.get();
+            if (allIngredientsInInventory(fullRecipe, normalizedHave)) {
+                uniqueRecipes.put(c.title, fullRecipe);
             }
         }
 
-        return new ArrayList<>(unique.values());
+        return new ArrayList<>(uniqueRecipes.values());
     }
 
-    public Optional<Recipe> findByTitle(String title) {
+    private boolean allIngredientsInInventory(Recipe recipe, Set<String> normalizedHave) {
+        for (Ingredient ing : recipe.getIngredients()) {
+            String norm = normalizeIngredientName(ing.getName());
+            if (norm.isEmpty()) {
+                continue;
+            }
+            if (!normalizedHave.contains(norm)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private String normalizeIngredientName(String name) {
+        if (name == null) {
+            return "";
+        }
+        return name.trim().toLowerCase();
+    }
+
+    // UC3
+    @Override
+    public Recipe findByTitle(String title) {
+        return fetchRecipeByTitleInternal(title).orElse(null);
+    }
+
+    private Optional<Recipe> fetchRecipeByTitleInternal(String title) {
         if (title == null || title.isBlank()) {
             return Optional.empty();
         }
@@ -108,10 +176,11 @@ public class MealDbRecipeGateway implements RecipeGateway {
             return Optional.of(recipe);
 
         } catch (IOException e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
+
+    //helper function
 
     private Recipe parseFullRecipe(JSONObject m) {
         String title = m.optString("strMeal", "");
@@ -131,5 +200,16 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
 
         return new Recipe(title, ingredients, instructions, image, youtube, category);
+    }
+
+    // used for uc1
+    private static class Candidate {
+        final String title;
+        int hitCount;
+
+        Candidate(String title) {
+            this.title = title;
+            this.hitCount = 0;
+        }
     }
 }
