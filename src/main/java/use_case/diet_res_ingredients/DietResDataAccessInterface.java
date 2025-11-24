@@ -26,7 +26,7 @@ public interface DietResDataAccessInterface {
     /**
      * Checks if an ingredient is already saved as restricted.
      * @param ingredient the ingredient to check if restricted
-     * @return true if the recipe is in restricted ingredients list, false otherwise
+     * @return true if the ingredient is in restricted ingredients list, false otherwise
      */
     boolean isRestricted(Ingredient ingredient);
 }
