@@ -1,5 +1,7 @@
 package data_access;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import use_case.search_ingredients.SearchIngredientsDataAccessInterface;
 
 import java.io.BufferedReader;
@@ -8,15 +10,22 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+/**
+ * Data Access Object for fetching ingredient data from TheMealDB API.
+ * Uses JSON parsing library for proper data handling.
+ */
 public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessInterface {
 
     private static final String API_URL = "https://www.themealdb.com/api/json/v1/1/list.php?i=list";
 
+    /**
+     * Fetches all available ingredients from TheMealDB API.
+     * @return a list of ingredient names
+     * @throws IngredientDataAccessException if the API request fails or the response cannot be parsed
+     */
     @Override
-    public List<String> getAllIngredients() {
+    public List<String> getAllIngredients() throws IngredientDataAccessException {
         List<String> ingredients = new ArrayList<>();
         
         try {
@@ -33,17 +42,20 @@ public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessIn
             }
             reader.close();
             
+            // Parse JSON response using org.json library
             String jsonResponse = response.toString();
-            Pattern pattern = Pattern.compile("\"strIngredient\":\"([^\"]+)\"");
-            Matcher matcher = pattern.matcher(jsonResponse);
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONArray mealsArray = jsonObject.getJSONArray("meals");
             
-            while (matcher.find()) {
-                String ingredientName = matcher.group(1);
+            // Extract ingredient names from the JSON array
+            for (int i = 0; i < mealsArray.length(); i++) {
+                JSONObject meal = mealsArray.getJSONObject(i);
+                String ingredientName = meal.getString("strIngredient");
                 ingredients.add(ingredientName);
             }
             
         } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch ingredients from API: " + e.getMessage());
+            throw new IngredientDataAccessException("Failed to fetch ingredients from API", e);
         }
         
         return ingredients;

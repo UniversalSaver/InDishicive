@@ -1,30 +1,38 @@
 package use_case.remove_ingredient;
 
 import entity.Ingredient;
-import entity.Inventory;
 
+/**
+ * Interactor for the Remove Ingredient use case.
+ * Handles the business logic for removing ingredients from the inventory.
+ */
 public class RemoveIngredientInteractor implements RemoveIngredientInputBoundary {
 
     private final RemoveIngredientOutputBoundary removeIngredientPresenter;
-    private final Inventory inventory;
+    private final InventoryDataAccessInterface inventoryDataAccess;
 
-    public RemoveIngredientInteractor(RemoveIngredientOutputBoundary removeIngredientPresenter, Inventory inventory) {
+    /**
+     * Constructs a RemoveIngredientInteractor.
+     * @param removeIngredientPresenter the presenter for preparing output
+     * @param inventoryDataAccess the data access interface for inventory operations
+     */
+    public RemoveIngredientInteractor(RemoveIngredientOutputBoundary removeIngredientPresenter, 
+                                       InventoryDataAccessInterface inventoryDataAccess) {
         this.removeIngredientPresenter = removeIngredientPresenter;
-        this.inventory = inventory;
+        this.inventoryDataAccess = inventoryDataAccess;
     }
 
+    /**
+     * Executes the remove ingredient use case.
+     * Searches for the ingredient by name and removes it from inventory if found.
+     * @param ingredientName the name of the ingredient to remove
+     */
     @Override
     public void execute(String ingredientName) {
-        Ingredient toRemove = null;
-        for (Ingredient ingredient : inventory.getIngredients()) {
-            if (ingredient.getName().equals(ingredientName)) {
-                toRemove = ingredient;
-                break;
-            }
-        }
+        Ingredient toRemove = inventoryDataAccess.findIngredientByName(ingredientName);
         
         if (toRemove != null) {
-            inventory.removeIngredient(toRemove);
+            inventoryDataAccess.removeIngredient(toRemove);
         }
         
         removeIngredientPresenter.prepareSuccessView();
