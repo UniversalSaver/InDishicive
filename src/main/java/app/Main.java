@@ -35,6 +35,7 @@ public class Main {
                 .addAddFavoriteUseCase()
                 .addAddDietResUseCase()
                 .addRemoveDietResUseCase()
+                .addRemoveFavoriteUseCase()
                 .addGenerateWithInventoryUseCase()
 
                 .addViewFavoritesUseCase()

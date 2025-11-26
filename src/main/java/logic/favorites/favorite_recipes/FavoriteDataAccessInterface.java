@@ -25,4 +25,6 @@ public interface FavoriteDataAccessInterface {
      * @return true if the recipe is in favorites, false otherwise
      */
     boolean isFavorite(Recipe recipe);
+
+    void removeFavorite(Recipe recipe);
 }
