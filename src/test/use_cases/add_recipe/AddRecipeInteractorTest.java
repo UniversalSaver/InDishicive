@@ -1,14 +1,14 @@
 package use_cases.add_recipe;
 
 import org.junit.jupiter.api.Test;
-import use_case.add_recipe.*;
+import use_case.user_recipe.add_recipe.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddRecipeInteractorTest {
+class AddRecipeInteractorTest {
 
 	/**
 	 * A test where everything is given as expected.
@@ -24,7 +24,7 @@ public class AddRecipeInteractorTest {
 		AddRecipeOutputBoundary outputBoundary = new AddRecipeOutputBoundary() {
 			@Override
 			public void prepareSuccessView() {
-
+                // Empty as this is desired
 			}
 
 			@Override

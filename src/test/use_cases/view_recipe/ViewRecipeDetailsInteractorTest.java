@@ -1,10 +1,10 @@
 package use_cases.view_recipe;
 
-import data_access.FromMemoryMealRecipeDataAccessObject;
+import data_access.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import use_case.view_recipe_details.*;
+import use_case.generate_recipe.view_recipe_details.*;
 
 import java.util.List;
 

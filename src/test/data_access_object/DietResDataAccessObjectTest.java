@@ -1,6 +1,6 @@
 package data_access_object;
 
-import data_access.DietResDataAccessObject;
+import data_access.dietary_restriction.DietResDataAccessObject;
 import entity.Ingredient;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
