@@ -14,16 +14,18 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import entity.Recipe;
-import interface_adapter.view_favorite.ViewFavoriteViewModel;
+import interface_adapter.favorites.view_favorite.ViewFavoriteViewModel;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 
 public class FavoriteView extends JPanel implements PropertyChangeListener{
     private final ViewFavoriteViewModel viewModel;
+    private final ViewRecipeDetailsController viewRecipeDetailsController;
     private final JPanel cardsPanel;
 
-    public FavoriteView(ViewFavoriteViewModel viewModel) {
+    public FavoriteView(ViewFavoriteViewModel viewModel, ViewRecipeDetailsController viewRecipeDetailsController) {
         this.viewModel = viewModel;
-        this.viewModel.addPropertyChangeListener(this);
+        this.viewRecipeDetailsController = viewRecipeDetailsController;
 
         setLayout(new BorderLayout());
 
@@ -35,6 +37,8 @@ public class FavoriteView extends JPanel implements PropertyChangeListener{
 
         JScrollPane scrollPane = new JScrollPane(cardsPanel);
         add(scrollPane, BorderLayout.CENTER);
+
+        this.viewModel.addPropertyChangeListener(this);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class FavoriteView extends JPanel implements PropertyChangeListener{
         cardsPanel.removeAll();
 
         for(Recipe recipe : recipes){
-            RecipeCard card = new RecipeCard(recipe);
+            RecipeCard card = new RecipeCard(recipe, viewRecipeDetailsController);
             cardsPanel.add(card);
             cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }

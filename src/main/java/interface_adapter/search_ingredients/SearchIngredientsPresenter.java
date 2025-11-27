@@ -4,6 +4,10 @@ import use_case.search_ingredients.SearchIngredientsOutputBoundary;
 
 import java.util.List;
 
+/**
+ * Presenter for the Search Ingredients use case.
+ * Prepares data for display and notifies the view of state changes.
+ */
 public class SearchIngredientsPresenter implements SearchIngredientsOutputBoundary {
 
     private final SearchIngredientsViewModel searchIngredientsViewModel;
@@ -17,7 +21,7 @@ public class SearchIngredientsPresenter implements SearchIngredientsOutputBounda
         SearchIngredientsState state = new SearchIngredientsState();
         state.setIngredients(ingredients);
         searchIngredientsViewModel.setState(state);
-        searchIngredientsViewModel.firePropertyChange("searchSuccess");
+        searchIngredientsViewModel.firePropertyChange(SearchIngredientsViewModel.SEARCH_SUCCESS_PROPERTY);
     }
 
     @Override
@@ -25,7 +29,7 @@ public class SearchIngredientsPresenter implements SearchIngredientsOutputBounda
         SearchIngredientsState state = new SearchIngredientsState();
         state.setError(error);
         searchIngredientsViewModel.setState(state);
-        searchIngredientsViewModel.firePropertyChange("searchFail");
+        searchIngredientsViewModel.firePropertyChange(SearchIngredientsViewModel.SEARCH_FAIL_PROPERTY);
     }
 }
 

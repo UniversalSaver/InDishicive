@@ -1,66 +1,39 @@
 package view.diet_res_view;
 
+import interface_adapter.dietary_restriction.remove_diet_res.RemoveDietResController;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class DietResVisual extends JPanel {
-    private String title;
+    private final String title;
+    private final JButton deleteButton;
 
-    private JPanel infoPanel = new JPanel();
-    private JPanel infoPanelNames = new JPanel();
-    private JPanel infoPanelData = new JPanel();
-
-
-    private JPanel infoPanelButtons = new JPanel();
-    private JButton deleteButton = new JButton("Delete");
-    private JButton addButton = new JButton("Add");
-
-    public DietResVisual(String title) {
+    /**
+     * @param title The name of the ingredient
+     * @param removeDietResController The controller to handle the delete action
+     */
+    public DietResVisual(String title, RemoveDietResController removeDietResController) {
         this.title = title;
 
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setMaximumSize(new Dimension(600, 100));
-        this.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.setLayout(new BorderLayout());
+        this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        this.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY)); // Bottom separator
 
+        JLabel nameLabel = new JLabel("  " + title); // Slight padding
+        nameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        this.add(nameLabel, BorderLayout.CENTER);
 
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-        infoPanel.setMaximumSize(new Dimension(550, 100));
-
-        infoPanelNames.setLayout(new BoxLayout(infoPanelNames, BoxLayout.Y_AXIS));
-
-        infoPanelNames.add(new JLabel("Ingredient Name:"));
-        infoPanelNames.add(Box.createVerticalGlue());
-        infoPanelNames.add(Box.createHorizontalGlue());
-        infoPanel.add(infoPanelNames);
-
-        infoPanelData.setLayout(new BoxLayout(infoPanelData, BoxLayout.Y_AXIS));
-
-        JLabel titleLabel = new JLabel(this.title);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        infoPanelData.add(titleLabel);
-
-
-        infoPanel.add(infoPanelData);
-        this.add(infoPanel);
-
-
-
-        infoPanelButtons.setLayout(new BoxLayout(infoPanelButtons, BoxLayout.Y_AXIS));
-
-        this.deleteButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        infoPanelButtons.add(this.deleteButton);
+        deleteButton = new JButton("Delete");
 
         deleteButton.addActionListener(e -> {
-            Container parent = this.getParent();
-            parent.remove(this);
-            parent.revalidate();
-            parent.repaint();
-
+            if (removeDietResController != null) {
+                removeDietResController.execute(title);
+            }
         });
 
-
-        this.add(infoPanelButtons);
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(deleteButton);
+        this.add(buttonPanel, BorderLayout.EAST);
     }
-
 }

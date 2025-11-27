@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entity.Recipe;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 /**
  * A card component that displays a single recipe with its title, category, and a show button.
@@ -19,7 +20,7 @@ import entity.Recipe;
  */
 public class RecipeCard extends JPanel {
 
-    public RecipeCard(Recipe recipe) {
+    public RecipeCard(Recipe recipe, ViewRecipeDetailsController viewRecipeDetailsController) {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1),
@@ -42,7 +43,7 @@ public class RecipeCard extends JPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.weightx = 0;
-        //showButton.addActionListener(e -> ()); WILL IMPLEMENT THIS ONCE THE VIEWING RECIPE USE CASE IS ADDED
+        showButton.addActionListener(e -> viewRecipeDetailsController.execute(recipe.getTitle()));
         add(showButton, gbc);
 
 

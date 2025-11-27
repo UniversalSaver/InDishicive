@@ -1,10 +1,6 @@
 package window;
 
-import interface_adapter.DietResViewManagerModel;
-import interface_adapter.view_diet_res.DietResViewModel;
-import interface_adapter.view_diet_res.DietResWindowModel;
-import view.diet_res_view.DietResView;
-import view.diet_res_view.DietResViewManager;
+import interface_adapter.dietary_restriction.view_diet_res.DietResWindowModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,43 +9,33 @@ import java.beans.PropertyChangeListener;
 
 public class DietResWindow extends JFrame implements PropertyChangeListener {
 
-    private final JPanel cardPanel;
-    private final CardLayout cardLayout;
-    private DietResWindowModel dietResWindowModel;
+    private final DietResWindowModel dietResWindowModel;
 
-    private DietResView dietResView;
-    private DietResViewModel dietResViewModel;
-
-    private DietResViewManagerModel dietResViewManagerModel;
-    private DietResViewManager dietResViewManager;
-
-    public DietResWindow(JPanel cardPanel, CardLayout cardLayout,
-                         DietResViewManager dietResViewManager,
-                         DietResViewManagerModel dietResViewManagerModel,
-                         DietResWindowModel dietResWindowModel) {
+    /**
+     * @param cardPanel The panel containing the views (managed by DietResViewManager)
+     * @param dietResWindowModel The model deciding if this window is visible
+     */
+    public DietResWindow(JPanel cardPanel, DietResWindowModel dietResWindowModel) {
         super("Dietary Restricted Ingredients");
 
-        this.setSize(600, 400);
-
-        this.cardPanel = cardPanel;
-        this.cardLayout = cardLayout;
-        this.dietResViewManager = dietResViewManager;
-        this.dietResViewManagerModel = dietResViewManagerModel;
         this.dietResWindowModel = dietResWindowModel;
 
+        this.dietResWindowModel.addPropertyChangeListener(this);
 
-        this.add(cardPanel);
-    }
+        this.setSize(600, 400);
+        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
-    public void addDietResView(DietResView dietResView, DietResViewModel dietResViewModel) {
-        this.dietResView = dietResView;
-        this.dietResViewModel = dietResViewModel;
+        if (cardPanel != null) {
+            this.add(cardPanel, BorderLayout.CENTER);
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if  (evt.getPropertyName().equals(DietResWindowModel.SET_VISIBLE)) {
+        if (DietResWindowModel.SET_VISIBLE.equals(evt.getPropertyName())) {
             this.setVisible(true);
+            this.toFront();
         }
     }
 }

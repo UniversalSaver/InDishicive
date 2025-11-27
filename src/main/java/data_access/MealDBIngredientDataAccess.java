@@ -3,6 +3,7 @@ package data_access;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import use_case.search_ingredients.SearchIngredientsDataAccessInterface;
+import use_case.search_ingredients.IngredientDataAccessException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

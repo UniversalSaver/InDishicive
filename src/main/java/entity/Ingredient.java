@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Objects;
+
 /**
  * A simple entity representing an ingredient.
  */
@@ -20,10 +22,34 @@ public class Ingredient {
         this.name = name;
         this.amount = amount;
     }
+
+    /**
+     * Gets the name of this ingredient
+     * @return the ingredient name
+     */
     public String getName() {
         return name;
     }
-    public String getAmount(){
+
+    /**
+     * Gets the amount of this ingredient
+     * @return the ingredient amount
+     */
+    public String getAmount() {
         return amount;
+    }
+
+    // This is to check lower/uppercases
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient i = (Ingredient) o;
+        return Objects.equals(name.toLowerCase(), i.name.toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name.toLowerCase());
     }
 }

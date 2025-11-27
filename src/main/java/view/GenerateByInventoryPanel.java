@@ -1,14 +1,19 @@
 package view;
 
-import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
+import interface_adapter.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
+import interface_adapter.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import interface_adapter.favorites.add_favorite.AddFavoriteController;
+import interface_adapter.favorites.add_favorite.AddFavoriteViewModel;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+
+
 
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
@@ -16,12 +21,16 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
     private final JList<String> list = new JList<>(model);
 
     private final GenerateWithInventoryViewModel viewModel;
+    private final AddFavoriteViewModel addFavoriteViewModel;
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel vm,
-                                    ViewRecipeDetailsController detailsController) {
+                                    ViewRecipeDetailsController detailsController,
+                                    AddFavoriteController addFavoriteController,
+                                    AddFavoriteViewModel addFavoriteViewModel) {
 
         this.viewModel = vm;
+        this.addFavoriteViewModel = addFavoriteViewModel;
 
         setLayout(new BorderLayout());
 
@@ -38,17 +47,20 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         JButton details = new JButton("View Details");
         details.setEnabled(false);
 
+        JButton addToFavorites = new JButton("Add to Favorites");
+        addToFavorites.setEnabled(false);
+
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        bottom.add((addToFavorites));
         bottom.add(details);
         add(bottom, BorderLayout.SOUTH);
-
-        vm.addPropertyChangeListener(this);
 
         generate.addActionListener(e -> controller.execute());
 
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 details.setEnabled(list.getSelectedValue() != null);
+                addToFavorites.setEnabled(list.getSelectedValue() != null);
             }
         });
 
@@ -58,6 +70,16 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                 detailsController.execute(selected);
             }
         });
+
+        addToFavorites.addActionListener(e -> {
+            String selected = list.getSelectedValue();
+            if (selected != null) {
+                addFavoriteController.execute(selected);
+            }
+        });
+
+        vm.addPropertyChangeListener(this);
+        addFavoriteViewModel.addPropertyChangeListener(this);
     }
 
     @Override
@@ -81,6 +103,22 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                 );
             }
             model.clear();
+        } else if (AddFavoriteViewModel.FAVORITE_ADDED.equals(name)) {
+            String msg = addFavoriteViewModel.getState().getStatusMessage();
+            JOptionPane.showMessageDialog(
+                    this,
+                    msg,
+                    "Successfully Added!",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        } else if (AddFavoriteViewModel.FAVORITE_FAILED.equals(name)) {
+            String msg = addFavoriteViewModel.getState().getStatusMessage();
+            JOptionPane.showMessageDialog(
+                    this,
+                    msg,
+                    "Adding to Favorites Failed!",
+                    JOptionPane.WARNING_MESSAGE
+            );
         }
     }
 

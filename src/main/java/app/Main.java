@@ -1,6 +1,6 @@
 package app;
 
-import data_access.MemoryDataAccessObject;
+import data_access.user_recipe.FileDataAccessObject;
 
 import javax.swing.*;
 
@@ -8,10 +8,10 @@ public class Main {
     public static void main(String[] args) {
         AppBuilder appBuilder = new AppBuilder();
 
-        MemoryDataAccessObject memoryDataAccessObject = new MemoryDataAccessObject();
+        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
 
         JFrame application = appBuilder
-                .addIndishisiveDAO(memoryDataAccessObject)
+                .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
 //                .addUserRecipesWindow()
@@ -28,20 +28,29 @@ public class Main {
 
                 .addMainView()
                 .addUserRecipesView()
-                .addDietResView()
+                .addAddRecipeView()
+
+				.addAddRecipeUseCase()
+                .addUserRecipesCancelButtonUseCase()
+                .addIngredientUseCase()
+                .addViewRecipesUseCase()
+                .addViewCreatorUseCase()
 
                 .addViewRecipeDetailsUseCase()
+                .addAddFavoriteUseCase()
+                .addAddDietResUseCase()
+                .addRemoveDietResUseCase()
                 .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
 
-                .addAddFavoriteUseCase()
                 .addViewFavoritesUseCase()
                 .addFavoritesView()
                 .addViewFavoritesButton()
 
 
                 .addViewRestrictionsUseCase()
+                .addDietResView()
                 .build();
 
         application.pack();
