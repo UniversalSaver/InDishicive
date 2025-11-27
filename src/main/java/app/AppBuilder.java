@@ -162,10 +162,6 @@ public class AppBuilder {
      */
      
     /*
-    Start of DietRes variables
-    */
-  
-    /*
     Start of Favorites variables
     */
 
