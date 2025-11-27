@@ -1,13 +1,13 @@
 package data_access_object;
 
 
-import data_access.user_recipe.CorruptDataException;
-import data_access.user_recipe.FileDataAccessObject;
+import databases.user_recipe.CorruptDataException;
+import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.UserRecipe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import use_case.user_recipe.add_recipe.AddRecipeDataAccessInterface;
+import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
 
 import java.io.*;
 import java.util.Arrays;

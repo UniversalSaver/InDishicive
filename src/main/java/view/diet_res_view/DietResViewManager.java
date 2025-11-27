@@ -1,6 +1,6 @@
 package view.diet_res_view;
 
-import interface_adapter.DietResViewManagerModel;
+import adapters.DietResViewManagerModel;
 
 import javax.swing.*;
 import java.awt.*;

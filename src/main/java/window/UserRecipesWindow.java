@@ -1,8 +1,8 @@
 package window;
 
-import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.user_recipe.view_recipes.UserRecipeWindowModel;
-import interface_adapter.user_recipe.view_recipes.UserRecipesViewModel;
+import adapters.UserRecipesViewManagerModel;
+import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
+import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
 
