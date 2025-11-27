@@ -14,8 +14,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import entity.Recipe;
-import interface_adapter.favorites.view_favorite.ViewFavoriteViewModel;
-import interface_adapter.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import adapters.favorites.view_favorite.ViewFavoriteViewModel;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 
 public class FavoriteView extends JPanel implements PropertyChangeListener{

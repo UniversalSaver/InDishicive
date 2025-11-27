@@ -1,6 +1,6 @@
 package data_access_object;
 
-import data_access.test_DAO.FromMemoryMealRecipeDataAccessObject;
+import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import entity.Ingredient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

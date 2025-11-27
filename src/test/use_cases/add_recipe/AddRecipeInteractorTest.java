@@ -1,7 +1,7 @@
 package use_cases.add_recipe;
 
 import org.junit.jupiter.api.Test;
-import use_case.user_recipe.add_recipe.*;
+import logic.user_recipe.add_recipe.*;
 
 import java.util.Arrays;
 import java.util.List;

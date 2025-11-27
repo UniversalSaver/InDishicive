@@ -2,10 +2,10 @@ package use_cases.remove_diet_res;
 
 import entity.Ingredient;
 import org.junit.jupiter.api.Test;
-import use_case.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
-import use_case.dietary_restriction.remove_restriction.RemoveDietResInputData;
-import use_case.dietary_restriction.remove_restriction.RemoveDietResInteractor;
-import use_case.dietary_restriction.remove_restriction.RemoveDietResOutputBoundary;
+import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
+import logic.dietary_restriction.remove_restriction.RemoveDietResInputData;
+import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
+import logic.dietary_restriction.remove_restriction.RemoveDietResOutputBoundary;
 
 import java.util.ArrayList;
 import java.util.List;

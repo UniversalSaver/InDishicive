@@ -1,11 +1,11 @@
 package use_cases.add_ingredient;
 
-import data_access.test_DAO.FromMemoryMealRecipeDataAccessObject;
+import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import use_case.user_recipe.add_recipe.add_ingredient.AddIngredientInteractor;
-import use_case.user_recipe.add_recipe.add_ingredient.AddIngredientOutputBoundary;
-import use_case.user_recipe.add_recipe.add_ingredient.AddIngredientOutputData;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientInteractor;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputBoundary;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputData;
 
 import java.util.ArrayList;
 import java.util.List;

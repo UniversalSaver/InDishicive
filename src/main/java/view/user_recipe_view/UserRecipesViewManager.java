@@ -1,6 +1,6 @@
 package view.user_recipe_view;
 
-import interface_adapter.UserRecipesViewManagerModel;
+import adapters.UserRecipesViewManagerModel;
 
 import javax.swing.*;
 import java.awt.*;
