@@ -23,7 +23,7 @@ public class RemoveFavoriteInteractor implements RemoveFavoriteInputBoundary {
 
         // incase somehow it isnt
         if (!favoriteDataAccess.isFavorite(recipe)) {
-            presenter.prepareFailureView("Recipe is not favorite!");
+            presenter.prepareFailureView("Recipe is not in favorites!");
             return;
         }
 
