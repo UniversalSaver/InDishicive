@@ -1,6 +1,6 @@
-package interface_adapter.search_ingredients;
+package adapters.inventory.search_ingredients;
 
-import interface_adapter.ViewModel;
+import adapters.ViewModel;
 
 /**
  * ViewModel for the Search Ingredients feature.

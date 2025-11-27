@@ -5,6 +5,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import databases.favorites.FavoriteDataAccessObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

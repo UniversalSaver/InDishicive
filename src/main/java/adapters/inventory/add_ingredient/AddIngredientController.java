@@ -1,4 +1,4 @@
-package interface_adapter.add_ingredient;
+package adapters.inventory.add_ingredient;
 
 import use_case.add_ingredient.AddIngredientInputBoundary;
 

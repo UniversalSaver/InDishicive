@@ -1,4 +1,4 @@
-package interface_adapter.search_ingredients;
+package adapters.inventory.search_ingredients;
 
 import java.util.ArrayList;
 import java.util.List;
