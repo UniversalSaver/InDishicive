@@ -1,4 +1,4 @@
-package interface_adapter.search_ingredients;
+package adapters.inventory.search_ingredients;
 
 import use_case.search_ingredients.SearchIngredientsOutputBoundary;
 

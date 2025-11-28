@@ -1,6 +1,6 @@
-package interface_adapter.add_ingredient;
+package adapters.inventory.add_ingredient;
 
-import interface_adapter.ViewModel;
+import adapters.ViewModel;
 
 /**
  * ViewModel for the Add Ingredient feature.
