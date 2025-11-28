@@ -1,13 +1,13 @@
 package data_access_object;
 
 
-import data_access.CorruptDataException;
-import data_access.FileDataAccessObject;
+import databases.user_recipe.CorruptDataException;
+import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.UserRecipe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import use_case.add_recipe.AddRecipeDataAccessInterface;
+import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
 
 import java.io.*;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileDataAccessObjectTest {
+class FileDataAccessObjectTest {
 	@AfterEach
 	void deleteTestFile() {
 		File closeFile = new File("test_DAO_file.tsv");

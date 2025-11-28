@@ -3,8 +3,9 @@ package use_case.add_favorite;
 import entity.Recipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import use_case.favorite_recipes.FavoriteDataAccessInterface;
-import use_case.view_recipe_details.RecipeDetailsGateway;
+import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
+import logic.favorites.add_favorite.*;
+import logic.generate_recipe.view_recipe_details.RecipeDetailsGateway;
 
 import java.util.ArrayList;
 import java.util.List;

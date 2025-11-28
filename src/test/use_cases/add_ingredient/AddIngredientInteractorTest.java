@@ -1,16 +1,16 @@
 package use_cases.add_ingredient;
 
-import data_access.FromMemoryMealRecipeDataAccessObject;
+import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import use_case.add_recipe.AddIngredientInteractor;
-import use_case.add_recipe.AddIngredientOutputBoundary;
-import use_case.add_recipe.AddIngredientOutputData;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientInteractor;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputBoundary;
+import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddIngredientInteractorTest {
+class AddIngredientInteractorTest {
 	@Test
 	void allIngredientsPresentTest() {
 		AddIngredientInteractor addIngredientInteractor = new AddIngredientInteractor(
@@ -45,6 +45,7 @@ public class AddIngredientInteractorTest {
 
 			@Override
 			public void presentFailView() {
+                // Empty, as this is the desired outcome
 			}
 		});
 		addIngredientInteractor.execute();
