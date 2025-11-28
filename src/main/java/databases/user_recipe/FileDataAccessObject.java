@@ -1,4 +1,4 @@
-package data_access.user_recipe;
+package databases.user_recipe;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 
 import entity.Ingredient;
 import entity.UserRecipe;
-import use_case.user_recipe.add_recipe.AddRecipeDataAccessInterface;
-import use_case.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
+import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
+import logic.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
 
 /**
  * A class to access the files for user created recipes.
