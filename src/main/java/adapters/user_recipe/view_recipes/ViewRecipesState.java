@@ -1,8 +1,10 @@
 package adapters.user_recipe.view_recipes;
 
-
 import java.util.List;
 
+/**
+ * A recipe state, which is used by the view model to send information about current view.
+ */
 public class ViewRecipesState {
 
     private final List<RecipeSummary> recipeSummaries;

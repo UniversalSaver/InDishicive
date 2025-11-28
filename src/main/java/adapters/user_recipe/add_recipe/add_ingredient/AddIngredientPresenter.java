@@ -4,9 +4,13 @@ import adapters.user_recipe.add_recipe.AddRecipeViewModel;
 import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputBoundary;
 import logic.user_recipe.add_recipe.add_ingredient.AddIngredientOutputData;
 
+/**
+ * Gives the user a new ingredient option to add to their recipe,
+ * and upon failure, tells user that something went wrong.
+ */
 public class AddIngredientPresenter implements AddIngredientOutputBoundary {
 
-	AddRecipeViewModel viewModel;
+	private AddRecipeViewModel viewModel;
 
 	public AddIngredientPresenter(AddRecipeViewModel viewModel) {
 		this.viewModel = viewModel;
