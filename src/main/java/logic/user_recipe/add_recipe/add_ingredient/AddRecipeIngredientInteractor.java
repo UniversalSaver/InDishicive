@@ -16,7 +16,7 @@ public class AddRecipeIngredientInteractor implements AddRecipeIngredientInputBo
 	private final AddRecipeIngredientOutputBoundary addIngredientPresenter;
 
 	public AddRecipeIngredientInteractor(AddRecipeIngredientDataAccessInterface addIngredientDataAccess,
-										 AddRecipeIngredientOutputBoundary addIngredientPresenter) {
+                                         AddRecipeIngredientOutputBoundary addIngredientPresenter) {
 		this.addIngredientDataAccess = addIngredientDataAccess;
 		this.addIngredientPresenter = addIngredientPresenter;
 	}

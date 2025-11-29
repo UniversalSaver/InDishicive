@@ -111,6 +111,11 @@ class AddFavoriteInteractorTest {
         public boolean isFavorite(Recipe recipe) {
             return favorites.contains(recipe);
         }
+
+        @Override
+        public void removeFavorite(Recipe recipe) {
+            fail("This method should not be called");
+        }
     }
 
     /**
