@@ -1,9 +1,9 @@
 package view.user_recipe_view;
 
-import interface_adapter.user_recipe.add_recipe.add_ingredient.AddIngredientController;
-import interface_adapter.user_recipe.add_recipe.AddRecipeController;
-import interface_adapter.user_recipe.add_recipe.AddRecipeViewModel;
-import interface_adapter.user_recipe.view_recipes.ViewRecipesController;
+import adapters.user_recipe.add_recipe.add_ingredient.AddIngredientController;
+import adapters.user_recipe.add_recipe.AddRecipeController;
+import adapters.user_recipe.add_recipe.AddRecipeViewModel;
+import adapters.user_recipe.view_recipes.ViewRecipesController;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
