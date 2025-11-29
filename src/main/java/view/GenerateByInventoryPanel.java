@@ -20,15 +20,9 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
     private final GenerateWithInventoryViewModel viewModel;
     private final AddFavoriteViewModel addFavoriteViewModel;
+
     private final FilterByCuisineController filterController;
-    private final JComboBox<String> cuisineBox = new JComboBox<>(new String[]{
-            "Any",
-            "American", "British", "Canadian", "Chinese", "Croatian", "Dutch",
-            "Egyptian", "Filipino", "French", "Greek", "Indian", "Irish",
-            "Italian", "Jamaican", "Japanese", "Kenyan", "Malaysian", "Mexican",
-            "Moroccan", "Polish", "Portuguese", "Russian", "Spanish", "Thai",
-            "Tunisian", "Turkish", "Vietnamese"
-    });
+    private final JComboBox<String> cuisineBox = new JComboBox<>();
     private final JButton applyFilter = new JButton("Filter");
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
@@ -53,7 +47,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
         JPanel filterBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
         filterBar.add(new JLabel("Cuisine:"));
-        cuisineBox.setSelectedItem("Any");
         filterBar.add(cuisineBox);
         filterBar.add(applyFilter);
 
@@ -117,7 +110,9 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             @SuppressWarnings("unchecked")
             List<String> titles = (List<String>) evt.getNewValue();
             model.clear();
-            titles.forEach(model::addElement);
+            if (titles != null) {
+                titles.forEach(model::addElement);
+            }
 
         } else if ("error".equals(name)) {
             String msg = viewModel.getErrorMessage();
@@ -130,6 +125,21 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                 );
             }
             model.clear();
+
+        } else if ("cuisines".equals(name)) {
+            List<String> cuisines = viewModel.getCuisines();
+            cuisineBox.removeAllItems();
+            if (cuisines != null) {
+                for (String c : cuisines) {
+                    cuisineBox.addItem(c);
+                }
+                if (cuisines.contains("Any")) {
+                    cuisineBox.setSelectedItem("Any");
+                } else if (!cuisines.isEmpty()) {
+                    cuisineBox.setSelectedIndex(0);
+                }
+            }
+
         } else if (AddFavoriteViewModel.FAVORITE_ADDED.equals(name)) {
             String msg = addFavoriteViewModel.getState().getStatusMessage();
             JOptionPane.showMessageDialog(
@@ -138,6 +148,7 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                     "Successfully Added!",
                     JOptionPane.INFORMATION_MESSAGE
             );
+
         } else if (AddFavoriteViewModel.FAVORITE_FAILED.equals(name)) {
             String msg = addFavoriteViewModel.getState().getStatusMessage();
             JOptionPane.showMessageDialog(

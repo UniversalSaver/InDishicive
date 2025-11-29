@@ -11,6 +11,7 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
     private List<String> allTitles = new ArrayList<>();
     private int offset = 0;
     private String errorMessage = "";
+    private List<String> cuisines = new ArrayList<>();
 
     public GenerateWithInventoryViewModel() {
         super("generate_with_inventory");
@@ -50,5 +51,14 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         this.offset = 0;
         setState(new ArrayList<>(titles));
         firePropertyChange("recipes");
+    }
+
+    public void setCuisines(List<String> cuisines) {
+        this.cuisines = (cuisines == null) ? new ArrayList<>() : new ArrayList<>(cuisines);
+        firePropertyChange("cuisines");
+    }
+
+    public List<String> getCuisines() {
+        return new ArrayList<>(cuisines);
     }
 }

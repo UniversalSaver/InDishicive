@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import use_case.filter_by_cuisine.FilterByCuisineDataAccessInterface;
+import use_case.get_available_cuisines.GetAvailableCuisinesDataAccessInterface;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -14,7 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MealDbCuisineDataAccessObject implements FilterByCuisineDataAccessInterface {
+public class MealDbCuisineDataAccessObject
+        implements FilterByCuisineDataAccessInterface, GetAvailableCuisinesDataAccessInterface {
 
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
     private final OkHttpClient client = new OkHttpClient();
@@ -65,5 +67,45 @@ public class MealDbCuisineDataAccessObject implements FilterByCuisineDataAccessI
         }
 
         return titles;
+    }
+
+    @Override
+    public List<String> getAvailableCuisines() {
+        List<String> cuisines = new ArrayList<>();
+        String url = BASE_URL + "list.php?a=list";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful() || response.body() == null) {
+                System.err.println("MealDB request failed: " + response.code());
+                return cuisines;
+            }
+
+            String responseBody = response.body().string();
+            JSONObject root = new JSONObject(responseBody);
+
+            if (root.isNull("meals")) {
+                return cuisines;
+            }
+
+            JSONArray meals = root.getJSONArray("meals");
+
+            for (int i = 0; i < meals.length(); i++) {
+                JSONObject areaObj = meals.getJSONObject(i);
+                String area = areaObj.optString("strArea", "").trim();
+                if (!area.isEmpty()) {
+                    cuisines.add(area);
+                }
+            }
+
+        } catch (IOException | JSONException e) {
+            System.err.println("Error calling MealDB API (getAvailableCuisines): " + e.getMessage());
+        }
+
+        return cuisines;
     }
 }
