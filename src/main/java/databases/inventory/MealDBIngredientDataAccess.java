@@ -1,5 +1,7 @@
 package databases.inventory;
 
+import entity.Ingredient;
+import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientDataAccessInterface;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import logic.inventory.search_ingredients.SearchIngredientsDataAccessInterface;
@@ -15,7 +17,8 @@ import java.util.List;
  * Data Access Object for fetching ingredient data from TheMealDB API.
  * Uses JSON parsing library for proper data handling.
  */
-public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessInterface {
+public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessInterface,
+        AddRecipeIngredientDataAccessInterface {
 
     private static final String API_URL = "https://www.themealdb.com/api/json/v1/1/list.php?i=list";
 
@@ -59,6 +62,28 @@ public class MealDBIngredientDataAccess implements SearchIngredientsDataAccessIn
         }
         
         return ingredients;
+    }
+
+    @Override
+    public List<Ingredient> listPossibleIngredients() {
+        List<Ingredient> result = new ArrayList<>();
+
+        List<String> ingredientNames = new ArrayList<>();
+        try {
+            ingredientNames = getAllIngredients();
+        } catch (IngredientDataAccessException dataAccessException) {
+            // Do nothing, as already null.
+        }
+
+        if (ingredientNames.isEmpty()) {
+            result = null;
+        } else {
+            for (String ingredientName : ingredientNames) {
+                result.add(new Ingredient(ingredientName, ""));
+            }
+        }
+
+        return result;
     }
 }
 
