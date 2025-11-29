@@ -3,14 +3,14 @@ package databases.test_DAO;
 import entity.Ingredient;
 import entity.Recipe;
 import org.jetbrains.annotations.NotNull;
-import logic.user_recipe.add_recipe.add_ingredient.AddIngredientDataAccessInterface;
+import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientDataAccessInterface;
 import logic.generate_recipe.view_recipe_details.RecipeDetailsGateway;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class FromMemoryMealRecipeDataAccessObject implements RecipeDetailsGateway, AddIngredientDataAccessInterface {
+public class FromMemoryMealRecipeDataAccessObject implements RecipeDetailsGateway, AddRecipeIngredientDataAccessInterface {
     List<Recipe> recipes = new ArrayList<>();
 	List<Ingredient> ingredients = new ArrayList<>();
 

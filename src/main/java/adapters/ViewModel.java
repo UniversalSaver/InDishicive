@@ -28,8 +28,4 @@ public class ViewModel<T> {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         this.support.addPropertyChangeListener(listener);
     }
-
-    public T getState() {
-        return this.state;
-    }
 }

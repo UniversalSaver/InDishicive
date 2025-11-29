@@ -1,6 +1,6 @@
 package adapters.inventory.search_ingredients;
 
-import use_case.search_ingredients.SearchIngredientsOutputBoundary;
+import logic.inventory.search_ingredients.SearchIngredientsOutputBoundary;
 
 import java.util.List;
 

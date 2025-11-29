@@ -1,5 +1,7 @@
 package view;
 
+import view.inventory.InventoryView;
+
 import javax.swing.*;
 
 public class MainView extends JPanel {
