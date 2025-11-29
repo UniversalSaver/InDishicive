@@ -2,7 +2,7 @@ package app;
 
 import java.awt.CardLayout;
 
-import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.MealDbIngredientDataAccess;
 import databases.inventory.InventoryDataAccessObject;
 import entity.Ingredient;
 import entity.Inventory;
@@ -252,7 +252,7 @@ public class AppBuilder {
 	public AppBuilder addRecipeIngredientUseCase() {
 		AddRecipeIngredientPresenter addIngredientPresenter = new AddRecipeIngredientPresenter(this.addRecipeViewModel);
 		AddRecipeIngredientInteractor addIngredientInteractor =
-				new AddRecipeIngredientInteractor(new MealDBIngredientDataAccess(), addIngredientPresenter);
+				new AddRecipeIngredientInteractor(new MealDbIngredientDataAccess(), addIngredientPresenter);
 		AddRecipeIngredientController addIngredientController = new AddRecipeIngredientController(addIngredientInteractor);
 
 		this.addRecipeView.addIngredientUseCase(addIngredientController);
@@ -334,7 +334,7 @@ public class AppBuilder {
      */
 
     public AppBuilder addInventoryView() {
-        MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+        MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
         InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
         
         SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);
