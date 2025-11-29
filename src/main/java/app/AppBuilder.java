@@ -515,7 +515,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addGenerateWithInventoryUseCase() {
-        RecipeGateway recipeGateway = new MealDbRecipeGateway();
+        MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
+        recipeGateway.preloadAllRecipes();
 
         InventoryReaderFromInventory inventoryReader =
                 new InventoryReaderFromInventory(this.inventory);
