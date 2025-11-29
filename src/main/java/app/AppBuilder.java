@@ -232,8 +232,8 @@ public class AppBuilder {
 
         this.userRecipeWindowModel = new UserRecipeWindowModel();
 
-        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
-                userRecipesViewManager, userRecipesViewManagerModel, userRecipeWindowModel);
+        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel
+        );
 
 
         return this;
@@ -247,7 +247,6 @@ public class AppBuilder {
         this.userRecipeCardPanel.add(this.userRecipesView, userRecipesView.getViewName());
         this.userRecipeWindowModel.addPropertyChangeListener(this.userRecipesWindow);
 
-        userRecipesWindow.addUserRecipesView(userRecipesView, userRecipesViewModel);
         return this;
     }
 
