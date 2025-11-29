@@ -1,6 +1,6 @@
 package view.user_recipe_view;
 
-import adapters.user_recipe.add_recipe.add_ingredient.AddIngredientController;
+import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientController;
 import adapters.user_recipe.add_recipe.AddRecipeController;
 import adapters.user_recipe.add_recipe.AddRecipeViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
@@ -50,7 +50,7 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 		databaseNotFoundLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
 
-	public void addIngredientUseCase(AddIngredientController addIngredientController) {
+	public void addIngredientUseCase(AddRecipeIngredientController addIngredientController) {
 		addIngredientButton.addActionListener(e -> addIngredientController.execute());
 	}
 

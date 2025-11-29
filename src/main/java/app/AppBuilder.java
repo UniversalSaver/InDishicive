@@ -2,6 +2,26 @@ package app;
 
 import java.awt.CardLayout;
 
+import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.InventoryDataAccessObject;
+import entity.Ingredient;
+import entity.Inventory;
+import adapters.UserRecipesViewManagerModel;
+import adapters.inventory.add_ingredient.AddIngredientController;
+import adapters.inventory.add_ingredient.AddIngredientPresenter;
+import adapters.inventory.add_ingredient.AddIngredientViewModel;
+import adapters.inventory.remove_ingredient.RemoveIngredientController;
+import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
+import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
+import adapters.inventory.search_ingredients.SearchIngredientsController;
+import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
+import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.user_recipe.view_recipes.ViewRecipesController;
+import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.add_ingredient.InventoryDataAccessInterface;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -13,7 +33,6 @@ import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.test_DAO.InMemoryInventoryReader;
 import databases.user_recipe.FileDataAccessObject;
 import adapters.DietResViewManagerModel;
-import adapters.UserRecipesViewManagerModel;
 import adapters.dietary_restriction.add_diet_res.AddDietResController;
 import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
 import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
@@ -36,18 +55,15 @@ import adapters.favorites.view_favorite.ViewFavoriteViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
+import adapters.user_recipe.add_recipe.add_ingredient.*;
 import adapters.user_recipe.add_recipe.*;
-import adapters.user_recipe.add_recipe.add_ingredient.AddIngredientController;
-import adapters.user_recipe.add_recipe.add_ingredient.AddIngredientPresenter;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
-import adapters.user_recipe.view_recipes.ViewRecipesController;
-import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
-import logic.user_recipe.add_recipe.add_ingredient.AddIngredientInteractor;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
 import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
+import logic.user_recipe.add_recipe.add_ingredient.*;
 import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
 import view.user_recipe_view.AddRecipeView;
 import logic.favorites.add_favorite.AddFavoriteInteractor;
@@ -60,13 +76,16 @@ import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
-import view.GenerateByInventoryPanel;
+import view.inventory.GenerateByInventoryPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
 import view.fav_view.FavoriteView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
+import view.inventory.InventoryView;
+
+import java.util.ArrayList;
 import window.DietResWindow;
 import window.FavoriteWindow;
 import window.MainWindow;
@@ -113,8 +132,22 @@ public class AppBuilder {
      */
 
     /*
-    Start of Favorites Variables
+    Start of Inventory Variables
      */
+
+    private InventoryView inventoryView;
+    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
+    private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
+    private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+
+    /*
+    End of Inventory Variables
+     */
+     
+    /*
+    Start of Favorites variables
+    */
 
     private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
 
@@ -212,11 +245,11 @@ public class AppBuilder {
         return this;
     }
 
-	public AppBuilder addIngredientUseCase() {
-		AddIngredientPresenter addIngredientPresenter = new AddIngredientPresenter(this.addRecipeViewModel);
-		AddIngredientInteractor addIngredientInteractor =
-				new AddIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
-		AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
+	public AppBuilder addRecipeIngredientUseCase() {
+		AddRecipeIngredientPresenter addIngredientPresenter = new AddRecipeIngredientPresenter(this.addRecipeViewModel);
+		AddRecipeIngredientInteractor addIngredientInteractor =
+				new AddRecipeIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
+		AddRecipeIngredientController addIngredientController = new AddRecipeIngredientController(addIngredientInteractor);
 
 		this.addRecipeView.addIngredientUseCase(addIngredientController);
 
@@ -291,9 +324,39 @@ public class AppBuilder {
     /*
     End of UserRecipe methods
      */
+  
+    /*
+    Start of Inventory Methods
+     */
 
+    public AppBuilder addInventoryView() {
+        MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+        InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
+        
+        SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);
+        SearchIngredientsInteractor searchInteractor = new SearchIngredientsInteractor(searchPresenter, dataAccess);
+        SearchIngredientsController searchController = new SearchIngredientsController(searchInteractor);
+        
+        AddIngredientPresenter addPresenter = new AddIngredientPresenter(addIngredientViewModel);
+        AddIngredientInteractor addInteractor = new AddIngredientInteractor(addPresenter, inventoryDataObject);
+        AddIngredientController addController = new AddIngredientController(addInteractor);
+        
+        RemoveIngredientPresenter removePresenter = new RemoveIngredientPresenter(removeIngredientViewModel);
+        RemoveIngredientInteractor removeInteractor = new RemoveIngredientInteractor(removePresenter, inventoryDataObject);
+        RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
+        
+        inventoryView = new InventoryView(searchController, addController, removeController, 
+                                          searchIngredientsViewModel, inventory);
+        
+        mainView.addInventoryTab(inventoryView);
+        
+        return this;
+    }
 
-
+    /*
+    End of Inventory Methods
+    */
+    
     /**
     Start of Favorites Methods
      */

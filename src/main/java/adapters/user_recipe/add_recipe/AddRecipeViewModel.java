@@ -13,7 +13,7 @@ public class AddRecipeViewModel extends ViewModel<List<String>> {
 
 	public static final String WIPE_VIEW = "wipe_view";
 
-	public static final String ADD_INGREDIENT = "add_ingredient";
+	public static final String ADD_INGREDIENT = "add_recipe_ingredient";
 
 	public static final String DATABASE_NOT_FOUND = "database_not_found";
 

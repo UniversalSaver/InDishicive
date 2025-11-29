@@ -14,17 +14,20 @@ public class Main {
                 .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
-                .addUserRecipesWindow()
-                .addDietResWindow()
+
                 .addProfileMenu()
 
+                .addUserRecipesWindow()
+                .addDietResWindow()
+
                 .addMainView()
+                .addInventoryView()
                 .addUserRecipesView()
                 .addAddRecipeView()
 
 				.addAddRecipeUseCase()
                 .addUserRecipesCancelButtonUseCase()
-                .addIngredientUseCase()
+                .addRecipeIngredientUseCase()
                 .addViewRecipesUseCase()
                 .addViewCreatorUseCase()
 
@@ -34,12 +37,9 @@ public class Main {
                 .addRemoveDietResUseCase()
                 .addGenerateWithInventoryUseCase()
 
-                .addViewRecipesUseCase()
-
                 .addViewFavoritesUseCase()
                 .addFavoritesView()
                 .addViewFavoritesButton()
-
 
                 .addViewRestrictionsUseCase()
                 .addDietResView()

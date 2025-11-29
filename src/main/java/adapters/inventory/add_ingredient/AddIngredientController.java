@@ -1,6 +1,6 @@
 package adapters.inventory.add_ingredient;
 
-import use_case.add_ingredient.AddIngredientInputBoundary;
+import logic.inventory.add_ingredient.AddIngredientInputBoundary;
 
 public class AddIngredientController {
 
