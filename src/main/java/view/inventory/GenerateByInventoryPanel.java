@@ -5,6 +5,7 @@ import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryVie
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.favorites.add_favorite.AddFavoriteController;
 import adapters.favorites.add_favorite.AddFavoriteViewModel;
+import adapters.generate_recipe.random_recipe.RandomRecipeController;
 
 import javax.swing.*;
 
@@ -12,8 +13,6 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
-
 
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
@@ -27,7 +26,8 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                                     GenerateWithInventoryViewModel vm,
                                     ViewRecipeDetailsController detailsController,
                                     AddFavoriteController addFavoriteController,
-                                    AddFavoriteViewModel addFavoriteViewModel) {
+                                    AddFavoriteViewModel addFavoriteViewModel,
+                                    RandomRecipeController randomRecipeController) {
 
         this.viewModel = vm;
         this.addFavoriteViewModel = addFavoriteViewModel;
@@ -35,11 +35,18 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Recipes you can make with your inventory");
+
         JButton generate = new JButton("Generate Recipes");
+        JButton randomButton = new JButton("Random Recipe"); // New Button
 
         JPanel top = new JPanel(new BorderLayout());
         top.add(title, BorderLayout.CENTER);
-        top.add(generate, BorderLayout.EAST);
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonsPanel.add(randomButton);
+        buttonsPanel.add(generate);
+
+        top.add(buttonsPanel, BorderLayout.EAST);
         add(top, BorderLayout.NORTH);
 
         add(new JScrollPane(list), BorderLayout.CENTER);
@@ -56,6 +63,8 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         add(bottom, BorderLayout.SOUTH);
 
         generate.addActionListener(e -> controller.execute());
+
+        randomButton.addActionListener(e -> randomRecipeController.execute());
 
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -121,5 +130,4 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             );
         }
     }
-
 }
