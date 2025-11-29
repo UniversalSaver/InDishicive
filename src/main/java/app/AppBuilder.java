@@ -29,7 +29,8 @@ import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
-import databases.test_DAO.InMemoryInventoryReader;
+import databases.inventory.InventoryReaderFromInventory;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.user_recipe.FileDataAccessObject;
 import adapters.DietResViewManagerModel;
 import adapters.dietary_restriction.add_diet_res.AddDietResController;
@@ -516,14 +517,17 @@ public class AppBuilder {
     public AppBuilder addGenerateWithInventoryUseCase() {
         RecipeGateway recipeGateway = new MealDbRecipeGateway();
 
-        // Used for testing UC1; replace with real inventory once implemented.
-        InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
-        inMemoryInventoryReader.add("");
-        inMemoryInventoryReader.add("cheese");
+        InventoryReaderFromInventory inventoryReader =
+                new InventoryReaderFromInventory(this.inventory);
 
-        GenerateWithInventoryViewModel generateWithInventoryViewModel = new GenerateWithInventoryViewModel();
+        GenerateWithInventoryViewModel generateWithInventoryViewModel =
+                new GenerateWithInventoryViewModel();
 
-        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(generateWithInventoryViewModel, inMemoryInventoryReader, recipeGateway);
+        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
+                generateWithInventoryViewModel,
+                inventoryReader,
+                recipeGateway
+        );
 
         this.mainView.addGenerateByInventoryPanel(panel);
 
@@ -532,14 +536,14 @@ public class AppBuilder {
 
     private GenerateByInventoryPanel getGenerateByInventoryPanel(
             GenerateWithInventoryViewModel generateWithInventoryViewModel,
-            InMemoryInventoryReader inMemoryInventoryReader,
+            InventoryReader inventoryReader,
             RecipeGateway recipeGateway) {
 
         GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inMemoryInventoryReader, recipeGateway, presenter);
+                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);;
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
