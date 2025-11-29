@@ -1,6 +1,8 @@
 package logic.favorites.favorite_recipes;
-import entity.Recipe;
+
 import java.util.List;
+
+import entity.Recipe;
 
 /**
  * Data Access Interface for managing favorite recipes.
@@ -28,3 +30,4 @@ public interface FavoriteDataAccessInterface {
 
     void removeFavorite(Recipe recipe);
 }
+
