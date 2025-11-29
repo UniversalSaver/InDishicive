@@ -110,7 +110,21 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
             System.err.println("Error saving favorites to file: " + e.getMessage());
         }
     }
-    
+
+
+    /**
+     * removes favorite from file
+     */
+    @Override
+    public void removeFavorite(Recipe recipe) {
+        // fyi, removeIf is an inherited method from java.util.Collection
+        // removes all elements of a collection given the predicate
+
+        favorites.removeIf(r -> r.getTitle().equals(recipe.getTitle()));
+        saveFavoritesToFile();
+    }
+
+
     /**
      * Converts a Recipe to JSON format.
      * @param recipe the recipe to convert

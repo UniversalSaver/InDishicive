@@ -1,4 +1,4 @@
-package use_case.add_favorite;
+package use_cases.favorites.add_favorite;
 
 import entity.Recipe;
 import org.junit.jupiter.api.BeforeEach;
