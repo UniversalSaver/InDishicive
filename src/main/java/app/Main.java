@@ -1,16 +1,19 @@
 package app;
 
-import databases.user_recipe.FileDataAccessObject;
-
 import javax.swing.*;
 
+import databases.user_recipe.FileDataAccessObject;
+
 public class Main {
+    /**
+     * Launches the Indishicive app.
+     */
     public static void main(String[] args) {
-        AppBuilder appBuilder = new AppBuilder();
+        final AppBuilder appBuilder = new AppBuilder();
 
-        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
+        final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
 
-        JFrame application = appBuilder
+        final JFrame application = appBuilder
                 .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
@@ -25,7 +28,7 @@ public class Main {
                 .addUserRecipesView()
                 .addAddRecipeView()
 
-				.addAddRecipeUseCase()
+                .addAddRecipeUseCase()
                 .addUserRecipesCancelButtonUseCase()
                 .addRecipeIngredientUseCase()
                 .addViewRecipesUseCase()

@@ -1,26 +1,29 @@
 package databases.favorites;
 
-import entity.Recipe;
-import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.nio.file.Files;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import entity.Recipe;
+import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
+
 /**
- * implementation of the Favorite Data Access Object.
+ * Implementation of the Favorite Data Access Object.
  * Stores favorite recipes in a JSON file.
  */
 public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
     /**
-     * filePath is the file path where the favorite JSON is saved
-     * favorites is a list of recipes
+     * The file path where the favorite JSON is saved.
      */
     private final String filePath;
+    /**
+     * A list of favorite recipes.
+     */
     private List<Recipe> favorites;
-    
 
     /**
      * Creates a FavoriteDataAccessObject with default file path.
@@ -56,38 +59,38 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
     public boolean isFavorite(Recipe recipe) {
         return favorites.contains(recipe);
     }
-    
 
     /**
      * Loads favorites from the JSON file.
      */
     private void loadFavorites() {
-        File file = new File(filePath);
-        
-        // if file doesnt exist, create a new empty list
+        final File file = new File(filePath);
+
+        // If file doesnt exist, create a new empty list
         if (!file.exists()) {
             favorites = new ArrayList<>();
             return;
         }
-        
+
         try {
-            String jsonContent = Files.readString(file.toPath());
-            
-            if (jsonContent.isEmpty()){
+            final String jsonContent = Files.readString(file.toPath());
+
+            if (jsonContent.isEmpty()) {
                 favorites = new ArrayList<>();
                 return;
             }
-            
-            JSONArray jsonArray = new JSONArray(jsonContent);
+
+            final JSONArray jsonArray = new JSONArray(jsonContent);
             favorites = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject recipeJson = jsonArray.getJSONObject(i);
-                Recipe recipe = jsonToRecipe(recipeJson);
+                final JSONObject recipeJson = jsonArray.getJSONObject(i);
+                final Recipe recipe = jsonToRecipe(recipeJson);
                 favorites.add(recipe);
             }
-            
-        } catch (IOException e) {
+
+        }
+        catch (IOException ioException) {
             favorites = new ArrayList<>();
         }
     }
@@ -97,33 +100,32 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
      */
     private void saveFavoritesToFile() {
         try (FileWriter writer = new FileWriter(filePath)) {
-            JSONArray jsonArray = new JSONArray();
-            
+            final JSONArray jsonArray = new JSONArray();
+
             for (Recipe recipe : favorites) {
-                JSONObject recipeJson = recipeToJson(recipe);
+                final JSONObject recipeJson = recipeToJson(recipe);
                 jsonArray.put(recipeJson);
             }
 
-            writer.write(jsonArray.toString(4));
-            
-        } catch (IOException e) {
-            System.err.println("Error saving favorites to file: " + e.getMessage());
+            final int indentSpaces = 4;
+            writer.write(jsonArray.toString(indentSpaces));
+
+        }
+        catch (IOException ioException) {
+            System.err.println("Error saving favorites to file: " + ioException.getMessage());
         }
     }
 
-
     /**
-     * removes favorite from file
+     * Removes favorite from file.
+     *
+     * @param recipe the recipe to remove from favorites
      */
     @Override
     public void removeFavorite(Recipe recipe) {
-        // fyi, removeIf is an inherited method from java.util.Collection
-        // removes all elements of a collection given the predicate
-
-        favorites.removeIf(r -> r.getTitle().equals(recipe.getTitle()));
+        favorites.removeIf(recipeItem -> recipeItem.getTitle().equals(recipe.getTitle()));
         saveFavoritesToFile();
     }
-
 
     /**
      * Converts a Recipe to JSON format.
@@ -131,35 +133,35 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
      * @return JSONObject representation of the recipe
      */
     private JSONObject recipeToJson(Recipe recipe) {
-        JSONObject json = new JSONObject();
-        
-        // I only need the Name and Category for my use case. 
+        final JSONObject json = new JSONObject();
+
+        // I only need the Name and Category for my use case.
 
         json.put("title", recipe.getTitle());
         json.put("category", recipe.getCategory());
-        
+
         return json;
     }
-    
+
     /**
      * Converts JSON to a Recipe object.
-     * Only title and category are stored. Other fields are left empty
+     * Only title and category are stored. Other fields are left empty.
      * @param json the JSON object to convert
      * @return Recipe object with title and category only
      */
     private Recipe jsonToRecipe(JSONObject json) {
-        String title = json.getString("title");
-        String category = json.getString("category");
-        
-        // Create recipe with only the required fields I need
-        // steps, imageLink, youtubeLink, and ingredients will be empty!!!!!!!!
+        final String title = json.getString("title");
+        final String category = json.getString("category");
+
+        // Create recipe with only the required fields I need.
+        // Steps, imageLink, youtubeLink, and ingredients will be empty.
         // Use ViewRecipe use case to get complete recipe details.
         return new Recipe(
             title,
-            new ArrayList<>(),  // empty ingredients list
-            "",                  
-            "",                  
-            "",                  
+            new ArrayList<>(),
+            "",
+            "",
+            "",
             category
         );
     }

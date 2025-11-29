@@ -1,16 +1,21 @@
 package use_cases.favorites.add_favorite;
 
-import entity.Recipe;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
-import logic.favorites.add_favorite.*;
-import logic.generate_recipe.view_recipe_details.RecipeDetailsGateway;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import entity.Recipe;
+import logic.favorites.add_favorite.AddFavoriteInputData;
+import logic.favorites.add_favorite.AddFavoriteInteractor;
+import logic.favorites.add_favorite.AddFavoriteOutputBoundary;
+import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
+import logic.generate_recipe.view_recipe_details.RecipeDetailsGateway;
 
 /**
  * Tests for the AddFavoriteInteractor use case.
@@ -110,6 +115,11 @@ class AddFavoriteInteractorTest {
         @Override
         public boolean isFavorite(Recipe recipe) {
             return favorites.contains(recipe);
+        }
+
+        @Override
+        public void removeFavorite(Recipe recipe) {
+            favorites.remove(recipe);
         }
     }
 

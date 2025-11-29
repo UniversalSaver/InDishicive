@@ -1,10 +1,12 @@
-package use_case.view_favorite;
+package use_cases.favorites.view_favorite;
 
 import entity.Recipe;
+import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
+import logic.favorites.view_favorite.ViewFavoriteInteractor;
+import logic.favorites.view_favorite.ViewFavoriteOutputBoundary;
+import logic.favorites.view_favorite.ViewFavoriteOutputData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
-import logic.favorites.view_favorite.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +154,11 @@ class ViewFavoriteInteractorTest {
         @Override
         public boolean isFavorite(Recipe recipe) {
             return favorites.contains(recipe);
+        }
+
+        @Override
+        public void removeFavorite(Recipe recipe) {
+            favorites.remove(recipe);
         }
     }
 
