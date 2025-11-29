@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import adapters.user_recipe.add_recipe.AddRecipeController;
 import adapters.user_recipe.add_recipe.AddRecipeViewModel;
-import adapters.user_recipe.add_recipe.add_ingredient.AddIngredientController;
+import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientController;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 
 /**
@@ -72,113 +72,113 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
      * Adds the addIngredient functionality to the add ingredients button.
      * @param addIngredientController a controller which will be called for the button
      */
-    public void addIngredientUseCase(AddIngredientController addIngredientController) {
-		addIngredientButton.addActionListener(event -> addIngredientController.execute());
-	}
+    public void addIngredientUseCase(AddRecipeIngredientController addIngredientController) {
+        addIngredientButton.addActionListener(e -> addIngredientController.execute());
+    }
 
     /**
      * Adds the cancel functionality to the cancel button.
      * @param viewRecipesController a controller which will be called for the button
      */
     public void addCancelButtonUseCase(ViewRecipesController viewRecipesController) {
-		cancelButton.addActionListener(event -> viewRecipesController.execute());
-	}
+        cancelButton.addActionListener(event -> viewRecipesController.execute());
+    }
 
     /**
      * Adds the add recipe functionality to the add recipe button.
      * @param addRecipeController a controller which will be called for the button
      */
     public void addAddRecipeUseCase(AddRecipeController addRecipeController) {
-		addRecipeButton.addActionListener(event -> addRecipe(addRecipeController));
-	}
+        addRecipeButton.addActionListener(event -> addRecipe(addRecipeController));
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void propertyChange(PropertyChangeEvent evt) {
-		switch (evt.getPropertyName()) {
-			case AddRecipeViewModel.WIPE_VIEW -> wipeView();
-			case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
-			case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
-			case AddRecipeViewModel.ADD_RECIPE_FAIL ->
-                recipeFail(((List<String>) evt.getNewValue()).get(0));
+    @Override
+    @SuppressWarnings("unchecked")
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case AddRecipeViewModel.WIPE_VIEW -> wipeView();
+            case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
+            case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
+            case AddRecipeViewModel.ADD_RECIPE_FAIL ->
+                    recipeFail(((List<String>) evt.getNewValue()).get(0));
             default -> throw new UnsupportedOperationException("Improper property change call");
-		}
-	}
+        }
+    }
 
-	private void addRecipe(AddRecipeController addRecipeController) {
-		final List<String> ingredientNames = getIngredientNames();
-		final List<String> ingredientAmounts = getIngredientAmounts();
-		final String title = nameTextField.getText();
-		final String description = descriptionTextArea.getText();
-		final String steps = stepsTextArea.getText();
+    private void addRecipe(AddRecipeController addRecipeController) {
+        final List<String> ingredientNames = getIngredientNames();
+        final List<String> ingredientAmounts = getIngredientAmounts();
+        final String title = nameTextField.getText();
+        final String description = descriptionTextArea.getText();
+        final String steps = stepsTextArea.getText();
 
-		addRecipeController.execute(ingredientNames, ingredientAmounts, title, description, steps);
-	}
+        addRecipeController.execute(ingredientNames, ingredientAmounts, title, description, steps);
+    }
 
-	@NotNull
-	private List<String> getIngredientNames() {
-		final List<String> ingredientNames = new ArrayList<>();
+    @NotNull
+    private List<String> getIngredientNames() {
+        final List<String> ingredientNames = new ArrayList<>();
 
-		for (Component component : ingredientSelectPanel.getComponents()) {
-			if (component instanceof IngredientChoice ingredientChoice) {
-				ingredientNames.add(ingredientChoice.getSelectedIngredient());
-			}
-		}
-		return ingredientNames;
-	}
+        for (Component component : ingredientSelectPanel.getComponents()) {
+            if (component instanceof IngredientChoice ingredientChoice) {
+                ingredientNames.add(ingredientChoice.getSelectedIngredient());
+            }
+        }
+        return ingredientNames;
+    }
 
-	private List<String> getIngredientAmounts() {
-		final List<String> result = new ArrayList<>();
-		for (Component component : ingredientSelectPanel.getComponents()) {
-			if (component instanceof IngredientChoice ingredientChoice) {
-				result.add(ingredientChoice.getAmount());
-			}
-		}
-		return result;
-	}
+    private List<String> getIngredientAmounts() {
+        final List<String> result = new ArrayList<>();
+        for (Component component : ingredientSelectPanel.getComponents()) {
+            if (component instanceof IngredientChoice ingredientChoice) {
+                result.add(ingredientChoice.getAmount());
+            }
+        }
+        return result;
+    }
 
-	private void recipeFail(String message) {
-		if (buttonsPanel.getComponent(1) instanceof JLabel label) {
-			label.setText(message);
-		} else {
-			buttonsPanel.add(new JLabel(message), 1);
-		}
-		buttonsPanel.revalidate();
-		buttonsPanel.repaint();
-	}
+    private void recipeFail(String message) {
+        if (buttonsPanel.getComponent(1) instanceof JLabel label) {
+            label.setText(message);
+        } else {
+            buttonsPanel.add(new JLabel(message), 1);
+        }
+        buttonsPanel.revalidate();
+        buttonsPanel.repaint();
+    }
 
     private void addIngredient(java.util.List<String> ingredientList) {
         final IngredientChoice ingredientChoice = new IngredientChoice(ingredientList);
         ingredientChoice.setAlignmentX(Component.CENTER_ALIGNMENT);
         ingredientSelectPanel.add(ingredientChoice, ingredientSelectPanel.getComponentCount() - 3);
 
-		removeWarningLabel();
+        removeWarningLabel();
 
-		resizeIngredientPanel();
-	}
+        resizeIngredientPanel();
+    }
 
-	private void removeWarningLabel() {
-		if (ingredientSelectPanel.getComponent(ingredientSelectPanel.getComponentCount() - 1)
+    private void removeWarningLabel() {
+        if (ingredientSelectPanel.getComponent(ingredientSelectPanel.getComponentCount() - 1)
                 == databaseNotFoundLabel) {
-			ingredientSelectPanel.remove(ingredientSelectPanel.getComponent(
-					ingredientSelectPanel.getComponentCount() - 1));
-		}
-	}
+            ingredientSelectPanel.remove(ingredientSelectPanel.getComponent(
+                    ingredientSelectPanel.getComponentCount() - 1));
+        }
+    }
 
-	private void resizeIngredientPanel() {
-		recipeCreatorPanel.setPreferredSize(new Dimension(CREATOR_WIDTH, CREATOR_HEIGHT
+    private void resizeIngredientPanel() {
+        recipeCreatorPanel.setPreferredSize(new Dimension(CREATOR_WIDTH, CREATOR_HEIGHT
                 + ingredientSelectPanel.getPreferredSize().height));
-		recipeCreatorPanel.revalidate();
-		recipeCreatorPanel.repaint();
-		ingredientSelectPanel.revalidate();
-		ingredientSelectPanel.repaint();
-	}
+        recipeCreatorPanel.revalidate();
+        recipeCreatorPanel.repaint();
+        ingredientSelectPanel.revalidate();
+        ingredientSelectPanel.repaint();
+    }
 
-	private void addIngredientWarning() {
-		ingredientSelectPanel.add(databaseNotFoundLabel);
+    private void addIngredientWarning() {
+        ingredientSelectPanel.add(databaseNotFoundLabel);
 
-		resizeIngredientPanel();
-	}
+        resizeIngredientPanel();
+    }
 
     private JPanel createRecipeCreator() {
         final JPanel result = new JPanel();
@@ -199,58 +199,58 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
 
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(nameLabel)
-                        .addComponent(descriptionLabel)
-                        .addComponent(ingredientsLabel)
-                        .addComponent(stepsLabel))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(nameTextField)
-                        .addComponent(descriptionTextArea)
-                        .addComponent(ingredientSelectPanel)
-                        .addComponent(stepsTextArea))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(nameLabel)
+                                .addComponent(descriptionLabel)
+                                .addComponent(ingredientsLabel)
+                                .addComponent(stepsLabel))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(nameTextField)
+                                .addComponent(descriptionTextArea)
+                                .addComponent(ingredientSelectPanel)
+                                .addComponent(stepsTextArea))
         );
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(nameLabel)
-                        .addComponent(nameTextField))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(descriptionLabel)
-                        .addComponent(descriptionTextArea))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(ingredientsLabel)
-                        .addComponent(ingredientSelectPanel))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(stepsLabel)
-                        .addComponent(stepsTextArea))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(nameLabel)
+                                .addComponent(nameTextField))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(descriptionLabel)
+                                .addComponent(descriptionTextArea))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(ingredientsLabel)
+                                .addComponent(ingredientSelectPanel))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(stepsLabel)
+                                .addComponent(stepsTextArea))
         );
         return result;
     }
 
-	private void wipeView() {
-		nameTextField.setText("Insert Name of Recipe");
-		descriptionTextArea.setText("Insert Description of Recipe");
+    private void wipeView() {
+        nameTextField.setText("Insert Name of Recipe");
+        descriptionTextArea.setText("Insert Description of Recipe");
 
-		ingredientSelectPanel.removeAll();
-		ingredientSelectPanel.add(Box.createHorizontalGlue());
-		ingredientSelectPanel.add(addIngredientButton);
-		ingredientSelectPanel.add(Box.createVerticalGlue());
+        ingredientSelectPanel.removeAll();
+        ingredientSelectPanel.add(Box.createHorizontalGlue());
+        ingredientSelectPanel.add(addIngredientButton);
+        ingredientSelectPanel.add(Box.createVerticalGlue());
 
-		stepsTextArea.setText("Insert Steps of Recipe");
+        stepsTextArea.setText("Insert Steps of Recipe");
 
-		recipeCreatorPanel.setPreferredSize(new Dimension(CREATOR_WIDTH, CREATOR_HEIGHT
+        recipeCreatorPanel.setPreferredSize(new Dimension(CREATOR_WIDTH, CREATOR_HEIGHT
                 + ingredientSelectPanel.getPreferredSize().height));
 
-		removeButtonErrorLabel();
+        removeButtonErrorLabel();
 
-		recipeCreatorPanel.revalidate();
-		recipeCreatorPanel.repaint();
-	}
+        recipeCreatorPanel.revalidate();
+        recipeCreatorPanel.repaint();
+    }
 
-	private void removeButtonErrorLabel() {
-		if (buttonsPanel.getComponent(1) instanceof JLabel errorLabel) {
-			buttonsPanel.remove(errorLabel);
-		}
-	}
+    private void removeButtonErrorLabel() {
+        if (buttonsPanel.getComponent(1) instanceof JLabel errorLabel) {
+            buttonsPanel.remove(errorLabel);
+        }
+    }
 }

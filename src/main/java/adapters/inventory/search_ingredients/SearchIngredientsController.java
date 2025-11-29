@@ -1,6 +1,6 @@
 package adapters.inventory.search_ingredients;
 
-import use_case.search_ingredients.SearchIngredientsInputBoundary;
+import logic.inventory.search_ingredients.SearchIngredientsInputBoundary;
 
 public class SearchIngredientsController {
 

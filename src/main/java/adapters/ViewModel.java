@@ -18,14 +18,14 @@ public class ViewModel<T> {
         this.state = state;
     }
 
+    public T getState() {
+        return state;
+    }
+
     public void firePropertyChange(String propertyName) {
         this.support.firePropertyChange(propertyName, null, state);
     }
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         this.support.addPropertyChangeListener(listener);
-    }
-
-    public T getState() {
-        return this.state;
     }
 }

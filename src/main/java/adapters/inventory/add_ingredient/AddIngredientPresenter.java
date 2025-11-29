@@ -1,6 +1,6 @@
 package adapters.inventory.add_ingredient;
 
-import use_case.add_ingredient.AddIngredientOutputBoundary;
+import logic.inventory.add_ingredient.AddIngredientOutputBoundary;
 
 /**
  * Presenter for the Add Ingredient use case.
@@ -22,4 +22,3 @@ public class AddIngredientPresenter implements AddIngredientOutputBoundary {
         addIngredientViewModel.firePropertyChange(AddIngredientViewModel.INGREDIENT_ADDED_PROPERTY);
     }
 }
-

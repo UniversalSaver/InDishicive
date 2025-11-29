@@ -13,7 +13,7 @@ public class AddIngredientViewModel extends ViewModel<Void> {
     public static final String INGREDIENT_ADDED_PROPERTY = "ingredientAdded";
 
     public AddIngredientViewModel() {
-        super("add_ingredient");
+        super("add_recipe_ingredient");
     }
 }
 
