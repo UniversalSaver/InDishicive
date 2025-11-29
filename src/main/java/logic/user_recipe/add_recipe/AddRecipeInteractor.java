@@ -1,12 +1,16 @@
 package logic.user_recipe.add_recipe;
 
-import entity.Ingredient;
-import entity.UserRecipe;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
+import entity.Ingredient;
+import entity.UserRecipe;
+
+/**
+ * An implementation of the AddRecipeInputBoundary.
+ */
 public class AddRecipeInteractor implements AddRecipeInputBoundary {
 	private final AddRecipeDataAccessInterface addRecipeDataAccess;
 	private final AddRecipeOutputBoundary addRecipeOutputBoundary;
@@ -21,33 +25,35 @@ public class AddRecipeInteractor implements AddRecipeInputBoundary {
     public void execute(AddRecipeInputData inputData) {
 
 		// Try to create a recipe, if one of the tests doesn't pass, return, as a presentFailureView was called
-		UserRecipe gottenRecipe = createUserRecipe(inputData);
-		if (gottenRecipe == null) return;
+		final UserRecipe gottenRecipe = createUserRecipe(inputData);
+		if (gottenRecipe != null) {
+            final String databaseMessage = addRecipeDataAccess.addRecipe(gottenRecipe);
 
-		String DAOOutput = addRecipeDataAccess.addRecipe(gottenRecipe);
-
-		if (DAOOutput.equals(AddRecipeDataAccessInterface.ADDED_MESSAGE)) {
-			addRecipeOutputBoundary.prepareSuccessView();
-		} else {
-			addRecipeOutputBoundary.prepareFailureView(DAOOutput);
-		}
+            if (databaseMessage.equals(AddRecipeDataAccessInterface.ADDED_MESSAGE)) {
+                addRecipeOutputBoundary.prepareSuccessView();
+            } else {
+                addRecipeOutputBoundary.prepareFailureView(databaseMessage);
+            }
+        }
 	}
 
 	@Nullable
 	private UserRecipe createUserRecipe(AddRecipeInputData inputData) {
-		List<Ingredient> ingredients = createIngredients(inputData);
-		String name = createName(inputData);
-		String description = createDescription(inputData);
-		String steps = createSteps(inputData);
+		final List<Ingredient> ingredients = createIngredients(inputData);
+		final String name = createName(inputData);
+		final String description = createDescription(inputData);
+		final String steps = createSteps(inputData);
 
-		if (ingredients == null || name == null || description == null || steps == null) return null;
+		if (ingredients == null || name == null || description == null || steps == null) {
+            return null;
+        }
 
 		return new UserRecipe(name, ingredients, steps, description);
 	}
 
 	@Nullable
 	private String createSteps(AddRecipeInputData inputData) {
-		String steps = inputData.getSteps();
+		final String steps = inputData.getSteps();
 		if (emptyString(steps)) {
 			addRecipeOutputBoundary.prepareFailureView("Steps are empty.");
 			return null;
@@ -57,7 +63,7 @@ public class AddRecipeInteractor implements AddRecipeInputBoundary {
 
 	@Nullable
 	private String createDescription(AddRecipeInputData inputData) {
-		String description = inputData.getDescription();
+		final String description = inputData.getDescription();
 		if (emptyString(description)) {
 			addRecipeOutputBoundary.prepareFailureView("Description is empty.");
 			return null;
@@ -67,7 +73,7 @@ public class AddRecipeInteractor implements AddRecipeInputBoundary {
 
 	@Nullable
 	private String createName(AddRecipeInputData inputData) {
-		String name = inputData.getTitle();
+		final String name = inputData.getTitle();
 		if (emptyString(name)) {
 			addRecipeOutputBoundary.prepareFailureView("Title is empty.");
 			return null;
@@ -86,42 +92,46 @@ public class AddRecipeInteractor implements AddRecipeInputBoundary {
 			return null;
 		}
 
-		List<Ingredient> ingredients = createIngredients(inputData.getIngredientNames(),
+		final List<Ingredient> ingredients = createIngredients(inputData.getIngredientNames(),
 				inputData.getIngredientAmounts());
 
-		if (ingredients == null) {
+		if (ingredients.isEmpty()) {
 			addRecipeOutputBoundary.prepareFailureView("Ingredients did not align with amounts.");
 			return null;
 		}
 		return ingredients;
 	}
 
-	private Boolean stringListNotFull(List<String> list) {
-		for (String string : list) {
-			if (emptyString(string)) return true;
+    private List<Ingredient> createIngredients(List<String> names, List<String> amounts) {
+        if (names.size() != amounts.size()) {
+            return new ArrayList<>();
+        }
+
+        final List<Ingredient> result = new ArrayList<>();
+
+        for (int i = 0; i < names.size(); i++) {
+            final Ingredient ingredient = new Ingredient(
+                    names.get(i),
+                    amounts.get(i)
+            );
+            result.add(ingredient);
+        }
+
+        return result;
+    }
+
+	private boolean stringListNotFull(List<String> list) {
+		boolean emptyList = false;
+        for (String string : list) {
+			if (emptyString(string)) {
+                emptyList = true;
+                break;
+            }
 		}
-		return list.isEmpty();
+		return emptyList;
 	}
 
 	private static boolean emptyString(String string) {
 		return string == null || string.isBlank();
-	}
-
-	private List<Ingredient> createIngredients(List<String> names, List<String> amounts) {
-		if (names.size() != amounts.size()) {
-			return null;
-		}
-
-		List<Ingredient> result = new ArrayList<>();
-
-		for (int i = 0; i < names.size(); i++) {
-			Ingredient ingredient = new Ingredient(
-					names.get(i),
-					amounts.get(i)
-			);
-			result.add(ingredient);
-		}
-
-		return result;
 	}
 }

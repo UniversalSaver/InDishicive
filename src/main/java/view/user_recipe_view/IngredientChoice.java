@@ -1,10 +1,21 @@
 package view.user_recipe_view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+/**
+ * A panel to represent the choices the user can make when it comes to ingredients in their recipe.
+ */
 public class IngredientChoice extends JPanel {
+    public static final int TEXT_FIELD_WIDTH = 10;
+
     private final JComboBox<String> ingredientSelectComboBox;
     private final JTextField amountTextField;
 
@@ -16,7 +27,7 @@ public class IngredientChoice extends JPanel {
         this.add(ingredientSelectComboBox);
 
         this.add(new JLabel("Amount:"));
-        amountTextField = new JTextField(10);
+        amountTextField = new JTextField(TEXT_FIELD_WIDTH);
         this.add(amountTextField);
 
         this.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
