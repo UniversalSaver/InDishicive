@@ -5,6 +5,14 @@ package logic.user_recipe.add_recipe.add_ingredient;
  * the parsed data.
  */
 public interface AddIngredientOutputBoundary {
-	void presentSuccessView(AddIngredientOutputData outputData);
-	void presentFailView();
+    /**
+     * Creates a success view, with an additional ingredient for user to customize from options.
+     * @param outputData options for ingredients
+     */
+    void presentSuccessView(AddIngredientOutputData outputData);
+
+    /**
+     * Presents a fail view to let user know their input was gotten, but something went wrong.
+     */
+    void presentFailView();
 }

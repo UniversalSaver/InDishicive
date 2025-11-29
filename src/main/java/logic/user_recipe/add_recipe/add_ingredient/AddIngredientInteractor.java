@@ -1,11 +1,15 @@
 package logic.user_recipe.add_recipe.add_ingredient;
 
-import entity.Ingredient;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
+import entity.Ingredient;
+
+/**
+ * An implementation of the respective interface.
+ */
 public class AddIngredientInteractor implements AddIngredientInputBoundary {
 
 	private final AddIngredientDataAccessInterface addIngredientDataAccess;
@@ -19,7 +23,7 @@ public class AddIngredientInteractor implements AddIngredientInputBoundary {
 	
 	@Override
 	public void execute() {
-		List<Ingredient> listOfIngredients = addIngredientDataAccess.listPossibleIngredients();
+		final List<Ingredient> listOfIngredients = addIngredientDataAccess.listPossibleIngredients();
 
 		if (listOfIngredients == null) {
 			addIngredientPresenter.presentFailView();
@@ -35,7 +39,7 @@ public class AddIngredientInteractor implements AddIngredientInputBoundary {
 
 	@NotNull
 	private static List<String> getIngredientNames(List<Ingredient> listOfIngredients) {
-		List<String> ingredientNames = new ArrayList<>();
+		final List<String> ingredientNames = new ArrayList<>();
 		for (Ingredient ingredient : listOfIngredients) {
 			ingredientNames.add(ingredient.getName());
 		}
