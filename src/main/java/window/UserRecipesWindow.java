@@ -13,7 +13,7 @@ import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
  */
 public class UserRecipesWindow extends JFrame implements PropertyChangeListener {
 
-    public static final int WIDTH = 600;
+    public static final int WIDTH = 750;
     public static final int HEIGHT = 400;
 
     public UserRecipesWindow(JPanel cardPanel) {
