@@ -1,16 +1,34 @@
 package view.user_recipe_view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+/**
+ * A user recipe visual. Used for showing a basic description of the recipe.
+ */
 public class UserRecipeVisual extends JPanel {
+    public static final int PANEL_WIDTH = 600;
+    public static final int PANEL_HEIGHT = 100;
+
+    public static final int INFO_WIDTH = 550;
+    public static final int INFO_HEIGHT = 100;
+
     private String title;
     private String description;
 
     private JPanel infoPanel = new JPanel();
     private JPanel infoPanelNames = new JPanel();
     private JPanel infoPanelData = new JPanel();
-
 
     private JPanel infoPanelButtons = new JPanel();
     private JButton deleteButton = new JButton("Delete");
@@ -21,43 +39,10 @@ public class UserRecipeVisual extends JPanel {
         this.description = description;
 
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        this.setMaximumSize(new Dimension(600, 100));
+        this.setMaximumSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         this.setBorder(BorderFactory.createLineBorder(Color.black));
 
-
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
-        infoPanel.setMaximumSize(new Dimension(550, 100));
-
-        infoPanelNames.setLayout(new BoxLayout(infoPanelNames, BoxLayout.Y_AXIS));
-
-        infoPanelNames.add(new JLabel("Title:"));
-        infoPanelNames.add(new JLabel("Description:"));
-        infoPanelNames.add(Box.createVerticalGlue());
-        infoPanelNames.add(Box.createHorizontalGlue());
-        infoPanel.add(infoPanelNames);
-
-
-
-        infoPanelData.setLayout(new BoxLayout(infoPanelData, BoxLayout.Y_AXIS));
-
-        JLabel titleLabel = new JLabel(this.title);
-        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        infoPanelData.add(titleLabel);
-
-        JTextArea descriptionTextArea = new JTextArea(5, 25);
-        descriptionTextArea.setLineWrap(true);
-        descriptionTextArea.setEditable(false);
-        descriptionTextArea.setText(this.description);
-
-        JScrollPane descriptionScrollPane = new JScrollPane(descriptionTextArea);
-        descriptionScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        infoPanelData.add(descriptionScrollPane);
-
-        infoPanel.add(infoPanelData);
-        this.add(infoPanel);
-
-
+        createInfoPanel();
 
         infoPanelButtons.setLayout(new BoxLayout(infoPanelButtons, BoxLayout.Y_AXIS));
 
@@ -67,5 +52,37 @@ public class UserRecipeVisual extends JPanel {
         infoPanelButtons.add(this.viewButton);
 
         this.add(infoPanelButtons);
+    }
+
+    private void createInfoPanel() {
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
+        infoPanel.setMaximumSize(new Dimension(INFO_WIDTH, INFO_HEIGHT));
+
+        infoPanelNames.setLayout(new BoxLayout(infoPanelNames, BoxLayout.Y_AXIS));
+
+        infoPanelNames.add(new JLabel("Title:"));
+        infoPanelNames.add(new JLabel("Description:"));
+        infoPanelNames.add(Box.createVerticalGlue());
+        infoPanelNames.add(Box.createHorizontalGlue());
+        infoPanel.add(infoPanelNames);
+
+        infoPanelData.setLayout(new BoxLayout(infoPanelData, BoxLayout.Y_AXIS));
+
+        final JLabel titleLabel = new JLabel(this.title);
+        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        infoPanelData.add(titleLabel);
+
+        final JTextArea descriptionTextArea = new JTextArea(5, 25);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setEditable(false);
+        descriptionTextArea.setText(this.description);
+
+        final JScrollPane descriptionScrollPane = new JScrollPane(descriptionTextArea);
+        descriptionScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        infoPanelData.add(descriptionScrollPane);
+
+        infoPanel.add(infoPanelData);
+        this.add(infoPanel);
     }
 }

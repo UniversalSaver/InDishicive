@@ -1,4 +1,4 @@
-package use_case.view_favorite;
+package use_cases.favorites.view_favorite;
 
 import entity.Recipe;
 import org.junit.jupiter.api.BeforeEach;
@@ -152,6 +152,11 @@ class ViewFavoriteInteractorTest {
         @Override
         public boolean isFavorite(Recipe recipe) {
             return favorites.contains(recipe);
+        }
+
+        @Override
+        public void removeFavorite(Recipe recipe) {
+            fail("This method should not be called");
         }
     }
 
