@@ -1,4 +1,4 @@
-package databases.inventory;
+package databases.generate_recipe;
 
 import entity.Ingredient;
 import entity.Inventory;
@@ -7,10 +7,6 @@ import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Adapter: wraps the Inventory entity and exposes it as an InventoryReader
- * for UC1 GenerateWithInventory.
- */
 public class InventoryReaderFromInventory implements InventoryReader {
 
     private final Inventory inventory;

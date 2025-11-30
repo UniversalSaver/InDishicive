@@ -29,7 +29,7 @@ import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
-import databases.inventory.InventoryReaderFromInventory;
+import databases.generate_recipe.InventoryReaderFromInventory;
 import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.user_recipe.FileDataAccessObject;
 import adapters.DietResViewManagerModel;
