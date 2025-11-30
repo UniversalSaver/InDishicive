@@ -1,11 +1,11 @@
 package logic.generate_recipe.generate_by_ingredients;
 
-import entity.Recipe;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import entity.Recipe;
 
 public class GenerateByIngredientsInteractor implements GenerateByIngredientsInputBoundary {
 
@@ -20,32 +20,34 @@ public class GenerateByIngredientsInteractor implements GenerateByIngredientsInp
 
     @Override
     public void execute(GenerateByIngredientsInputData inputData) {
-        List<String> cleaned = getStrings(inputData);
+        final List<String> cleaned = getStrings(inputData);
 
-        List<Recipe> recipes = gateway.findByIngredients(cleaned);
+        final List<Recipe> recipes = gateway.findByIngredients(cleaned);
 
-        List<String> titles = new ArrayList<>();
+        final List<String> titles = new ArrayList<>();
         for (Recipe r : recipes) {
             titles.add(r.getTitle());
         }
 
-        GenerateByIngredientsOutputData out =
+        final GenerateByIngredientsOutputData out =
                 new GenerateByIngredientsOutputData(titles);
 
         presenter.present(out);
     }
 
     private static List<String> getStrings(GenerateByIngredientsInputData inputData) {
-        List<String> rawIngredients =
-                inputData != null ? inputData.getIngredients() : null;
+        List<String> rawIngredients = null;
+        if (inputData != null) {
+            rawIngredients = inputData.getIngredients();
+        }
 
-        Set<String> unique = new LinkedHashSet<>();
+        final Set<String> unique = new LinkedHashSet<>();
         if (rawIngredients != null) {
             for (String raw : rawIngredients) {
                 if (raw == null) {
                     continue;
                 }
-                String trimmed = raw.trim();
+                final String trimmed = raw.trim();
                 if (!trimmed.isEmpty()) {
                     unique.add(trimmed);
                 }
