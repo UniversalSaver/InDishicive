@@ -35,6 +35,10 @@ import interface_adapter.view_recipes.UserRecipeWindowModel;
 import interface_adapter.view_recipes.UserRecipesViewModel;
 import interface_adapter.view_recipes.ViewRecipesController;
 import interface_adapter.view_recipes.ViewRecipesPresenter;
+import interface_adapter.filter_by_cuisine.FilterByCuisineController;
+import interface_adapter.filter_by_cuisine.FilterByCuisinePresenter;
+import interface_adapter.get_available_cuisines.GetAvailableCuisinesController;
+import interface_adapter.get_available_cuisines.GetAvailableCuisinesPresenter;
 import use_case.add_recipe.AddIngredientInteractor;
 import use_case.add_restrictions.AddDietResInteractor;
 import use_case.remove_restriction.RemoveDietResInteractor;
@@ -51,6 +55,8 @@ import use_case.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import use_case.view_recipe_details.ViewRecipeDetailsInteractor;
 import use_case.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import use_case.view_recipes.ViewRecipesInteractor;
+import use_case.filter_by_cuisine.FilterByCuisineInteractor;
+import use_case.get_available_cuisines.GetAvailableCuisinesInteractor;
 import view.GenerateByInventoryPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
@@ -203,16 +209,16 @@ public class AppBuilder {
         return this;
     }
 
-	public AppBuilder addIngredientUseCase() {
-		AddIngredientPresenter addIngredientPresenter = new AddIngredientPresenter(this.addRecipeViewModel);
-		AddIngredientInteractor addIngredientInteractor =
-				new AddIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
-		AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
+    public AppBuilder addIngredientUseCase() {
+        AddIngredientPresenter addIngredientPresenter = new AddIngredientPresenter(this.addRecipeViewModel);
+        AddIngredientInteractor addIngredientInteractor =
+                new AddIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
+        AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
 
-		this.addRecipeView.addIngredientUseCase(addIngredientController);
+        this.addRecipeView.addIngredientUseCase(addIngredientController);
 
-		return this;
-	}
+        return this;
+    }
 
     public AppBuilder addUserRecipesCancelButtonUseCase() {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
@@ -240,27 +246,27 @@ public class AppBuilder {
         return this;
     }
 
-	public AppBuilder addAddRecipeView() {
-		this.addRecipeViewModel = new AddRecipeViewModel();
+    public AppBuilder addAddRecipeView() {
+        this.addRecipeViewModel = new AddRecipeViewModel();
 
-		this.addRecipeView = new AddRecipeView(addRecipeViewModel);
+        this.addRecipeView = new AddRecipeView(addRecipeViewModel);
 
-		this.userRecipeCardPanel.add(this.addRecipeView, AddRecipeViewModel.VIEW_NAME);
+        this.userRecipeCardPanel.add(this.addRecipeView, AddRecipeViewModel.VIEW_NAME);
 
-		return this;
-	}
+        return this;
+    }
 
-	public AppBuilder addViewCreatorUseCase() {
-		ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(this.userRecipesViewManagerModel,
-				this.addRecipeViewModel);
+    public AppBuilder addViewCreatorUseCase() {
+        ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(this.userRecipesViewManagerModel,
+                this.addRecipeViewModel);
 
-		ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
-		SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
+        ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
+        SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
 
-		userRecipesView.addViewCreatorUseCase(switchViewController);
+        userRecipesView.addViewCreatorUseCase(switchViewController);
 
-		return this;
-	}
+        return this;
+    }
 
     /*
     End of UserRecipe methods
@@ -269,7 +275,7 @@ public class AppBuilder {
 
 
     /**
-    Start of Favorites Methods
+     Start of Favorites Methods
      */
 
 
@@ -326,13 +332,12 @@ public class AppBuilder {
     }
 
     /**
-    End of Favorites Methods
+     End of Favorites Methods
      */
 
      /*
     Start of DietRes Methods
      */
-    //Adds "Add Dietary Restrictions" Use Case
     public AppBuilder addAddDietResUseCase() {
         AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
 
@@ -344,7 +349,6 @@ public class AppBuilder {
         return this;
     }
 
-    //Adds "Remove Dietary Restrictions" Use Case
     public AppBuilder addRemoveDietResUseCase() {
         RemoveDietResPresenter removeDietResPresenter = new RemoveDietResPresenter(this.removeDietResViewModel);
 
@@ -409,7 +413,6 @@ public class AppBuilder {
     public AppBuilder addGenerateWithInventoryUseCase() {
         RecipeGateway recipeGateway = new MealDbRecipeGateway();
 
-        // Used for testing UC1; replace with real inventory once implemented.
         InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
         inMemoryInventoryReader.add("");
         inMemoryInventoryReader.add("cheese");
@@ -436,15 +439,23 @@ public class AppBuilder {
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
-        MealDbCuisineDataAccessObject cuisineDao = new MealDbCuisineDataAccessObject();
-        interface_adapter.filter_by_cuisine.FilterByCuisinePresenter cuisinePresenter =
-                new interface_adapter.filter_by_cuisine.FilterByCuisinePresenter(generateWithInventoryViewModel);
-        use_case.filter_by_cuisine.FilterByCuisineInteractor cuisineInteractor =
-                new use_case.filter_by_cuisine.FilterByCuisineInteractor(cuisineDao, cuisinePresenter);
-        interface_adapter.filter_by_cuisine.FilterByCuisineController cuisineController =
-                new interface_adapter.filter_by_cuisine.FilterByCuisineController(cuisineInteractor);
 
-        return new GenerateByInventoryPanel(
+        MealDbCuisineDataAccessObject cuisineDao = new MealDbCuisineDataAccessObject();
+        FilterByCuisinePresenter cuisinePresenter =
+                new FilterByCuisinePresenter(generateWithInventoryViewModel);
+        FilterByCuisineInteractor cuisineInteractor =
+                new FilterByCuisineInteractor(cuisineDao, cuisinePresenter);
+        FilterByCuisineController cuisineController =
+                new FilterByCuisineController(cuisineInteractor);
+
+        GetAvailableCuisinesPresenter listPresenter =
+                new GetAvailableCuisinesPresenter(generateWithInventoryViewModel);
+        GetAvailableCuisinesInteractor listInteractor =
+                new GetAvailableCuisinesInteractor(cuisineDao, listPresenter);
+        GetAvailableCuisinesController cuisinesController =
+                new GetAvailableCuisinesController(listInteractor);
+
+        GenerateByInventoryPanel panel = new GenerateByInventoryPanel(
                 generateWithInventoryController,
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
@@ -452,6 +463,10 @@ public class AppBuilder {
                 this.addFavoriteViewModel,
                 cuisineController
         );
+
+        cuisinesController.execute();
+
+        return panel;
     }
 
     public AppBuilder addViewRecipeDetailsUseCase() {
