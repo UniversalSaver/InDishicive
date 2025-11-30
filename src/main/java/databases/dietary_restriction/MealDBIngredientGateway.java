@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MealDBIngredientGateway implements IngredientGateway {
-    private static final Logger logger = Logger.getLogger(MealDBIngredientGateway.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MealDBIngredientGateway.class.getName());
     private static final String BASE_URL = "https://themealdb.com/api/json/v1/1/filter.php?i=";
     private final OkHttpClient client;
 
@@ -56,12 +56,12 @@ public class MealDBIngredientGateway implements IngredientGateway {
 
         } catch (InterruptedIOException e) {
             // Log warning for timeouts
-            logger.log(Level.WARNING, e, () -> "Timeout while checking ingredient: " + ingredient);
+            LOGGER.log(Level.WARNING, e, () -> "Timeout while checking ingredient: " + ingredient);
             return false;
 
         } catch (IOException | JSONException e) {
             // Log error for IO/JSON failures
-            logger.log(Level.SEVERE, e, () -> "Error calling MealDB API: " + e.getMessage());
+            LOGGER.log(Level.SEVERE, e, () -> "Error calling MealDB API: " + e.getMessage());
             return false;
         }
     }
