@@ -10,8 +10,6 @@ import org.json.JSONObject;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class MealDbRecipeGateway implements RecipeGateway {
