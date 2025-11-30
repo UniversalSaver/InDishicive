@@ -6,8 +6,7 @@ import entity.Ingredient;
 import entity.Recipe;
 
 /**
- * Domain Service responsible for checking if items violate dietary restrictions.
- * Located in logic.dietary_restriction so it can be shared across different Use Cases.
+ * Responsible for checking if recipes violate dietary restrictions.
  */
 public class DietaryRestrictionChecker {
 
