@@ -4,7 +4,7 @@ import java.util.List;
 
 import entity.Ingredient;
 import entity.Recipe;
-import logic.dietary_restriction.DietaryRestrictionChecker;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
 public class GenerateWithInventoryInteractor implements GenerateWithInventoryInputBoundary {
@@ -13,18 +13,18 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
     private final RecipeGateway recipeGateway;
     private final GenerateWithInventoryOutputBoundary presenter;
     private final DietResDataAccessInterface dietResDataAccessInterface;
-    private final DietaryRestrictionChecker dietaryRestrictionChecker;
+    private final DietaryRestrictionCheckerInterface dietaryRestrictionCheckerInterface;
 
     public GenerateWithInventoryInteractor(InventoryReader inventoryReader,
                                            RecipeGateway recipeGateway,
                                            GenerateWithInventoryOutputBoundary presenter,
                                            DietResDataAccessInterface dietResDataAccessInterface,
-                                           DietaryRestrictionChecker dietaryRestrictionChecker) {
+                                           DietaryRestrictionCheckerInterface dietaryRestrictionCheckerInterface) {
         this.inventoryReader = inventoryReader;
         this.recipeGateway = recipeGateway;
         this.presenter = presenter;
         this.dietResDataAccessInterface = dietResDataAccessInterface;
-        this.dietaryRestrictionChecker = dietaryRestrictionChecker;
+        this.dietaryRestrictionCheckerInterface = dietaryRestrictionCheckerInterface;
     }
 
     /**
@@ -39,7 +39,7 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
 
         // Filter recipes using the DietaryRestrictionChecker
         final List<String> titles = allRecipes.stream()
-                .filter(recipe -> !dietaryRestrictionChecker.containsRestrictedIngredient(recipe, restrictions))
+                .filter(recipe -> !dietaryRestrictionCheckerInterface.containsRestrictedIngredient(recipe, restrictions))
                 .map(Recipe::getTitle)
                 .toList();
 

@@ -8,7 +8,7 @@ import entity.Recipe;
 /**
  * Responsible for checking if recipes violate dietary restrictions.
  */
-public class DietaryRestrictionChecker {
+public class DietaryRestrictionChecker implements DietaryRestrictionCheckerInterface {
 
     /**
      * Checks if a recipe contains any ingredient from the list of restrictions.
@@ -18,6 +18,7 @@ public class DietaryRestrictionChecker {
      * @param restrictions The list of restricted ingredients.
      * @return true if the recipe contains a restricted ingredient, false otherwise.
      */
+    @Override
     public boolean containsRestrictedIngredient(Recipe recipe, List<Ingredient> restrictions) {
         boolean foundRestriction = false;
 
