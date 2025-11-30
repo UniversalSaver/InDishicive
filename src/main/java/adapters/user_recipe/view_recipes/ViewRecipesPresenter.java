@@ -1,12 +1,15 @@
 package adapters.user_recipe.view_recipes;
 
-import adapters.*;
-import logic.user_recipe.view_recipes.ViewRecipesOutputBoundary;
-import logic.user_recipe.view_recipes.ViewRecipesOutputData;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import adapters.UserRecipesViewManagerModel;
+import logic.user_recipe.view_recipes.ViewRecipesOutputBoundary;
+import logic.user_recipe.view_recipes.ViewRecipesOutputData;
+
+/**
+ * Given a list of recipe data to show the user, changes the view model to show their created recipes.
+ */
 public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
 
     private final UserRecipeWindowModel userRecipeWindowModel;
@@ -24,7 +27,7 @@ public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
     @Override
     public void prepareSuccessView(List<ViewRecipesOutputData> recipeInformation) {
 
-        List<RecipeSummary> recipeSummaries = new ArrayList<>();
+        final List<RecipeSummary> recipeSummaries = new ArrayList<>();
 
         for (ViewRecipesOutputData recipe : recipeInformation) {
             recipeSummaries.add(new RecipeSummary(recipe.getTitle(), recipe.getDescription()));

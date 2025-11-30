@@ -1,4 +1,4 @@
-package use_case.add_favorite;
+package use_cases.favorites.add_favorite;
 
 import entity.Recipe;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,6 +110,11 @@ class AddFavoriteInteractorTest {
         @Override
         public boolean isFavorite(Recipe recipe) {
             return favorites.contains(recipe);
+        }
+
+        @Override
+        public void removeFavorite(Recipe recipe) {
+            fail("This method should not be called");
         }
     }
 
