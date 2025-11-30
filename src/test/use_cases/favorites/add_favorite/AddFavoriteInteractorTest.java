@@ -33,7 +33,7 @@ class AddFavoriteInteractorTest {
         mockDataAccess = new MockFavoriteDataAccess();
         mockPresenter = new MockPresenter();
         mockGateway = new MockRecipeDetailsGateway();
-        interactor = new AddFavoriteInteractor(mockDataAccess, mockPresenter, mockGateway);
+        interactor = new AddFavoriteInteractor(mockDataAccess, mockDataAccess, mockPresenter, mockGateway);
     }
 
     @Test
@@ -49,7 +49,7 @@ class AddFavoriteInteractorTest {
         assertFalse(mockPresenter.failCalled);
         assertNull(mockPresenter.errorMessage);
 
-        // chec if recipe was saved
+        // check if recipe was saved
         assertTrue(mockDataAccess.savedRecipes.contains(recipe));
     }
 

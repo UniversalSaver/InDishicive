@@ -1,12 +1,14 @@
 package app;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 import databases.user_recipe.FileDataAccessObject;
 
 public class Main {
     /**
      * Launches the Indishicive app.
+     *
+     * @param args is an array of Strings that contains command-line arguments passed (sources: Google).
      */
     public static void main(String[] args) {
         final AppBuilder appBuilder = new AppBuilder();

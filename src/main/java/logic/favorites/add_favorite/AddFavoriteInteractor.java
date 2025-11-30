@@ -1,30 +1,34 @@
 package logic.favorites.add_favorite;
 
 import entity.Recipe;
-import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
+import logic.favorites.favorite_recipes.FavoriteReaderInterface;
+import logic.favorites.favorite_recipes.FavoriteWriterInterface;
 import logic.generate_recipe.view_recipe_details.RecipeDetailsGateway;
 
 /**
  * Interactor for the add favorite use case.
- * Handles the business logic for adding a recipe to the user's favorites list.
  */
 public class AddFavoriteInteractor implements AddFavoriteInputBoundary {
 
-    private final FavoriteDataAccessInterface favoriteDataAccess;
+    private final FavoriteReaderInterface favoriteReader;
+    private final FavoriteWriterInterface favoriteWriter;
     private final AddFavoriteOutputBoundary presenter;
     private final RecipeDetailsGateway recipeDetailsGateway;
 
     /**
      * Constructs an AddFavoriteInteractor with the specified dependencies.
      *
-     * @param favoriteDataAccess the data access interface for favorites operations
+     * @param favoriteReader the reader interface for checking favorites
+     * @param favoriteWriter the writer interface for adding favorites
      * @param presenter the output boundary for presenting the result
      * @param recipeDetailsGateway the gateway for fetching recipe details by title
      */
-    public AddFavoriteInteractor(FavoriteDataAccessInterface favoriteDataAccess,
+    public AddFavoriteInteractor(FavoriteReaderInterface favoriteReader,
+                                  FavoriteWriterInterface favoriteWriter,
                                   AddFavoriteOutputBoundary presenter,
                                   RecipeDetailsGateway recipeDetailsGateway) {
-        this.favoriteDataAccess = favoriteDataAccess;
+        this.favoriteReader = favoriteReader;
+        this.favoriteWriter = favoriteWriter;
         this.presenter = presenter;
         this.recipeDetailsGateway = recipeDetailsGateway;
     }
@@ -38,13 +42,13 @@ public class AddFavoriteInteractor implements AddFavoriteInputBoundary {
     @Override
     public void execute(AddFavoriteInputData inputData) {
         final Recipe recipe = inputData.getRecipe();
-        if (favoriteDataAccess.isFavorite(recipe)) {
+        if (favoriteReader.isFavorite(recipe)) {
             presenter.prepareFailView("Already in Favorites!");
-            return;
         }
-
-        favoriteDataAccess.saveFavorite(recipe);
-        presenter.prepareSuccessView();
+        else {
+            favoriteWriter.saveFavorite(recipe);
+            presenter.prepareSuccessView();
+        }
     }
 
     /**
@@ -59,16 +63,14 @@ public class AddFavoriteInteractor implements AddFavoriteInputBoundary {
 
         if (recipe == null) {
             presenter.prepareFailView("Recipe not found!");
-            return;
         }
-
-        if (favoriteDataAccess.isFavorite(recipe)) {
+        else if (favoriteReader.isFavorite(recipe)) {
             presenter.prepareFailView("Already in Favorites!");
-            return;
         }
-
-        favoriteDataAccess.saveFavorite(recipe);
-        presenter.prepareSuccessView();
+        else {
+            favoriteWriter.saveFavorite(recipe);
+            presenter.prepareSuccessView();
+        }
     }
 
 }

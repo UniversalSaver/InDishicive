@@ -1,4 +1,4 @@
-package view.fav_view;
+package view.favorite_view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -38,14 +38,21 @@ public class RecipeCard extends JPanel {
      */
     public RecipeCard(Recipe recipe, ViewRecipeDetailsController viewRecipeDetailsController,
                       RemoveFavoriteController removeFavoriteController) {
+        setupCardLayout();
+        buildCardContent(recipe, viewRecipeDetailsController, removeFavoriteController);
+    }
 
+    private void setupCardLayout() {
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH),
                 BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
         ));
         setMaximumSize(new Dimension(Integer.MAX_VALUE, MAX_HEIGHT));
+    }
 
+    private void buildCardContent(Recipe recipe, ViewRecipeDetailsController viewRecipeDetailsController,
+                                   RemoveFavoriteController removeFavoriteController) {
         final GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(INSET_VERTICAL, INSET_HORIZONTAL, INSET_VERTICAL, INSET_HORIZONTAL);
 

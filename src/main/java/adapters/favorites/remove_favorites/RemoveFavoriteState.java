@@ -6,7 +6,7 @@ package adapters.favorites.remove_favorites;
  */
 public class RemoveFavoriteState {
     private String statusMessage = "";
-    private boolean success = false;
+    private boolean success;
 
     /**
      * Gets the status message of the remove favorite operation.

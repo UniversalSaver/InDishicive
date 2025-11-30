@@ -87,7 +87,7 @@ import logic.user_recipe.view_recipes.ViewRecipesInteractor;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
-import view.fav_view.FavoriteView;
+import view.favorite_view.FavoriteView;
 import view.inventory.GenerateByInventoryPanel;
 import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
@@ -454,7 +454,7 @@ public class AppBuilder {
         final MealDbRecipeDetailsGateway recipeDetailsGateway = new MealDbRecipeDetailsGateway();
 
         final AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
-                this.favoriteDataAccess, addFavoritePresenter, recipeDetailsGateway);
+                this.favoriteDataAccess, this.favoriteDataAccess, addFavoritePresenter, recipeDetailsGateway);
 
         this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
 
@@ -488,7 +488,7 @@ public class AppBuilder {
                 this.removeFavoriteViewModel, this.viewFavoriteViewModel);
 
         final RemoveFavoriteInteractor removeFavoriteInteractor = new RemoveFavoriteInteractor(
-                this.favoriteDataAccess, removeFavoritePresenter);
+                this.favoriteDataAccess, this.favoriteDataAccess, removeFavoritePresenter);
 
         this.removeFavoriteController = new RemoveFavoriteController(removeFavoriteInteractor);
 

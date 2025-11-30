@@ -7,7 +7,7 @@ package adapters.favorites.add_favorite;
 public class AddFavoriteState {
 
     private String statusMessage = "";
-    private boolean isSuccess = false;
+    private boolean isSuccess;
 
     /**
      * Gets the status message of the add favorite operation.

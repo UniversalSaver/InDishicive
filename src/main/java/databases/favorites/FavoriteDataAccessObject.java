@@ -1,6 +1,8 @@
 package databases.favorites;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,32 +71,42 @@ public class FavoriteDataAccessObject implements FavoriteDataAccessInterface {
         // If file doesnt exist, create a new empty list
         if (!file.exists()) {
             favorites = new ArrayList<>();
-            return;
         }
+        else {
+            try {
+                final String jsonContent = Files.readString(file.toPath());
 
-        try {
-            final String jsonContent = Files.readString(file.toPath());
+                if (jsonContent.isEmpty()) {
+                    favorites = new ArrayList<>();
+                }
+                else {
+                    final JSONArray jsonArray = new JSONArray(jsonContent);
+                    favorites = parseFavoritesFromJson(jsonArray);
+                }
 
-            if (jsonContent.isEmpty()) {
+            }
+            catch (IOException ioException) {
                 favorites = new ArrayList<>();
-                return;
             }
-
-            final JSONArray jsonArray = new JSONArray(jsonContent);
-            favorites = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                final JSONObject recipeJson = jsonArray.getJSONObject(i);
-                final Recipe recipe = jsonToRecipe(recipeJson);
-                favorites.add(recipe);
-            }
-
-        }
-        catch (IOException ioException) {
-            favorites = new ArrayList<>();
         }
     }
-    
+
+    /**
+     * Parses recipes from a JSON array.
+     *
+     * @param jsonArray the JSON array containing recipe objects
+     * @return list of parsed Recipe objects
+     */
+    private List<Recipe> parseFavoritesFromJson(JSONArray jsonArray) {
+        final List<Recipe> parsedFavorites = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            final JSONObject recipeJson = jsonArray.getJSONObject(i);
+            final Recipe recipe = jsonToRecipe(recipeJson);
+            parsedFavorites.add(recipe);
+        }
+        return parsedFavorites;
+    }
+
     /**
      * Saves favorites to the JSON file.
      */

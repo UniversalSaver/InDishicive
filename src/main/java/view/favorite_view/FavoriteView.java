@@ -1,4 +1,4 @@
-package view.fav_view;
+package view.favorite_view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -44,18 +44,22 @@ public class FavoriteView extends JPanel implements PropertyChangeListener {
         this.viewRecipeDetailsController = viewRecipeDetailsController;
         this.removeFavoriteController = removeFavoriteController;
 
+        cardsPanel = new JPanel();
+        buildView();
+
+        this.viewModel.addPropertyChangeListener(this);
+    }
+
+    private void buildView() {
         setLayout(new BorderLayout());
 
         final JLabel title = new JLabel("My Favorite Recipes", SwingConstants.CENTER);
         add(title, BorderLayout.NORTH);
 
-        cardsPanel = new JPanel();
         cardsPanel.setLayout(new BoxLayout(cardsPanel, BoxLayout.Y_AXIS));
 
         final JScrollPane scrollPane = new JScrollPane(cardsPanel);
         add(scrollPane, BorderLayout.CENTER);
-
-        this.viewModel.addPropertyChangeListener(this);
     }
 
     @Override
@@ -63,16 +67,16 @@ public class FavoriteView extends JPanel implements PropertyChangeListener {
         final List<Recipe> favoriteRecipes = viewModel.getState();
 
         if (favoriteRecipes == null || favoriteRecipes.isEmpty()) {
-            displayEmptyMessage("No favorite recipes have been added");
+            displayEmptyMessage();
         }
         else {
             displayMessage(favoriteRecipes);
         }
     }
 
-    private void displayEmptyMessage(String message) {
+    private void displayEmptyMessage() {
         cardsPanel.removeAll();
-        final JLabel emptyLabel = new JLabel(message, SwingConstants.CENTER);
+        final JLabel emptyLabel = new JLabel("No favorite recipes have been added", SwingConstants.CENTER);
         cardsPanel.add(emptyLabel);
         cardsPanel.revalidate();
         cardsPanel.repaint();

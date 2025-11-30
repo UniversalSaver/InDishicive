@@ -17,15 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import entity.Recipe;
-import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
-import logic.favorites.remove_favorite.RemoveFavoriteInputData;
-import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
-import logic.favorites.remove_favorite.RemoveFavoriteOutputBoundary;
-import logic.favorites.remove_favorite.RemoveFavoriteOutputData;
 
 /**
  * Tests for the RemoveFavoriteInteractor use case.
@@ -41,7 +32,7 @@ class RemoveFavoriteInteractorTest {
     void setUp() {
         mockDataAccess = new MockFavoriteDataAccess();
         mockPresenter = new MockPresenter();
-        interactor = new RemoveFavoriteInteractor(mockDataAccess, mockPresenter);
+        interactor = new RemoveFavoriteInteractor(mockDataAccess, mockDataAccess, mockPresenter);
     }
 
     @Test
