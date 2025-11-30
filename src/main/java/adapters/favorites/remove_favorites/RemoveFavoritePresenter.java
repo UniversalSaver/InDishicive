@@ -34,7 +34,6 @@ public class RemoveFavoritePresenter implements RemoveFavoriteOutputBoundary {
     @Override
     public void prepareSuccessView(RemoveFavoriteOutputData outputData) {
         final RemoveFavoriteState state = removeFavoriteViewModel.getState();
-        state.setStatusMessage("Recipe removed from favorites!");
         state.setSuccess(true);
         removeFavoriteViewModel.setState(state);
         removeFavoriteViewModel.firePropertyChange(RemoveFavoriteViewModel.FAVORITE_REMOVED);
@@ -51,7 +50,6 @@ public class RemoveFavoritePresenter implements RemoveFavoriteOutputBoundary {
     @Override
     public void prepareFailureView(String errorMessage) {
         final RemoveFavoriteState state = removeFavoriteViewModel.getState();
-        state.setStatusMessage(errorMessage);
         state.setSuccess(false);
         removeFavoriteViewModel.setState(state);
         removeFavoriteViewModel.firePropertyChange(RemoveFavoriteViewModel.FAVORITE_REMOVED_FAILED);
