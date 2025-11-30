@@ -116,7 +116,7 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface, 
     
     /**
      * Saves the entire inventory to the JSON file.
-     * Rewrites the file completely (as suggested by your partner).
+     * Rewrites the file completely.
      */
     private void saveInventoryToFile() {
         try (FileWriter writer = new FileWriter(filePath)) {
@@ -126,7 +126,7 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface, 
                 jsonArray.put(ingredientToJson(ingredient));
             }
             
-            writer.write(jsonArray.toString(4)); // Pretty print with indent
+            writer.write(jsonArray.toString(4));
             
         } catch (IOException e) {
             throw new RuntimeException("Failed to save inventory to " + filePath, e);
