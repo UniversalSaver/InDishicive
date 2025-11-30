@@ -6,7 +6,7 @@ import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface
 public class AddDietResInteractor implements AddDietResInputBoundary {
     private final DietResDataAccessInterface dietResDataAccessInterface;
     private final AddDietResOutputBoundary addDietResOutputBoundary;
-    private final IngredientGateway ingredientGateway; // New Dependency
+    private final IngredientGateway ingredientGateway;
 
     public AddDietResInteractor(DietResDataAccessInterface dietResDataAccessInterface,
                                 AddDietResOutputBoundary addDietResOutputBoundary,
@@ -18,12 +18,13 @@ public class AddDietResInteractor implements AddDietResInputBoundary {
 
     @Override
     public void execute(AddDietResInputData inputData) {
-        Ingredient ingredient = inputData.getIngredient();
-        String ingredientName = ingredient.getName();
+        final Ingredient ingredient = inputData.getIngredient();
+        final String ingredientName = ingredient.getName();
 
         if (!ingredientGateway.isValidIngredient(ingredientName)) {
             addDietResOutputBoundary.prepareFailView("Ingredient not found in database");
-        } else if (dietResDataAccessInterface.isRestricted(ingredient)) {
+        }
+        else if (dietResDataAccessInterface.isRestricted(ingredient)) {
             addDietResOutputBoundary.prepareFailView("Already in Dietary Restricted Ingredients List");
         }
         // Only runs if both above failed
