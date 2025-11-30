@@ -66,6 +66,8 @@ import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.Inventory;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
+import logic.dietary_restriction.DietaryRestrictionChecker;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
 import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
 import logic.favorites.add_favorite.AddFavoriteInteractor;
@@ -690,8 +692,14 @@ public class AppBuilder {
         final GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
+        final DietaryRestrictionCheckerInterface dietResChecker = new DietaryRestrictionChecker();
+
         final GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);
+                new GenerateWithInventoryInteractor(inventoryReader,
+                                                    recipeGateway,
+                                                    presenter,
+                                                    this.restrictionDataAccess,
+                                                    dietResChecker);
 
         final GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
