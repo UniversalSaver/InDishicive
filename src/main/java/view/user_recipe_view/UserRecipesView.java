@@ -1,6 +1,9 @@
 package view.user_recipe_view;
 
 import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -15,6 +18,7 @@ import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.RecipeSummary;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesState;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
 
 /**
  * A panel with all the recipes the user has already created in an easy-to-read format.
@@ -30,8 +34,12 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
     private final JPanel recipes = new JPanel();
 
     private final JButton addRecipeButton;
+    private final JPanel addRecipesPanel;
+    private final JLabel viewDetailsErrorLabel = new JLabel();
 
-    private JLabel numberOfRecipesLabel = new JLabel();
+    private ViewUserRecipeDetailsController viewRecipeDetailsController;
+
+    private final JLabel numberOfRecipesLabel = new JLabel();
 
     public UserRecipesView(UserRecipesViewModel userRecipesViewModel) {
         userRecipesViewModel.addPropertyChangeListener(this);
@@ -49,7 +57,7 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
         this.add(scrollPane);
 
-        final JPanel addRecipesPanel = new JPanel();
+        addRecipesPanel = new JPanel();
         addRecipesPanel.setLayout(new BorderLayout());
 
         addRecipesPanel.add(numberOfRecipesLabel, BorderLayout.LINE_START);
@@ -83,19 +91,48 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
         if (evt.getPropertyName().equals(UserRecipesViewModel.SET_SUMMARIES)) {
             final ViewRecipesState summaryState = (ViewRecipesState) evt.getNewValue();
 
-            this.numberOfRecipesLabel.setText("Currently have " + summaryState.getNumberOfRecipes() + " recipes");
-            this.recipes.removeAll();
-            for (RecipeSummary recipeSummary : summaryState.getRecipeSummaries()) {
-                this.recipes.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
+            addSummaries(summaryState);
+
+            if (addRecipesPanel.getComponent(1) == viewDetailsErrorLabel) {
+                addRecipesPanel.remove(viewDetailsErrorLabel);
             }
 
-            for (Component component : this.recipes.getComponents()) {
-                if (component instanceof UserRecipeVisual visual) {
-                    visual.addDeleteUserRecipeUseCase(deleteUserRecipeController);
-                }
-            }
             this.recipes.revalidate();
             this.recipes.repaint();
+        } else if (evt.getPropertyName().equals(UserRecipesViewModel.DETAILS_ERROR_MESSAGE)) {
+            presentErrorMessage();
+        }
+    }
+
+    /**
+     * Adds the viewRecipeDetails use case, so it is applied every time a summary is added.
+     * @param controller controller to be called upon
+     */
+    public void addViewRecipeDetailsUseCase(ViewUserRecipeDetailsController controller) {
+        this.viewRecipeDetailsController = controller;
+    }
+
+    private void addSummaries(ViewRecipesState summaryState) {
+        this.numberOfRecipesLabel.setText("Currently have " + summaryState.getNumberOfRecipes() + " recipes");
+        this.recipes.removeAll();
+        for (RecipeSummary recipeSummary : summaryState.getRecipeSummaries()) {
+            this.recipes.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
+        }
+        for (Component visual : this.recipes.getComponents()) {
+            if (visual instanceof UserRecipeVisual userVisual) {
+                userVisual.addViewUseCase(viewRecipeDetailsController);
+            }
+        }
+        for (Component component : this.recipes.getComponents()) {
+            if (component instanceof UserRecipeVisual visual) {
+                visual.addDeleteUserRecipeUseCase(deleteUserRecipeController);
+            }
+        }
+    }
+
+    private void presentErrorMessage() {
+        if (addRecipesPanel.getComponent(1) != viewDetailsErrorLabel) {
+            addRecipesPanel.add(viewDetailsErrorLabel, BorderLayout.CENTER);
         }
     }
 }
