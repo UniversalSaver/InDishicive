@@ -34,6 +34,7 @@ public class Main {
                 .addUserRecipesCancelButtonUseCase()
                 .addRecipeIngredientUseCase()
                 .addViewRecipesUseCase()
+                .addViewUserRecipeDetailsUseCase()
                 .addViewCreatorUseCase()
 
                 .addViewRecipeDetailsUseCase()
@@ -42,6 +43,7 @@ public class Main {
                 .addRemoveDietResUseCase()
                 .addRemoveFavoriteUseCase()
                 .addGenerateWithInventoryUseCase()
+                .addGenerateByIngredientsUseCase()
 
                 .addViewFavoritesUseCase()
                 .addFavoritesView()

@@ -3,9 +3,38 @@ package app;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 
+import adapters.user_recipe.view_recipes.view_detailed_recipe.UserRecipeDetailsViewModel;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsPresenter;
+import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.InventoryDataAccessObject;
+import entity.Ingredient;
+import entity.Inventory;
+import adapters.UserRecipesViewManagerModel;
+import adapters.inventory.add_ingredient.AddIngredientController;
+import adapters.inventory.add_ingredient.AddIngredientPresenter;
+import adapters.inventory.add_ingredient.AddIngredientViewModel;
+import adapters.inventory.remove_ingredient.RemoveIngredientController;
+import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
+import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
+import adapters.inventory.search_ingredients.SearchIngredientsController;
+import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
+import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.user_recipe.view_recipes.ViewRecipesController;
+import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import databases.dietary_restriction.DietResDataAccessObject;
+import databases.favorites.FavoriteDataAccessObject;
+import databases.generate_recipe.MealDbRecipeDetailsGateway;
+import databases.generate_recipe.MealDbRecipeGateway;
+import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
+import databases.user_recipe.FileDataAccessObject;
+import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import adapters.DietResViewManagerModel;
 import adapters.UserRecipesViewManagerModel;
 import adapters.dietary_restriction.add_diet_res.AddDietResController;
@@ -51,6 +80,9 @@ import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientControl
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientPresenter;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsController;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsPresenter;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
 import databases.dietary_restriction.DietResDataAccessObject;
@@ -88,6 +120,13 @@ import logic.user_recipe.add_recipe.AddRecipeInteractor;
 import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientInteractor;
 import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputBoundary;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsOutputBoundary;
+import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
+import view.inventory.GenerateByInventoryPanel;
+import view.generate_recipe_view.GenerateByIngredientsPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
@@ -97,11 +136,7 @@ import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
-import window.DietResWindow;
-import window.FavoriteWindow;
-import window.MainWindow;
-import window.RecipeDetailsWindow;
-import window.UserRecipesWindow;
+import window.*;
 
 /**
  * An object that will build the app given what windows to include.
@@ -120,6 +155,10 @@ public class AppBuilder {
 
     private UserRecipesWindow userRecipesWindow;
     private UserRecipeWindowModel userRecipeWindowModel;
+
+    private UserRecipeDetailsWindow userRecipeDetailsWindow;
+    private UserRecipeDetailsViewModel userRecipeDetailsViewModel;
+
 
     private UserRecipesView userRecipesView;
     private UserRecipesViewModel userRecipesViewModel;
@@ -197,12 +236,23 @@ public class AppBuilder {
 
     private final JPanel dietResCardPanel = new JPanel();
     private final CardLayout dietResCardLayout = new CardLayout();
+    private ViewRecipesInteractor viewRecipesInteractor;
 
     /*
     End of DietRes variables
      */
 
-    /**
+    /*
+    Start of Generate By Ingredients Variables (UC2)
+     */
+
+    private GenerateByIngredientsViewModel generateByIngredientsViewModel;
+
+    /*
+    End of Generate By Ingredients Variables
+     */
+
+     /**
      * Adds the main view to the application builder.
      *
      * @return this AppBuilder instance for method chaining
@@ -250,7 +300,28 @@ public class AppBuilder {
     Start of UserRecipe Methods
      */
 
-    /**
+    public AppBuilder addViewUserRecipeDetailsUseCase() {
+        userRecipeDetailsViewModel = new UserRecipeDetailsViewModel();
+
+        userRecipeDetailsWindow = new UserRecipeDetailsWindow(userRecipeDetailsViewModel);
+
+        ViewUserRecipeDetailsPresenter viewUserRecipeDetailsPresenter =
+                new ViewUserRecipeDetailsPresenter(userRecipesViewModel, userRecipeDetailsViewModel);
+
+        ViewUserRecipeDetailsInteractor viewUserRecipeDetailsInteractor =
+                new ViewUserRecipeDetailsInteractor(fileDataAccessObject, viewUserRecipeDetailsPresenter,
+                        viewRecipesInteractor);
+
+        ViewUserRecipeDetailsController viewUserRecipeDetailsController = new ViewUserRecipeDetailsController(
+                viewUserRecipeDetailsInteractor
+        );
+
+        userRecipesView.addViewRecipeDetailsUseCase(viewUserRecipeDetailsController);
+
+        return this;
+    }
+  
+     /**
      * Adds the user recipes window to the application builder.
      *
      * @return this AppBuilder instance for method chaining
@@ -355,9 +426,8 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        final ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
-        final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
+        viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
+        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
 
@@ -732,6 +802,40 @@ public class AppBuilder {
                 );
 
         viewRecipeDetailsController = new ViewRecipeDetailsController(interactor);
+
+        return this;
+    }
+
+    /**
+     * connect the \"generate recipes by ingredients\" use case
+     * into the application, and attaches its panel to the main view.
+     *
+     * @return this builder for chaining
+     */
+    public AppBuilder addGenerateByIngredientsUseCase() {
+        this.generateByIngredientsViewModel = new GenerateByIngredientsViewModel();
+
+        final GenerateByIngredientsOutputBoundary presenter =
+                new GenerateByIngredientsPresenter(this.generateByIngredientsViewModel);
+
+        final RecipeByIngredientsGateway gateway = new MealDbRecipeByIngredientsGateway();
+
+        final GenerateByIngredientsInputBoundary interactor =
+                new GenerateByIngredientsInteractor(gateway, presenter);
+
+        final GenerateByIngredientsController controller =
+                new GenerateByIngredientsController(interactor);
+
+        final GenerateByIngredientsPanel panel =
+                new GenerateByIngredientsPanel(
+                        controller,
+                        this.generateByIngredientsViewModel,
+                        this.viewRecipeDetailsController,
+                        this.addFavoriteController,
+                        this.addFavoriteViewModel
+                );
+
+        this.mainView.addGenerateByIngredientsPanel(panel);
 
         return this;
     }

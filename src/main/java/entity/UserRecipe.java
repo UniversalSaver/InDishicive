@@ -41,13 +41,17 @@ public class UserRecipe {
 		return ingredients;
 	}
 
-	@Override
+    /**
+     * Returns whether the user recipes are the same, which is only true if the titles are the same.
+     * @param obj   the reference object with which to compare.
+     * @return whether the recipes are the same
+     */
+    @Override
 	public boolean equals(Object obj) {
         boolean result = false;
 		if (obj instanceof UserRecipe other) {
 
-			result = getTitle().equals(other.getTitle()) && getIngredients().equals(other.getIngredients())
-                    && getSteps().equals(other.getSteps()) && getDescription().equals(other.getDescription());
+			result = getTitle().equals(other.getTitle());
 		}
         return result;
 	}

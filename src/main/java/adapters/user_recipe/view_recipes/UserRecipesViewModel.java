@@ -8,6 +8,7 @@ import adapters.ViewModel;
 public class UserRecipesViewModel extends ViewModel<ViewRecipesState> {
     public static final String VIEW_NAME = "user_recipes";
     public static final String SET_SUMMARIES = "set_summaries";
+    public static final String DETAILS_ERROR_MESSAGE = "details_error_message";
 
     public UserRecipesViewModel() {
         super(VIEW_NAME);
