@@ -35,7 +35,7 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 
     private ViewUserRecipeDetailsController viewRecipeDetailsController;
 
-    private JLabel numberOfRecipesLabel = new JLabel();
+    private final JLabel numberOfRecipesLabel = new JLabel();
 
     public UserRecipesView(UserRecipesViewModel userRecipesViewModel) {
         userRecipesViewModel.addPropertyChangeListener(this);
