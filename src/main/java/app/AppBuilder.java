@@ -18,6 +18,7 @@ import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
 import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
+import logic.dietary_restriction.DietaryRestrictionChecker;
 import logic.inventory.add_ingredient.AddIngredientInteractor;
 import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
 import logic.inventory.search_ingredients.SearchIngredientsInteractor;
@@ -537,8 +538,14 @@ public class AppBuilder {
         GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
+        DietaryRestrictionChecker dietResChecker = new DietaryRestrictionChecker();
+
         GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inMemoryInventoryReader, recipeGateway, presenter);
+                new GenerateWithInventoryInteractor(inMemoryInventoryReader,
+                                                    recipeGateway,
+                                                    presenter,
+                                                    this.restrictionDataAccess,
+                                                    dietResChecker);
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
