@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import databases.dietary_restriction.DietResDataAccessObject;
+import databases.dietary_restriction.MealDBIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
@@ -442,8 +443,13 @@ public class AppBuilder {
     public AppBuilder addAddDietResUseCase() {
         AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
 
+        MealDBIngredientGateway ingredientGateway = new MealDBIngredientGateway();
+
         AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
-                this.restrictionDataAccess, addDietResPresenter);
+                this.restrictionDataAccess,
+                addDietResPresenter,
+                ingredientGateway
+        );
 
         this.addDietResController = new AddDietResController(addDietResInteractor);
 
