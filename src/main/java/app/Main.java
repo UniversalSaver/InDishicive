@@ -25,13 +25,14 @@ public class Main {
                 .addAddRecipeView()
 
                 .addUserRecipesCancelButtonUseCase()
-				.addIngredientUseCase()
+                .addIngredientUseCase()
                 .addViewRecipesUseCase()
                 .addViewCreatorUseCase()
-                .addDietResView()
 
                 .addViewRecipeDetailsUseCase()
                 .addAddFavoriteUseCase()
+                .addAddDietResUseCase()
+                .addRemoveDietResUseCase()
                 .addGenerateWithInventoryUseCase()
 
                 .addViewRecipesUseCase()
@@ -42,6 +43,7 @@ public class Main {
 
 
                 .addViewRestrictionsUseCase()
+                .addDietResView()
                 .build();
 
         application.pack();
