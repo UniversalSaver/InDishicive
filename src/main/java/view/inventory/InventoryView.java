@@ -5,8 +5,8 @@ import adapters.inventory.remove_ingredient.RemoveIngredientController;
 import adapters.inventory.search_ingredients.SearchIngredientsController;
 import adapters.inventory.search_ingredients.SearchIngredientsState;
 import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import databases.inventory.InventoryDataAccessObject;
 import entity.Ingredient;
-import entity.Inventory;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,7 +21,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
     private final AddIngredientController addIngredientController;
     private final RemoveIngredientController removeIngredientController;
     private final SearchIngredientsViewModel searchIngredientsViewModel;
-    private final Inventory inventory;
+    private final InventoryDataAccessObject inventoryDAO;
     
     private final JTextField searchField;
     private final DefaultListModel<String> searchResultsModel;
@@ -34,13 +34,13 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
                          AddIngredientController addIngredientController,
                          RemoveIngredientController removeIngredientController,
                          SearchIngredientsViewModel searchIngredientsViewModel,
-                         Inventory inventory) {
+                         InventoryDataAccessObject inventoryDAO) {
         
         this.searchIngredientsController = searchIngredientsController;
         this.addIngredientController = addIngredientController;
         this.removeIngredientController = removeIngredientController;
         this.searchIngredientsViewModel = searchIngredientsViewModel;
-        this.inventory = inventory;
+        this.inventoryDAO = inventoryDAO;
         
         this.searchIngredientsViewModel.addPropertyChangeListener(this);
         
@@ -128,7 +128,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
     
     private void updateInventoryList() {
         inventoryModel.clear();
-        for (Ingredient ingredient : inventory.getIngredients()) {
+        for (Ingredient ingredient : inventoryDAO.getAllIngredients()) {
             inventoryModel.addElement(ingredient.getName() + " - " + ingredient.getAmount());
         }
     }
