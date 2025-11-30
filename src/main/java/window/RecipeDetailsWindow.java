@@ -2,20 +2,26 @@ package window;
 
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsState;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
+import adapters.inventory.missing_ingredients.MissingIngredientsController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 public class RecipeDetailsWindow extends JFrame implements PropertyChangeListener {
 
     private final JLabel titleLabel = new JLabel();
     private final JTextArea ingredientsArea = new JTextArea();
     private final JTextArea instructionsArea = new JTextArea();
+    private final MissingIngredientsController missingIngredientsController;
+    private List<String> currentIngredients;
 
-    public RecipeDetailsWindow(ViewRecipeDetailsViewModel viewModel) {
+    public RecipeDetailsWindow(ViewRecipeDetailsViewModel viewModel, 
+                               MissingIngredientsController missingIngredientsController) {
         super("Recipe Details");
+        this.missingIngredientsController = missingIngredientsController;
         viewModel.addPropertyChangeListener(this);
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -46,7 +52,13 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
         center.add(instructionsPanel);
 
         JPanel bottom = new JPanel();
-        bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
+        JButton missingIngredientsButton = new JButton("Check Missing Ingredients");
+        missingIngredientsButton.addActionListener(e -> {
+            if (currentIngredients != null) {
+                missingIngredientsController.execute(currentIngredients);
+            }
+        });
+        bottom.add(missingIngredientsButton);
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(top, BorderLayout.NORTH);
@@ -66,7 +78,8 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
         }
 
         titleLabel.setText(state.getTitle());
-        ingredientsArea.setText(String.join("\n", state.getIngredients()));
+        this.currentIngredients = state.getIngredients();
+        ingredientsArea.setText(String.join("\n", currentIngredients));
         instructionsArea.setText(state.getInstructions());
 
         if (!this.isVisible()) {

@@ -3,6 +3,7 @@ package databases.inventory;
 import entity.Ingredient;
 import logic.inventory.add_ingredient.InventoryDataAccessInterface;
 import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
+import logic.inventory.missing_ingredients.InventoryReaderInterface;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,7 @@ import java.util.List;
  * Data Access Object for managing inventory operations with file persistence.
  * Stores inventory in a JSON file and automatically saves on add/remove operations.
  */
-public class InventoryDataAccessObject implements InventoryDataAccessInterface, RemoveIngredientDataAccessInterface {
+public class InventoryDataAccessObject implements InventoryDataAccessInterface, RemoveIngredientDataAccessInterface, InventoryReaderInterface {
     
     private final String filePath;
     private List<Ingredient> ingredients;

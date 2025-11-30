@@ -31,6 +31,7 @@ public class Main {
                 .addViewRecipesUseCase()
                 .addViewCreatorUseCase()
 
+                .addMissingIngredientsUseCase()
                 .addViewRecipeDetailsUseCase()
                 .addAddFavoriteUseCase()
                 .addAddDietResUseCase()

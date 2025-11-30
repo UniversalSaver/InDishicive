@@ -16,12 +16,15 @@ import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
 import adapters.inventory.search_ingredients.SearchIngredientsController;
 import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
 import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.inventory.missing_ingredients.MissingIngredientsController;
+import adapters.inventory.missing_ingredients.MissingIngredientsPresenter;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
 import logic.inventory.add_ingredient.AddIngredientInteractor;
 import logic.inventory.add_ingredient.InventoryDataAccessInterface;
 import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
 import logic.inventory.search_ingredients.SearchIngredientsInteractor;
+import logic.inventory.missing_ingredients.MissingIngredientsInteractor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -139,6 +142,7 @@ public class AppBuilder {
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+    private MissingIngredientsController missingIngredientsController;
 
     /*
     End of Inventory Variables
@@ -534,9 +538,17 @@ public class AppBuilder {
         );
     }
 
+    public AppBuilder addMissingIngredientsUseCase() {
+        InventoryDataAccessObject inventoryDAO = new InventoryDataAccessObject();
+        MissingIngredientsPresenter presenter = new MissingIngredientsPresenter(recipeDetailsWindow);
+        MissingIngredientsInteractor interactor = new MissingIngredientsInteractor(inventoryDAO, presenter);
+        missingIngredientsController = new MissingIngredientsController(interactor);
+        return this;
+    }
+
     public AppBuilder addViewRecipeDetailsUseCase() {
         viewRecipeDetailsViewModel = new ViewRecipeDetailsViewModel();
-        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel);
+        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel, missingIngredientsController);
 
         ViewRecipeDetailsOutputBoundary outputBoundary =
                 new ViewRecipeDetailsPresenter(viewRecipeDetailsViewModel);
