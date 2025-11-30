@@ -8,12 +8,14 @@ import java.util.List;
 public class ViewRecipesState {
 
     private final List<RecipeSummary> recipeSummaries;
-
     private final int numberOfRecipes;
 
-    public ViewRecipesState(List<RecipeSummary> recipeSummaries, int numberOfRecipes) {
+    private final String errorMessage;
+
+    public ViewRecipesState(List<RecipeSummary> recipeSummaries, int numberOfRecipes, String errorMessage) {
         this.recipeSummaries = recipeSummaries;
         this.numberOfRecipes = numberOfRecipes;
+        this.errorMessage = errorMessage;
     }
 
     public List<RecipeSummary> getRecipeSummaries() {
@@ -22,5 +24,9 @@ public class ViewRecipesState {
 
     public int getNumberOfRecipes() {
         return numberOfRecipes;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }

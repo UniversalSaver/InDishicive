@@ -2,6 +2,7 @@ package logic.user_recipe.view_recipes.view_detailed_recipe;
 
 import entity.Ingredient;
 import entity.UserRecipe;
+import logic.user_recipe.view_recipes.ViewRecipesInputBoundary;
 
 /**
  * A concrete interactor.
@@ -10,11 +11,14 @@ import entity.UserRecipe;
 public class ViewUserRecipeDetailsInteractor implements ViewUserRecipeDetailsInputBoundary {
     private final ViewUserRecipeDetailsDataAccessInterface viewUserRecipeDetailsDataAccess;
     private final ViewUserRecipeDetailsOutputBoundary viewUserRecipeDetailsPresenter;
+    private final ViewRecipesInputBoundary viewRecipesInteractor;
 
     public ViewUserRecipeDetailsInteractor(ViewUserRecipeDetailsDataAccessInterface viewUserRecipeDetailsDataAccess,
-                                           ViewUserRecipeDetailsOutputBoundary viewUserRecipeDetailsPresenter) {
+                                           ViewUserRecipeDetailsOutputBoundary viewUserRecipeDetailsPresenter,
+                                           ViewRecipesInputBoundary viewRecipesInteractor) {
         this.viewUserRecipeDetailsDataAccess = viewUserRecipeDetailsDataAccess;
         this.viewUserRecipeDetailsPresenter = viewUserRecipeDetailsPresenter;
+        this.viewRecipesInteractor = viewRecipesInteractor;
     }
 
     @Override
@@ -22,6 +26,9 @@ public class ViewUserRecipeDetailsInteractor implements ViewUserRecipeDetailsInp
         final UserRecipe gottenRecipe = viewUserRecipeDetailsDataAccess.getRecipeByTitle(inputData.getTitle());
 
         if (gottenRecipe == null) {
+            // To refresh the data in the summaries.
+            viewRecipesInteractor.execute();
+
             viewUserRecipeDetailsPresenter.presentFailureView();
         } else {
             viewUserRecipeDetailsPresenter.presentSuccessView(createOutputData(gottenRecipe));
