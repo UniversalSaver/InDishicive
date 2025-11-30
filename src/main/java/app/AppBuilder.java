@@ -44,6 +44,7 @@ import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
 import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
 import adapters.user_recipe.add_recipe.*;
 import adapters.user_recipe.add_recipe.add_ingredient.*;
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
@@ -80,6 +81,7 @@ import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
 import logic.user_recipe.add_recipe.add_ingredient.*;
 import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
+import logic.user_recipe.delete_recipe.DeleteUserRecipeInteractor;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
 import view.MainView;
 import view.diet_res_view.DietResView;
@@ -120,6 +122,8 @@ public class AppBuilder {
 
     private AddRecipeView addRecipeView;
     private AddRecipeViewModel addRecipeViewModel;
+
+    private ViewRecipesInteractor viewRecipesInteractor;
 
 
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
@@ -251,6 +255,19 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addDeleteUserRecipeUseCase() {
+        DeleteUserRecipeInteractor deleteUserRecipeInteractor = new DeleteUserRecipeInteractor(
+                viewRecipesInteractor, fileDataAccessObject
+        );
+
+        DeleteUserRecipeController deleteUserRecipeController =
+                new DeleteUserRecipeController(deleteUserRecipeInteractor);
+
+        userRecipesView.addDeleteRecipeUseCase(deleteUserRecipeController);
+
+        return this;
+    }
+
 	public AppBuilder addRecipeIngredientUseCase() {
 		AddRecipeIngredientPresenter addIngredientPresenter = new AddRecipeIngredientPresenter(this.addRecipeViewModel);
 		AddRecipeIngredientInteractor addIngredientInteractor =
@@ -266,7 +283,7 @@ public class AppBuilder {
 		ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
 				this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-		ViewRecipesInteractor viewRecipesInteractor =
+		viewRecipesInteractor =
 				new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
 		ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
@@ -296,7 +313,7 @@ public class AppBuilder {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        ViewRecipesInteractor viewRecipesInteractor =
+        viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
@@ -548,7 +565,7 @@ public class AppBuilder {
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);;
+                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);
 
         GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);

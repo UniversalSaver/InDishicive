@@ -30,6 +30,7 @@ public class Main {
                 .addRecipeIngredientUseCase()
                 .addViewRecipesUseCase()
                 .addViewCreatorUseCase()
+                .addDeleteUserRecipeUseCase()
 
                 .addViewRecipeDetailsUseCase()
                 .addAddFavoriteUseCase()

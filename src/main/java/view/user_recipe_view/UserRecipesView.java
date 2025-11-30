@@ -1,7 +1,6 @@
 package view.user_recipe_view;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -12,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import adapters.user_recipe.add_recipe.SwitchViewController;
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.RecipeSummary;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesState;
@@ -22,6 +22,8 @@ import adapters.user_recipe.view_recipes.ViewRecipesState;
 public class UserRecipesView extends JPanel implements PropertyChangeListener {
     public static final int PANEL_WIDTH = 600;
     public static final int PANEL_HEIGHT = 350;
+
+    private DeleteUserRecipeController deleteUserRecipeController;
 
     private final String viewName;
 
@@ -64,6 +66,14 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 		this.addRecipeButton.addActionListener(event -> switchViewController.execute());
 	}
 
+    /**
+     * Adds the delete use recipe use case to the controller
+     * @param controller controller for use case
+     */
+    public void addDeleteRecipeUseCase(DeleteUserRecipeController controller) {
+        this.deleteUserRecipeController = controller;
+    }
+
     public String getViewName() {
         return viewName;
     }
@@ -77,6 +87,12 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
             this.recipes.removeAll();
             for (RecipeSummary recipeSummary : summaryState.getRecipeSummaries()) {
                 this.recipes.add(new UserRecipeVisual(recipeSummary.getTitle(), recipeSummary.getDescription()));
+            }
+
+            for (Component component : this.recipes.getComponents()) {
+                if (component instanceof UserRecipeVisual visual) {
+                    visual.addDeleteUserRecipeUseCase(deleteUserRecipeController);
+                }
             }
             this.recipes.revalidate();
             this.recipes.repaint();

@@ -1,11 +1,6 @@
 package databases.user_recipe;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +10,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import logic.user_recipe.delete_recipe.DeleteUserRecipeDataAccessInterface;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +22,8 @@ import logic.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
 /**
  * A class to access the files for user created recipes.
  */
-public class FileDataAccessObject implements ViewRecipesDataAccessInterface, AddRecipeDataAccessInterface {
+public class FileDataAccessObject implements ViewRecipesDataAccessInterface, AddRecipeDataAccessInterface,
+        DeleteUserRecipeDataAccessInterface {
 
     static final String USER_RECIPE_FILE_HEADER = "title\tingredients\tsteps\tdescription";
     static final int HEADER_LENGTH = 4;
@@ -61,18 +58,53 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 
 	@Override
 	public String addRecipe(UserRecipe recipe) {
-		String returnMessage = AddRecipeDataAccessInterface.ADDED_MESSAGE;
+		String returnMessage;
 
         if (recipeExists(recipe)) {
 			returnMessage = "Recipe with that name already exists";
 		} else {
-            returnMessage = addRecipeToDatabase(recipe, returnMessage);
+            returnMessage = addRecipeToDatabase(recipe);
         }
 
 		return returnMessage;
 	}
 
-    private String addRecipeToDatabase(UserRecipe recipe, String returnMessage) {
+    @Override
+	public List<UserRecipe> getUserRecipes() {
+		this.updateUserRecipes();
+		return this.userRecipes;
+	}
+
+    @Override
+    public String deleteRecipe(String title) {
+        String result = DeleteUserRecipeDataAccessInterface.DELETED;
+
+        this.updateUserRecipes();
+        if (recipeExists(new UserRecipe(title, new ArrayList<>(), "", ""))) {
+            this.userRecipes.removeIf(userRecipe -> userRecipe.getTitle().equals(title));
+
+            File file = new File(filePath);
+            if (file.delete()) {
+                writeHeader(filePath);
+
+                for (UserRecipe recipe : userRecipes) {
+
+                    if (!addRecipeToDatabase(recipe).equals(AddRecipeDataAccessInterface.ADDED_MESSAGE)) {
+                        throw new CorruptDataException("Couldn't add already existing recipes back");
+                    }
+                }
+            }
+        } else {
+            result = "Recipe with that name does not exist";
+        }
+
+
+        return result;
+    }
+
+    private String addRecipeToDatabase(UserRecipe recipe) {
+        String returnMessage = AddRecipeDataAccessInterface.ADDED_MESSAGE;
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
             final String name = replaceWithEscapes(recipe.getTitle());
             final String description = replaceWithEscapes(recipe.getDescription());
@@ -82,25 +114,20 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
             if ("Please choose a name without special characters".equals(ingredients)
                     || "Please choose an amount without special characters".equals(ingredients)) {
                 returnMessage = ingredients;
+            } else {
+
+                final String recipeString = name + '\t'
+                        + ingredients + '\t'
+                        + steps + '\t'
+                        + description + '\n';
+
+                writer.append(recipeString);
             }
-
-            final String recipeString = name + '\t'
-                    + ingredients + '\t'
-                    + steps + '\t'
-                    + description + '\n';
-
-            writer.append(recipeString);
         } catch (IOException fileReadingException) {
             returnMessage = "File corrupted";
         }
         return returnMessage;
     }
-
-    @Override
-	public List<UserRecipe> getUserRecipes() {
-		this.updateUserRecipes();
-		return this.userRecipes;
-	}
 
 	private static String getIngredientsString(UserRecipe recipe) {
         StringBuilder result = new StringBuilder();
@@ -241,11 +268,7 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
             logger.info(fileNotFoundException.getMessage());
             logger.info("Creating new file, and using that");
 
-            try (FileWriter fileWriter = new FileWriter(filepath)) {
-                fileWriter.write(FileDataAccessObject.USER_RECIPE_FILE_HEADER + "\n");
-            } catch (IOException ex) {
-                throw new InaccessibleFileException(ex.getMessage());
-            }
+            writeHeader(filepath);
 
             try {
                 fileReader = new FileReader(filepath);
@@ -257,5 +280,13 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
         }
 
         return fileReader;
+    }
+
+    private static void writeHeader(String filepath) {
+        try (FileWriter fileWriter = new FileWriter(filepath)) {
+            fileWriter.write(FileDataAccessObject.USER_RECIPE_FILE_HEADER + "\n");
+        } catch (IOException ex) {
+            throw new InaccessibleFileException(ex.getMessage());
+        }
     }
 }

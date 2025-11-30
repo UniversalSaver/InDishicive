@@ -1,5 +1,7 @@
 package view.user_recipe_view;
 
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,6 +54,16 @@ public class UserRecipeVisual extends JPanel {
         infoPanelButtons.add(this.viewButton);
 
         this.add(infoPanelButtons);
+    }
+
+    /**
+     * Adds the delete user recipe use case to the delete button
+     * @param deleteUserRecipeController controller for the use case
+     */
+    public void addDeleteUserRecipeUseCase(DeleteUserRecipeController deleteUserRecipeController) {
+        deleteButton.addActionListener(e -> {
+            deleteUserRecipeController.execute(title);
+        });
     }
 
     private void createInfoPanel() {
