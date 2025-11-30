@@ -56,13 +56,12 @@ import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
 import databases.dietary_restriction.DietResDataAccessObject;
 import databases.dietary_restriction.MealDbIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
+import databases.generate_recipe.InventoryReaderFromInventory;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
 import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDBIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
-import databases.generate_recipe.InventoryReaderFromInventory;
-import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.Inventory;
@@ -75,6 +74,7 @@ import logic.favorites.view_favorite.ViewFavoriteInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
@@ -555,9 +555,9 @@ public class AppBuilder {
     public AppBuilder addAddDietResUseCase() {
         final AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
 
-        MealDbIngredientGateway ingredientGateway = new MealDbIngredientGateway();
+        final MealDbIngredientGateway ingredientGateway = new MealDbIngredientGateway();
 
-        AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
+        final AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
                 this.restrictionDataAccess,
                 addDietResPresenter,
                 ingredientGateway
@@ -662,16 +662,16 @@ public class AppBuilder {
      * @return this AppBuilder instance for method chaining
      */
     public AppBuilder addGenerateWithInventoryUseCase() {
-        MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
+        final MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
         recipeGateway.preloadAllRecipes();
 
-        InventoryReaderFromInventory inventoryReader =
+        final InventoryReaderFromInventory inventoryReader =
                 new InventoryReaderFromInventory(this.inventory);
 
-        GenerateWithInventoryViewModel generateWithInventoryViewModel =
+        final GenerateWithInventoryViewModel generateWithInventoryViewModel =
                 new GenerateWithInventoryViewModel();
 
-        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
+        final GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
                 generateWithInventoryViewModel,
                 inventoryReader,
                 recipeGateway
@@ -691,7 +691,7 @@ public class AppBuilder {
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         final GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);;
+                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);
 
         final GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
