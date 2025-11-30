@@ -57,6 +57,8 @@ import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDBIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.generate_recipe.InventoryReaderFromInventory;
+import logic.dietary_restriction.DietaryRestrictionChecker;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
@@ -548,11 +550,9 @@ public class AppBuilder {
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         final DietaryRestrictionCheckerInterface dietResChecker = new DietaryRestrictionChecker();
-        GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);;
 
         final GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inMemoryInventoryReader,
+                new GenerateWithInventoryInteractor(inventoryReader,
                                                     recipeGateway,
                                                     presenter,
                                                     this.restrictionDataAccess,
