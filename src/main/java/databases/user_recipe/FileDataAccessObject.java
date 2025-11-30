@@ -67,33 +67,38 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
 
         if (recipeExists(recipe)) {
 			returnMessage = "Recipe with that name already exists";
-		}
-
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-			final String name = replaceWithEscapes(recipe.getTitle());
-			final String description = replaceWithEscapes(recipe.getDescription());
-			final String steps = replaceWithEscapes(recipe.getSteps());
-			final String ingredients = getIngredientsString(recipe);
-
-			if ("Please choose a name without special characters".equals(ingredients)
-                    || "Please choose an amount without special characters".equals(ingredients)) {
-				returnMessage = ingredients;
-			}
-
-			final String recipeString = name + '\t'
-                    + ingredients + '\t'
-                    + steps + '\t'
-                    + description + '\n';
-
-			writer.append(recipeString);
-		} catch (IOException fileReadingException) {
-			returnMessage = "File corrupted";
-		}
+		} else {
+            returnMessage = addRecipeToDatabase(recipe, returnMessage);
+        }
 
 		return returnMessage;
 	}
 
-	@Override
+    private String addRecipeToDatabase(UserRecipe recipe, String returnMessage) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            final String name = replaceWithEscapes(recipe.getTitle());
+            final String description = replaceWithEscapes(recipe.getDescription());
+            final String steps = replaceWithEscapes(recipe.getSteps());
+            final String ingredients = getIngredientsString(recipe);
+
+            if ("Please choose a name without special characters".equals(ingredients)
+                    || "Please choose an amount without special characters".equals(ingredients)) {
+                returnMessage = ingredients;
+            }
+
+            final String recipeString = name + '\t'
+                    + ingredients + '\t'
+                    + steps + '\t'
+                    + description + '\n';
+
+            writer.append(recipeString);
+        } catch (IOException fileReadingException) {
+            returnMessage = "File corrupted";
+        }
+        return returnMessage;
+    }
+
+    @Override
 	public List<UserRecipe> getUserRecipes() {
 		this.updateUserRecipes();
 		return this.userRecipes;
@@ -150,6 +155,7 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
 		for (UserRecipe userRecipe : userRecipes) {
 			if (userRecipe.getTitle().equals(recipe.getTitle())) {
 				recipeExists = true;
+                break;
 			}
 		}
 		return recipeExists;
