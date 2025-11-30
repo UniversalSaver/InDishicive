@@ -1,10 +1,10 @@
 package logic.dietary_restriction.view_restrictions;
 
-import entity.Ingredient;
-import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import entity.Ingredient;
+import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
 public class ViewRestrictionsInteractor implements ViewRestrictionsInputBoundary {
 
@@ -19,14 +19,14 @@ public class ViewRestrictionsInteractor implements ViewRestrictionsInputBoundary
 
     @Override
     public void execute() {
-        List<Ingredient> ingredients = dietResDataAccessObject.getResIngredients();
+        final List<Ingredient> ingredients = dietResDataAccessObject.getResIngredients();
 
-        List<String> ingredientNames = new ArrayList<>();
+        final List<String> ingredientNames = new ArrayList<>();
         for (Ingredient ingredient : ingredients) {
             ingredientNames.add(ingredient.getName());
         }
 
-        ViewRestrictionsOutputData outputData = new ViewRestrictionsOutputData(ingredientNames);
+        final ViewRestrictionsOutputData outputData = new ViewRestrictionsOutputData(ingredientNames);
 
         viewRestrictionsPresenter.prepareSuccessView(outputData);
     }

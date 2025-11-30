@@ -15,12 +15,13 @@ public class RemoveDietResInteractor implements RemoveDietResInputBoundary {
 
     @Override
     public void execute(RemoveDietResInputData inputData) {
-        Ingredient ingredient = inputData.getIngredient();
+        final Ingredient ingredient = inputData.getIngredient();
 
         if (dietResDataAccessObject.isRestricted(ingredient)) {
             dietResDataAccessObject.removeRestriction(ingredient);
             removeDietResPresenter.prepareSuccessView();
-        } else {
+        }
+        else {
             removeDietResPresenter.prepareFailView("Ingredient not found in restrictions list.");
         }
     }
