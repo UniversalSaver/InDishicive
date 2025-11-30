@@ -119,6 +119,7 @@ import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputB
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsOutputBoundary;
 import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
 import view.inventory.GenerateByInventoryPanel;
 import view.generate_recipe_view.GenerateByIngredientsPanel;
 import view.MainView;
@@ -130,11 +131,7 @@ import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
-import window.DietResWindow;
-import window.FavoriteWindow;
-import window.MainWindow;
-import window.RecipeDetailsWindow;
-import window.UserRecipesWindow;
+import window.*;
 
 /**
  * An object that will build the app given what windows to include.
