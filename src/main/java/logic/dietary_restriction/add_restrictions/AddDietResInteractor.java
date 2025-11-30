@@ -23,15 +23,13 @@ public class AddDietResInteractor implements AddDietResInputBoundary {
 
         if (!ingredientGateway.isValidIngredient(ingredientName)) {
             addDietResOutputBoundary.prepareFailView("Ingredient not found in database");
-            return;
-        }
-
-        if (dietResDataAccessInterface.isRestricted(ingredient)) {
+        } else if (dietResDataAccessInterface.isRestricted(ingredient)) {
             addDietResOutputBoundary.prepareFailView("Already in Dietary Restricted Ingredients List");
-            return;
         }
-
-        dietResDataAccessInterface.saveRestriction(ingredient);
-        addDietResOutputBoundary.prepareSuccessView();
+        // Only runs if both above failed
+        else {
+            dietResDataAccessInterface.saveRestriction(ingredient);
+            addDietResOutputBoundary.prepareSuccessView();
+        }
     }
 }
