@@ -31,6 +31,7 @@ import databases.generate_recipe.MealDbRecipeGateway;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.test_DAO.InMemoryInventoryReader;
 import databases.user_recipe.FileDataAccessObject;
+import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import adapters.DietResViewManagerModel;
 import adapters.dietary_restriction.add_diet_res.AddDietResController;
 import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
@@ -61,6 +62,9 @@ import adapters.user_recipe.add_recipe.add_ingredient.*;
 import adapters.user_recipe.add_recipe.*;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsController;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsPresenter;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsViewModel;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
@@ -79,7 +83,12 @@ import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputBoundary;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsOutputBoundary;
+import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
 import view.inventory.GenerateByInventoryPanel;
+import view.generate_recipe_view.GenerateByIngredientsPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
@@ -194,6 +203,16 @@ public class AppBuilder {
 
     /*
     End of DietRes variables
+     */
+
+    /*
+    Start of Generate By Ingredients Variables (UC2)
+     */
+
+    private GenerateByIngredientsViewModel generateByIngredientsViewModel;
+
+    /*
+    End of Generate By Ingredients Variables
      */
 
     public AppBuilder addMainView() {
@@ -567,6 +586,40 @@ public class AppBuilder {
                 );
 
         viewRecipeDetailsController = new ViewRecipeDetailsController(interactor);
+
+        return this;
+    }
+
+    /**
+     * connect the \"generate recipes by ingredients\" use case
+     * into the application, and attaches its panel to the main view.
+     *
+     * @return this builder for chaining
+     */
+    public AppBuilder addGenerateByIngredientsUseCase() {
+        this.generateByIngredientsViewModel = new GenerateByIngredientsViewModel();
+
+        final GenerateByIngredientsOutputBoundary presenter =
+                new GenerateByIngredientsPresenter(this.generateByIngredientsViewModel);
+
+        final RecipeByIngredientsGateway gateway = new MealDbRecipeByIngredientsGateway();
+
+        final GenerateByIngredientsInputBoundary interactor =
+                new GenerateByIngredientsInteractor(gateway, presenter);
+
+        final GenerateByIngredientsController controller =
+                new GenerateByIngredientsController(interactor);
+
+        final GenerateByIngredientsPanel panel =
+                new GenerateByIngredientsPanel(
+                        controller,
+                        this.generateByIngredientsViewModel,
+                        this.viewRecipeDetailsController,
+                        this.addFavoriteController,
+                        this.addFavoriteViewModel
+                );
+
+        this.mainView.addGenerateByIngredientsPanel(panel);
 
         return this;
     }
