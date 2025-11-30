@@ -136,7 +136,6 @@ public class AppBuilder {
      */
 
     private InventoryView inventoryView;
-    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
@@ -331,7 +330,7 @@ public class AppBuilder {
 
     public AppBuilder addInventoryView() {
         MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
-        InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
+        InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(); // Uses inventory.json by default
         
         SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);
         SearchIngredientsInteractor searchInteractor = new SearchIngredientsInteractor(searchPresenter, dataAccess);
@@ -346,7 +345,7 @@ public class AppBuilder {
         RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
         
         inventoryView = new InventoryView(searchController, addController, removeController, 
-                                          searchIngredientsViewModel, inventory);
+                                          searchIngredientsViewModel, inventoryDataObject);
         
         mainView.addInventoryTab(inventoryView);
         
