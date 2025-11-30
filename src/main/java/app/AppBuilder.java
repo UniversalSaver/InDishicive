@@ -3,6 +3,28 @@ package app;
 import java.awt.CardLayout;
 import java.util.ArrayList;
 
+import adapters.user_recipe.view_recipes.view_detailed_recipe.UserRecipeDetailsViewModel;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsPresenter;
+import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.InventoryDataAccessObject;
+import entity.Ingredient;
+import entity.Inventory;
+import adapters.UserRecipesViewManagerModel;
+import adapters.inventory.add_ingredient.AddIngredientController;
+import adapters.inventory.add_ingredient.AddIngredientPresenter;
+import adapters.inventory.add_ingredient.AddIngredientViewModel;
+import adapters.inventory.remove_ingredient.RemoveIngredientController;
+import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
+import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
+import adapters.inventory.search_ingredients.SearchIngredientsController;
+import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
+import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.user_recipe.view_recipes.ViewRecipesController;
+import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -97,6 +119,7 @@ import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputB
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsOutputBoundary;
 import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
 import view.inventory.GenerateByInventoryPanel;
 import view.generate_recipe_view.GenerateByIngredientsPanel;
 import view.MainView;
@@ -108,11 +131,7 @@ import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
-import window.DietResWindow;
-import window.FavoriteWindow;
-import window.MainWindow;
-import window.RecipeDetailsWindow;
-import window.UserRecipesWindow;
+import window.*;
 
 /**
  * An object that will build the app given what windows to include.
@@ -131,6 +150,9 @@ public class AppBuilder {
 
     private UserRecipesWindow userRecipesWindow;
     private UserRecipeWindowModel userRecipeWindowModel;
+
+    private UserRecipeDetailsWindow userRecipeDetailsWindow;
+    private UserRecipeDetailsViewModel userRecipeDetailsViewModel;
 
 
     private UserRecipesView userRecipesView;
@@ -210,6 +232,7 @@ public class AppBuilder {
 
     private final JPanel dietResCardPanel = new JPanel();
     private final CardLayout dietResCardLayout = new CardLayout();
+    private ViewRecipesInteractor viewRecipesInteractor;
 
     /*
     End of DietRes variables
@@ -251,6 +274,27 @@ public class AppBuilder {
     /*
     Start of UserRecipe Methods
      */
+
+    public AppBuilder addViewUserRecipeDetailsUseCase() {
+        userRecipeDetailsViewModel = new UserRecipeDetailsViewModel();
+
+        userRecipeDetailsWindow = new UserRecipeDetailsWindow(userRecipeDetailsViewModel);
+
+        ViewUserRecipeDetailsPresenter viewUserRecipeDetailsPresenter =
+                new ViewUserRecipeDetailsPresenter(userRecipesViewModel, userRecipeDetailsViewModel);
+
+        ViewUserRecipeDetailsInteractor viewUserRecipeDetailsInteractor =
+                new ViewUserRecipeDetailsInteractor(fileDataAccessObject, viewUserRecipeDetailsPresenter,
+                        viewRecipesInteractor);
+
+        ViewUserRecipeDetailsController viewUserRecipeDetailsController = new ViewUserRecipeDetailsController(
+                viewUserRecipeDetailsInteractor
+        );
+
+        userRecipesView.addViewRecipeDetailsUseCase(viewUserRecipeDetailsController);
+
+        return this;
+    }
 
     public AppBuilder addUserRecipesWindow() {
         this.userRecipeCardPanel.setLayout(userRecipeCardLayout);
@@ -324,8 +368,7 @@ public class AppBuilder {
         ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
+        viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);

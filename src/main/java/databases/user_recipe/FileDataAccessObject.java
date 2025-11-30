@@ -22,11 +22,13 @@ import entity.Ingredient;
 import entity.UserRecipe;
 import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
 import logic.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsDataAccessInterface;
 
 /**
  * A class to access the files for user created recipes.
  */
-public class FileDataAccessObject implements ViewRecipesDataAccessInterface, AddRecipeDataAccessInterface {
+public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
+        AddRecipeDataAccessInterface, ViewUserRecipeDetailsDataAccessInterface {
 
     static final String USER_RECIPE_FILE_HEADER = "title\tingredients\tsteps\tdescription";
     static final int HEADER_LENGTH = 4;
@@ -101,6 +103,19 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 		this.updateUserRecipes();
 		return this.userRecipes;
 	}
+
+    @Override
+    public UserRecipe getRecipeByTitle(String recipeTitle) {
+        UserRecipe result = null;
+        final List<UserRecipe> updatedUserRecipes = getUserRecipes();
+
+        for (UserRecipe userRecipe : updatedUserRecipes) {
+            if (userRecipe.getTitle().equals(recipeTitle)) {
+                result = userRecipe;
+            }
+        }
+        return result;
+    }
 
 	private static String getIngredientsString(UserRecipe recipe) {
         StringBuilder result = new StringBuilder();
