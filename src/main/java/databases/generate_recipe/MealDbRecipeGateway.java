@@ -10,19 +10,23 @@ import org.json.JSONObject;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class MealDbRecipeGateway implements RecipeGateway {
 
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
+    private static final int MAX_INGREDIENTS = 20;
+
     private final OkHttpClient client = new OkHttpClient();
+
+    private final Map<String, Recipe> cache = new LinkedHashMap<>();
+    private boolean cacheLoaded = false;
 
     private String get(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 return null;
@@ -31,27 +35,26 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
     }
 
-    @Override
-    public List<Recipe> findByInventory(Set<String> have) {
-        Map<String, Recipe> unique = new LinkedHashMap<>();
+    public void preloadAllRecipes() {
+        if (cacheLoaded) {
+            return;
+        }
+        loadAllRecipesIntoCache();
+    }
 
-        if (have == null || have.isEmpty()) {
-            return List.of();
+    private void ensureCacheLoaded() {
+        if (!cacheLoaded) {
+            loadAllRecipesIntoCache();
+        }
+    }
+
+    private void loadAllRecipesIntoCache() {
+        if (cacheLoaded) {
+            return;
         }
 
-        for (String raw : have) {
-            if (raw == null) {
-                continue;
-            }
-            String ingredient = raw.trim();
-            if (ingredient.isEmpty()) {
-                continue;
-            }
-
-            ingredient = ingredient.toLowerCase().replace(" ", "_");
-
-            String url = BASE_URL + "filter.php?i=" + ingredient;
-
+        for (char c = 'a'; c <= 'z'; c++) {
+            String url = BASE_URL + "search.php?f=" + c;
             try {
                 String body = get(url);
                 if (body == null) {
@@ -66,13 +69,14 @@ public class MealDbRecipeGateway implements RecipeGateway {
 
                 for (int i = 0; i < meals.length(); i++) {
                     JSONObject m = meals.getJSONObject(i);
-                    String title = m.getString("strMeal");
-                    String thumb = m.optString("strMealThumb", "");
+                    Recipe recipe = parseFullRecipe(m);
 
-                    if (!unique.containsKey(title)) {
-                        Recipe r = new Recipe(title, List.of(), "", thumb, "", "");
-                        unique.put(title, r);
+                    String title = recipe.getTitle();
+                    if (title == null || title.isBlank()) {
+                        continue;
                     }
+
+                    cache.putIfAbsent(title, recipe);
                 }
 
             } catch (IOException e) {
@@ -80,37 +84,40 @@ public class MealDbRecipeGateway implements RecipeGateway {
             }
         }
 
-        return new ArrayList<>(unique.values());
+        cacheLoaded = true;
     }
 
-    public Optional<Recipe> findByTitle(String title) {
-        if (title == null || title.isBlank()) {
-            return Optional.empty();
+    @Override
+    public List<Recipe> findByInventory(Set<String> have) {
+        if (have == null || have.isEmpty()) {
+            return List.of();
         }
 
-        String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
-        String url = BASE_URL + "search.php?s=" + encodedTitle;
-
-        try {
-            String body = get(url);
-            if (body == null) {
-                return Optional.empty();
+        ensureCacheLoaded();
+        Set<String> available = new HashSet<>();
+        for (String raw : have) {
+            if (raw == null) {
+                continue;
             }
-
-            JSONObject root = new JSONObject(body);
-            JSONArray meals = root.optJSONArray("meals");
-            if (meals == null || meals.isEmpty()) {
-                return Optional.empty();
+            String normalized = raw.trim().toLowerCase();
+            if (!normalized.isEmpty()) {
+                available.add(normalized);
             }
-
-            JSONObject m = meals.getJSONObject(0);
-            Recipe recipe = parseFullRecipe(m);
-            return Optional.of(recipe);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Optional.empty();
         }
+
+        if (available.isEmpty()) {
+            return List.of();
+        }
+
+        List<Recipe> result = new ArrayList<>();
+
+        for (Recipe recipe : cache.values()) {
+            if (allIngredientsInInventory(recipe, available)) {
+                result.add(recipe);
+            }
+        }
+
+        return result;
     }
 
     private Recipe parseFullRecipe(JSONObject m) {
@@ -121,7 +128,7 @@ public class MealDbRecipeGateway implements RecipeGateway {
         String category = m.optString("strCategory", "");
 
         List<Ingredient> ingredients = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= MAX_INGREDIENTS; i++) {
             String ing = m.optString("strIngredient" + i, "").trim();
             String measure = m.optString("strMeasure" + i, "").trim();
             if (ing.isEmpty()) {
@@ -131,5 +138,21 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
 
         return new Recipe(title, ingredients, instructions, image, youtube, category);
+    }
+
+    private boolean allIngredientsInInventory(Recipe recipe, Set<String> available) {
+        for (Ingredient ing : recipe.getIngredients()) {
+            if (ing == null || ing.getName() == null) {
+                return false;
+            }
+            String name = ing.getName().trim().toLowerCase();
+            if (name.isEmpty()) {
+                continue;
+            }
+            if (!available.contains(name)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

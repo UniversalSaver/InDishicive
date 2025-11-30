@@ -1,12 +1,38 @@
 package app;
 
 import java.awt.CardLayout;
+import java.util.ArrayList;
 
-import databases.inventory.MealDBIngredientDataAccess;
-import databases.inventory.InventoryDataAccessObject;
-import entity.Ingredient;
-import entity.Inventory;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import adapters.DietResViewManagerModel;
 import adapters.UserRecipesViewManagerModel;
+import adapters.dietary_restriction.add_diet_res.AddDietResController;
+import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
+import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResPresenter;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsPresenter;
+import adapters.favorites.add_favorite.AddFavoriteController;
+import adapters.favorites.add_favorite.AddFavoritePresenter;
+import adapters.favorites.add_favorite.AddFavoriteViewModel;
+import adapters.favorites.remove_favorites.RemoveFavoriteController;
+import adapters.favorites.remove_favorites.RemoveFavoritePresenter;
+import adapters.favorites.remove_favorites.RemoveFavoriteViewModel;
+import adapters.favorites.view_favorite.ViewFavoriteController;
+import adapters.favorites.view_favorite.ViewFavoritePresenter;
+import adapters.favorites.view_favorite.ViewFavoriteViewModel;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryPresenter;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
 import adapters.inventory.add_ingredient.AddIngredientController;
 import adapters.inventory.add_ingredient.AddIngredientPresenter;
 import adapters.inventory.add_ingredient.AddIngredientViewModel;
@@ -16,81 +42,54 @@ import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
 import adapters.inventory.search_ingredients.SearchIngredientsController;
 import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
 import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.user_recipe.add_recipe.*;
+import adapters.user_recipe.add_recipe.add_ingredient.*;
+import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
+import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
-import logic.dietary_restriction.DietaryRestrictionChecker;
-import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
-import logic.inventory.add_ingredient.AddIngredientInteractor;
-import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
-import logic.inventory.search_ingredients.SearchIngredientsInteractor;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import databases.dietary_restriction.DietResDataAccessObject;
+import databases.dietary_restriction.MealDbIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
+import databases.inventory.InventoryDataAccessObject;
+import databases.inventory.MealDBIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
-import databases.test_DAO.InMemoryInventoryReader;
+import databases.generate_recipe.InventoryReaderFromInventory;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.user_recipe.FileDataAccessObject;
-import adapters.DietResViewManagerModel;
-import adapters.dietary_restriction.add_diet_res.AddDietResController;
-import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
-import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
-import adapters.favorites.add_favorite.AddFavoriteController;
-import adapters.favorites.add_favorite.AddFavoritePresenter;
-import adapters.favorites.add_favorite.AddFavoriteViewModel;
-import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
-import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryPresenter;
-import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
-import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
-import adapters.dietary_restriction.remove_diet_res.RemoveDietResPresenter;
-import adapters.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
-import adapters.dietary_restriction.view_diet_res.DietResViewModel;
-import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
-import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
-import adapters.dietary_restriction.view_diet_res.ViewRestrictionsPresenter;
-import adapters.favorites.view_favorite.ViewFavoriteController;
-import adapters.favorites.view_favorite.ViewFavoritePresenter;
-import adapters.favorites.view_favorite.ViewFavoriteViewModel;
-import adapters.favorites.remove_favorites.RemoveFavoriteController;
-import adapters.favorites.remove_favorites.RemoveFavoritePresenter;
-import adapters.favorites.remove_favorites.RemoveFavoriteViewModel;
-import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
-import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
-import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
-import adapters.user_recipe.add_recipe.add_ingredient.*;
-import adapters.user_recipe.add_recipe.*;
-import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
-import adapters.user_recipe.view_recipes.UserRecipesViewModel;
+import entity.Ingredient;
+import entity.Inventory;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
-import logic.user_recipe.add_recipe.AddRecipeInteractor;
-import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
-import logic.user_recipe.add_recipe.add_ingredient.*;
 import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
-import view.user_recipe_view.AddRecipeView;
 import logic.favorites.add_favorite.AddFavoriteInteractor;
+import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
+import logic.favorites.view_favorite.ViewFavoriteInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
-import logic.favorites.view_favorite.ViewFavoriteInteractor;
-import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
+import logic.user_recipe.add_recipe.AddRecipeInteractor;
+import logic.user_recipe.add_recipe.add_ingredient.*;
+import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
-import view.inventory.GenerateByInventoryPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
 import view.fav_view.FavoriteView;
+import view.inventory.GenerateByInventoryPanel;
+import view.inventory.InventoryView;
+import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
-import view.inventory.InventoryView;
-
-import java.util.ArrayList;
 import window.DietResWindow;
 import window.FavoriteWindow;
 import window.MainWindow;
@@ -98,7 +97,7 @@ import window.RecipeDetailsWindow;
 import window.UserRecipesWindow;
 
 /**
- * An object that will build the app given what windows to include
+ * An object that will build the app given what windows to include.
  */
 public class AppBuilder {
 
@@ -444,8 +443,13 @@ public class AppBuilder {
     public AppBuilder addAddDietResUseCase() {
         AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
 
+        MealDbIngredientGateway ingredientGateway = new MealDbIngredientGateway();
+
         AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
-                this.restrictionDataAccess, addDietResPresenter);
+                this.restrictionDataAccess,
+                addDietResPresenter,
+                ingredientGateway
+        );
 
         this.addDietResController = new AddDietResController(addDietResInteractor);
 
@@ -515,16 +519,20 @@ public class AppBuilder {
     }
 
     public AppBuilder addGenerateWithInventoryUseCase() {
-        RecipeGateway recipeGateway = new MealDbRecipeGateway();
+        MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
+        recipeGateway.preloadAllRecipes();
 
-        // Used for testing UC1; replace with real inventory once implemented.
-        InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
-        inMemoryInventoryReader.add("");
-        inMemoryInventoryReader.add("cheese");
+        InventoryReaderFromInventory inventoryReader =
+                new InventoryReaderFromInventory(this.inventory);
 
-        GenerateWithInventoryViewModel generateWithInventoryViewModel = new GenerateWithInventoryViewModel();
+        GenerateWithInventoryViewModel generateWithInventoryViewModel =
+                new GenerateWithInventoryViewModel();
 
-        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(generateWithInventoryViewModel, inMemoryInventoryReader, recipeGateway);
+        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
+                generateWithInventoryViewModel,
+                inventoryReader,
+                recipeGateway
+        );
 
         this.mainView.addGenerateByInventoryPanel(panel);
 
@@ -533,13 +541,15 @@ public class AppBuilder {
 
     private GenerateByInventoryPanel getGenerateByInventoryPanel(
             GenerateWithInventoryViewModel generateWithInventoryViewModel,
-            InMemoryInventoryReader inMemoryInventoryReader,
+            InventoryReader inventoryReader,
             RecipeGateway recipeGateway) {
 
         final GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
         final DietaryRestrictionCheckerInterface dietResChecker = new DietaryRestrictionChecker();
+        GenerateWithInventoryInputBoundary interactor =
+                new GenerateWithInventoryInteractor(inventoryReader, recipeGateway, presenter);;
 
         final GenerateWithInventoryInputBoundary interactor =
                 new GenerateWithInventoryInteractor(inMemoryInventoryReader,

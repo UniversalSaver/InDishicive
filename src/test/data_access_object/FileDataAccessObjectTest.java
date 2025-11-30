@@ -5,6 +5,7 @@ import databases.user_recipe.CorruptDataException;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.UserRecipe;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
@@ -109,23 +110,29 @@ class FileDataAccessObjectTest {
 
 		assertEquals(AddRecipeDataAccessInterface.ADDED_MESSAGE, fileDataAccessObject.addRecipe(expectedUserRecipe));
 
-		String actualFile = "Failed";
-		try (BufferedReader reader = new BufferedReader(new FileReader("test_DAO_file.tsv"))) {
-			StringBuilder stringBuilder = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				stringBuilder.append(line)
-						.append("\n");
-			}
-			actualFile = stringBuilder.toString();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+        String actualFile = readFile("test_DAO_file.tsv");
 
-		assertEquals(expectedFile, actualFile);
+        assertEquals(expectedFile, actualFile);
 	}
 
-	@Test
+    @NotNull
+    private static String readFile(String fileName) {
+        String actualFile = "Failed";
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line)
+                        .append("\n");
+            }
+            actualFile = stringBuilder.toString();
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+        return actualFile;
+    }
+
+    @Test
 	void addInvalidRecipeTest() {
 		UserRecipe expectedUserRecipe = new UserRecipe("Hot Chocolate",
 				Arrays.stream((new Ingredient[]
@@ -143,24 +150,14 @@ class FileDataAccessObjectTest {
 
 	@Test
 	void createFileWithHeaderTest() {
+        // This goes unused just to test that when initializing the file is created.
 		FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("test_DAO_file.tsv");
 
 		String expectedFile =  "title\tingredients\tsteps\tdescription\n";
 
-		String actualFile = "Failed";
-		try (BufferedReader reader = new BufferedReader(new FileReader("test_DAO_file.tsv"))) {
-			StringBuilder stringBuilder = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				stringBuilder.append(line)
-						.append("\n");
-			}
-			actualFile = stringBuilder.toString();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+        String actualFile = readFile("test_DAO_file.tsv");
 
-		assertEquals(expectedFile, actualFile);
+        assertEquals(expectedFile, actualFile);
 	}
 
 	@Test
@@ -181,9 +178,17 @@ class FileDataAccessObjectTest {
 								new Ingredient("Vanilla Extract", "1/2 cup")})).toList(),
 				"Make it", "A cool hot chocolate recipe");
 		String expectedErrorMessage = "Recipe with that name already exists";
+        String expectedFile = """
+                title\tingredients\tsteps\tdescription
+                Hot Chocolate\tMilk=4 cups,Unsweetened cocoa powder=1/4 cup,Granulated sugar=1/4 cup,\
+                Chocolate chips=1/4 cup,Vanilla Extract=1/2 cup\tMake it\tA cool hot chocolate recipe
+                """;
 
 		FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("test_DAO_file.tsv");
 
+        String actualFile = readFile("test_DAO_file.tsv");
+
 		assertEquals(expectedErrorMessage, fileDataAccessObject.addRecipe(userRecipe));
+        assertEquals(expectedFile,actualFile);
 	}
 }

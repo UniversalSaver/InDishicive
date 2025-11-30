@@ -1,8 +1,8 @@
 package logic.dietary_restriction.diet_res_ingredients;
 
-import entity.Ingredient;
-
 import java.util.List;
+
+import entity.Ingredient;
 
 public interface DietResDataAccessInterface {
     /**
