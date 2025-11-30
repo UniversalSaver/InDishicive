@@ -32,37 +32,39 @@ public class MealDBIngredientGateway implements IngredientGateway {
 
     @Override
     public boolean isValidIngredient(String ingredient) {
-        if (ingredient == null || ingredient.isBlank()) {
-            return false;
+        boolean isValid = false;
+
+        if (ingredient != null && !ingredient.isBlank()) {
+
+            isValid = checkIngredientWithApi(ingredient);
         }
+
+        return isValid;
+    }
+
+    private boolean checkIngredientWithApi(String ingredient) {
+        boolean isFound = false;
 
         try {
             String encodedIngredient = URLEncoder.encode(ingredient, StandardCharsets.UTF_8);
             String url = BASE_URL + encodedIngredient;
-
             Request request = new Request.Builder().url(url).get().build();
 
             try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful() || response.body() == null) {
-                    return false;
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseBody = response.body().string();
+                    if (!responseBody.isEmpty()) {
+                        JSONObject root = new JSONObject(responseBody);
+                        isFound = !root.isNull("meals");
+                    }
                 }
-
-                String responseBody = response.body().string();
-                if (responseBody.isEmpty()) return false;
-
-                JSONObject root = new JSONObject(responseBody);
-                return !root.isNull("meals");
             }
-
         } catch (InterruptedIOException e) {
-            // Log warning for timeouts
             LOGGER.log(Level.WARNING, e, () -> "Timeout while checking ingredient: " + ingredient);
-            return false;
-
         } catch (IOException | JSONException e) {
-            // Log error for IO/JSON failures
             LOGGER.log(Level.SEVERE, e, () -> "Error calling MealDB API: " + e.getMessage());
-            return false;
         }
+
+        return isFound;
     }
 }
