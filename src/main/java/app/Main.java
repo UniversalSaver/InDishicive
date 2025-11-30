@@ -1,16 +1,21 @@
 package app;
 
+import javax.swing.JFrame;
+
 import databases.user_recipe.FileDataAccessObject;
 
-import javax.swing.*;
-
 public class Main {
+    /**
+     * Launches the Indishicive app.
+     *
+     * @param args is an array of Strings that contains command-line arguments passed (sources: Google).
+     */
     public static void main(String[] args) {
-        AppBuilder appBuilder = new AppBuilder();
+        final AppBuilder appBuilder = new AppBuilder();
 
-        FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
+        final FileDataAccessObject fileDataAccessObject = new FileDataAccessObject("user_recipes.tsv");
 
-        JFrame application = appBuilder
+        final JFrame application = appBuilder
                 .addIndishisiveDAO(fileDataAccessObject)
 
                 .addMainWindow()
@@ -25,7 +30,7 @@ public class Main {
                 .addUserRecipesView()
                 .addAddRecipeView()
 
-				.addAddRecipeUseCase()
+                .addAddRecipeUseCase()
                 .addUserRecipesCancelButtonUseCase()
                 .addRecipeIngredientUseCase()
                 .addViewRecipesUseCase()
