@@ -1,7 +1,7 @@
 package view;
 
 import view.inventory.InventoryView;
-
+import view.generate_recipe_view.GenerateByIngredientsPanel;
 import javax.swing.*;
 
 public class MainView extends JPanel {
@@ -17,5 +17,10 @@ public class MainView extends JPanel {
     }
     public void addGenerateByInventoryPanel(JPanel panel) {
         tabbedPane.addTab("Generate with inventory", panel);
+    }
+
+
+    public void addGenerateByIngredientsPanel(GenerateByIngredientsPanel panel) {
+        tabbedPane.addTab("Generate by Ingredients", panel);
     }
 }
