@@ -9,8 +9,8 @@ import entity.Ingredient;
  * A builder for the output data, because I find the creation to be ugly otherwise.
  */
 public class OutputDataBuilder {
-    private List<String> ingredientAmounts = new ArrayList<>();
-    private List<String> ingredientNames = new ArrayList<>();
+    private final List<String> ingredientAmounts = new ArrayList<>();
+    private final List<String> ingredientNames = new ArrayList<>();
     private String title;
     private String steps;
 

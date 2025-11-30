@@ -31,8 +31,8 @@ public class ViewUserRecipeDetailsInteractor implements ViewUserRecipeDetailsInp
     private static ViewUserRecipeOutputData createOutputData(UserRecipe gottenRecipe) {
         final OutputDataBuilder builder = new OutputDataBuilder();
 
-        builder.addTitle(gottenRecipe.getTitle());
-        builder.addSteps(gottenRecipe.getSteps());
+        builder.addTitle(gottenRecipe.getTitle())
+                .addSteps(gottenRecipe.getSteps());
 
         for (Ingredient ingredient : gottenRecipe.getIngredients()) {
             builder.addIngredient(ingredient);
