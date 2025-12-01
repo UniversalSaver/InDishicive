@@ -1,21 +1,26 @@
 package adapters.favorites.remove_favorites;
 
+/**
+ * State object for the remove favorite view model.
+ * Holds the status and result of a remove favorite operation.
+ */
 public class RemoveFavoriteState {
-    private String statusMessage = "";
-    private boolean success = false;
+    private boolean success;
 
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
-
+    /**
+     * Checks if the remove favorite operation was successful.
+     *
+     * @return true if successful, false otherwise
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Sets whether the remove favorite operation was successful.
+     *
+     * @param success true if successful, false otherwise
+     */
     public void setSuccess(boolean success) {
         this.success = success;
     }
