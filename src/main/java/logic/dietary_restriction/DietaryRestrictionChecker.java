@@ -1,40 +1,44 @@
 package logic.dietary_restriction;
 
 import java.util.List;
+import java.util.Objects;
 
 import entity.Ingredient;
 import entity.Recipe;
 
 /**
- * Responsible for checking if recipes violate dietary restrictions.
+ * Standard implementation of the DietaryRestrictionChecker.
+ * Uses flexible string matching to find restricted ingredients.
  */
 public class DietaryRestrictionChecker implements DietaryRestrictionCheckerInterface {
 
-    /**
-     * Checks if a recipe contains any ingredient from the list of restrictions.
-     * Uses case-insensitive comparison on ingredient names.
-     *
-     * @param recipe       The recipe to check.
-     * @param restrictions The list of restricted ingredients.
-     * @return true if the recipe contains a restricted ingredient, false otherwise.
-     */
     @Override
     public boolean containsRestrictedIngredient(Recipe recipe, List<Ingredient> restrictions) {
         boolean foundRestriction = false;
 
-        // Only proceed if there are actual restrictions to check against
-        if (restrictions != null && !restrictions.isEmpty()) {
+        // Only proceed if there are restrictions to check
+        if (restrictions != null && !restrictions.isEmpty() && recipe.getIngredients() != null) {
 
             // Check every ingredient in the recipe
             for (Ingredient recipeIngredient : recipe.getIngredients()) {
+                if (recipeIngredient.getName() != null) {
+                    final String ingredientName = recipeIngredient.getName().toLowerCase();
 
-                // See if this ingredient exists in the restrictions list
-                final boolean isMatch = restrictions.stream()
-                        .anyMatch(restricted -> restricted.getName().equalsIgnoreCase(recipeIngredient.getName()));
-
-                if (isMatch) {
-                    foundRestriction = true;
-                    break;
+                    // Check against all restrictions
+                    final boolean isMatch = restrictions.stream()
+                            .map(Ingredient::getName)
+                            .filter(Objects::nonNull)
+                            .map(String::toLowerCase)
+                            .anyMatch(restrictedName -> {
+                                // Check if recipe ingredient contains the restriction
+                                // (e.g. "Peanut Butter" contains "Peanut")
+                                return ingredientName.contains(restrictedName)
+                                        || restrictedName.contains(ingredientName);
+                            });
+                    if (isMatch) {
+                        foundRestriction = true;
+                        break;
+                    }
                 }
             }
         }

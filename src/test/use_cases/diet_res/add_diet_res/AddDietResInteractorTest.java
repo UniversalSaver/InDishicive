@@ -1,4 +1,4 @@
-package use_cases.add_diet_res;
+package use_cases.diet_res.add_diet_res;
 
 import entity.Ingredient;
 import logic.dietary_restriction.add_restrictions.AddDietResInputData;

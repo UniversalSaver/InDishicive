@@ -36,11 +36,13 @@ public class Main {
                 .addViewRecipesUseCase()
                 .addViewUserRecipeDetailsUseCase()
                 .addViewCreatorUseCase()
+                .addDeleteUserRecipeUseCase()
 
                 .addViewRecipeDetailsUseCase()
                 .addAddFavoriteUseCase()
                 .addAddDietResUseCase()
                 .addRemoveDietResUseCase()
+                .addRandomRecipeUseCase()
                 .addRemoveFavoriteUseCase()
                 .addGenerateWithInventoryUseCase()
                 .addGenerateByIngredientsUseCase()
