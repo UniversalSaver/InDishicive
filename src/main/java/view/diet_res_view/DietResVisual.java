@@ -12,6 +12,10 @@ import javax.swing.JPanel;
 
 import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
 
+/**
+ * A UI component representing a single dietary restriction item.
+ * It displays the ingredient name and provides a button to remove it.
+ */
 public class DietResVisual extends JPanel {
 
     public DietResVisual(String title, RemoveDietResController removeDietResController) {
