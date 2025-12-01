@@ -1,17 +1,17 @@
 package logic.user_recipe.delete_recipe;
 
-import logic.user_recipe.view_recipes.ViewRecipesInteractor;
+import logic.user_recipe.view_recipes.ViewRecipesInputBoundary;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsOutputBoundary;
 
 /**
  * Concrete implementation of the input boundary.
  */
 public class DeleteUserRecipeInteractor implements DeleteUserRecipeInputBoundary {
-    private final ViewRecipesInteractor viewRecipesInteractor;
+    private final ViewRecipesInputBoundary viewRecipesInteractor;
     private final DeleteUserRecipeDataAccessInterface database;
     private final ViewUserRecipeDetailsOutputBoundary viewRecipeDetailsPresenter;
 
-    public DeleteUserRecipeInteractor(ViewRecipesInteractor viewRecipesInteractor,
+    public DeleteUserRecipeInteractor(ViewRecipesInputBoundary viewRecipesInteractor,
                                       DeleteUserRecipeDataAccessInterface database,
                                       ViewUserRecipeDetailsOutputBoundary viewRecipeDetailsPresenter) {
         this.viewRecipesInteractor = viewRecipesInteractor;
