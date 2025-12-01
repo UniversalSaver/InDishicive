@@ -1,6 +1,6 @@
 package window;
 
-import interface_adapter.view_diet_res.DietResWindowModel;
+import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
 
 import javax.swing.*;
 import java.awt.*;

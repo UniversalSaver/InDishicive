@@ -22,10 +22,17 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
-.idea/checkstyle-idea.xml
-.idea/InDishicive.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
+
+# IDE settings
+.idea/
+*.iml
+
+# Build output
+target/
 
 src/tests/
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/modules.xml

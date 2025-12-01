@@ -1,77 +1,139 @@
 package app;
 
 import java.awt.CardLayout;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import data_access.*;
-import interface_adapter.DietResViewManagerModel;
-import interface_adapter.UserRecipesViewManagerModel;
-import interface_adapter.add_diet_res.AddDietResController;
-import interface_adapter.add_diet_res.AddDietResPresenter;
-import interface_adapter.add_diet_res.AddDietResViewModel;
-import interface_adapter.add_recipe.*;
-import interface_adapter.add_favorite.AddFavoriteController;
-import interface_adapter.add_favorite.AddFavoritePresenter;
-import interface_adapter.add_favorite.AddFavoriteViewModel;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryController;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryPresenter;
-import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
-import interface_adapter.remove_diet_res.RemoveDietResController;
-import interface_adapter.remove_diet_res.RemoveDietResPresenter;
-import interface_adapter.remove_diet_res.RemoveDietResViewModel;
-import interface_adapter.view_diet_res.DietResViewModel;
-import interface_adapter.view_diet_res.DietResWindowModel;
-import interface_adapter.view_diet_res.ViewRestrictionsController;
-import interface_adapter.view_diet_res.ViewRestrictionsPresenter;
-import interface_adapter.view_favorite.ViewFavoriteController;
-import interface_adapter.view_favorite.ViewFavoritePresenter;
-import interface_adapter.view_favorite.ViewFavoriteViewModel;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsController;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsPresenter;
-import interface_adapter.view_recipe_details.ViewRecipeDetailsViewModel;
-import interface_adapter.view_recipes.UserRecipeWindowModel;
-import interface_adapter.view_recipes.UserRecipesViewModel;
-import interface_adapter.view_recipes.ViewRecipesController;
-import interface_adapter.view_recipes.ViewRecipesPresenter;
-import interface_adapter.filter_by_cuisine.FilterByCuisineController;
-import interface_adapter.filter_by_cuisine.FilterByCuisinePresenter;
-import interface_adapter.get_available_cuisines.GetAvailableCuisinesController;
-import interface_adapter.get_available_cuisines.GetAvailableCuisinesPresenter;
-import use_case.add_recipe.AddIngredientInteractor;
-import use_case.add_restrictions.AddDietResInteractor;
-import use_case.remove_restriction.RemoveDietResInteractor;
-import use_case.view_recipe_creator.ViewCreatorInteractor;
-import use_case.view_restrictions.ViewRestrictionsInteractor;
-import view.user_recipe_view.AddRecipeView;
-import use_case.add_favorite.AddFavoriteInteractor;
-import use_case.generate_with_inventory.GenerateWithInventoryInputBoundary;
-import use_case.generate_with_inventory.GenerateWithInventoryInteractor;
-import use_case.generate_with_inventory.GenerateWithInventoryOutputBoundary;
-import use_case.generate_with_inventory.RecipeGateway;
-import use_case.view_favorite.ViewFavoriteInteractor;
-import use_case.view_recipe_details.ViewRecipeDetailsInputBoundary;
-import use_case.view_recipe_details.ViewRecipeDetailsInteractor;
-import use_case.view_recipe_details.ViewRecipeDetailsOutputBoundary;
-import use_case.view_recipes.ViewRecipesInteractor;
-import use_case.filter_by_cuisine.FilterByCuisineInteractor;
-import use_case.get_available_cuisines.GetAvailableCuisinesInteractor;
-import view.GenerateByInventoryPanel;
+import adapters.DietResViewManagerModel;
+import adapters.UserRecipesViewManagerModel;
+import adapters.dietary_restriction.add_diet_res.AddDietResController;
+import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
+import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResPresenter;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsPresenter;
+import adapters.favorites.add_favorite.AddFavoriteController;
+import adapters.favorites.add_favorite.AddFavoritePresenter;
+import adapters.favorites.add_favorite.AddFavoriteViewModel;
+import adapters.favorites.remove_favorites.RemoveFavoriteController;
+import adapters.favorites.remove_favorites.RemoveFavoritePresenter;
+import adapters.favorites.remove_favorites.RemoveFavoriteViewModel;
+import adapters.favorites.view_favorite.ViewFavoriteController;
+import adapters.favorites.view_favorite.ViewFavoritePresenter;
+import adapters.favorites.view_favorite.ViewFavoriteViewModel;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsController;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsPresenter;
+import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsViewModel;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryPresenter;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
+import adapters.inventory.add_ingredient.AddIngredientController;
+import adapters.inventory.add_ingredient.AddIngredientPresenter;
+import adapters.inventory.add_ingredient.AddIngredientViewModel;
+import adapters.inventory.remove_ingredient.RemoveIngredientController;
+import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
+import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
+import adapters.inventory.search_ingredients.SearchIngredientsController;
+import adapters.inventory.search_ingredients.SearchIngredientsPresenter;
+import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
+import adapters.user_recipe.add_recipe.AddRecipeController;
+import adapters.user_recipe.add_recipe.AddRecipePresenter;
+import adapters.user_recipe.add_recipe.AddRecipeViewModel;
+import adapters.user_recipe.add_recipe.SwitchViewController;
+import adapters.user_recipe.add_recipe.ViewCreatorPresenter;
+import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientController;
+import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientPresenter;
+import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
+import adapters.user_recipe.view_recipes.UserRecipesViewModel;
+import adapters.user_recipe.view_recipes.ViewRecipesController;
+import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.UserRecipeDetailsViewModel;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsPresenter;
+
+// cuisines dropdown
+import adapters.generate_recipe.filter_by_cuisine.FilterByCuisineController;
+import adapters.generate_recipe.filter_by_cuisine.FilterByCuisinePresenter;
+import adapters.generate_recipe.get_available_cuisines.GetAvailableCuisinesController;
+import adapters.generate_recipe.get_available_cuisines.GetAvailableCuisinesPresenter;
+
+import databases.dietary_restriction.DietResDataAccessObject;
+import databases.dietary_restriction.MealDbIngredientGateway;
+import databases.favorites.FavoriteDataAccessObject;
+import databases.generate_recipe.InventoryReaderFromInventory;
+import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
+import databases.generate_recipe.MealDbRecipeDetailsGateway;
+import databases.generate_recipe.MealDbRecipeGateway;
+import databases.inventory.InventoryDataAccessObject;
+import databases.inventory.MealDbIngredientDataAccess;
+import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
+import databases.user_recipe.FileDataAccessObject;
+// cuisines DAO
+import databases.generate_recipe.MealDbCuisineDataAccessObject;
+
+import entity.Ingredient;
+import entity.Inventory;
+
+import logic.dietary_restriction.DietaryRestrictionChecker;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
+import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
+import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
+import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
+import logic.favorites.add_favorite.AddFavoriteInteractor;
+import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
+import logic.favorites.view_favorite.ViewFavoriteInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputBoundary;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
+import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsOutputBoundary;
+import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
+import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInputBoundary;
+import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInteractor;
+import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
+import logic.generate_recipe.generate_with_inventory.RecipeGateway;
+import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
+import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
+import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
+import logic.user_recipe.add_recipe.AddRecipeInteractor;
+import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientInteractor;
+import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
+import logic.user_recipe.view_recipes.ViewRecipesInteractor;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
+// cuisines use cases
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineInteractor;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesInteractor;
+
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
-import view.fav_view.FavoriteView;
+import view.favorite_view.FavoriteView;
+import view.generate_recipe_view.GenerateByIngredientsPanel;
+import view.inventory.GenerateByInventoryPanel;
+import view.inventory.InventoryView;
+import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
 import view.user_recipe_view.UserRecipesViewManager;
 import window.DietResWindow;
 import window.FavoriteWindow;
 import window.MainWindow;
 import window.RecipeDetailsWindow;
+import window.UserRecipeDetailsWindow;
 import window.UserRecipesWindow;
 
 /**
- * An object that will build the app given what windows to include
+ * An object that will build the app given what windows to include.
  */
 public class AppBuilder {
 
@@ -88,13 +150,14 @@ public class AppBuilder {
     private UserRecipesWindow userRecipesWindow;
     private UserRecipeWindowModel userRecipeWindowModel;
 
+    private UserRecipeDetailsWindow userRecipeDetailsWindow;
+    private UserRecipeDetailsViewModel userRecipeDetailsViewModel;
 
     private UserRecipesView userRecipesView;
     private UserRecipesViewModel userRecipesViewModel;
 
     private AddRecipeView addRecipeView;
     private AddRecipeViewModel addRecipeViewModel;
-
 
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
     private UserRecipesViewManager userRecipesViewManager;
@@ -110,8 +173,22 @@ public class AppBuilder {
      */
 
     /*
-    Start of Favorites Variables
+    Start of Inventory Variables
      */
+
+    private InventoryView inventoryView;
+    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
+    private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
+    private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+
+    /*
+    End of Inventory Variables
+     */
+
+    /*
+    Start of Favorites variables
+    */
 
     private final FavoriteDataAccessObject favoriteDataAccess = new FavoriteDataAccessObject();
 
@@ -123,6 +200,9 @@ public class AppBuilder {
 
     private FavoriteView favoriteView;
     private FavoriteWindow favoriteWindow;
+
+    private final RemoveFavoriteViewModel removeFavoriteViewModel = new RemoveFavoriteViewModel();
+    private RemoveFavoriteController removeFavoriteController;
 
     /*
     End of Favorites Variables
@@ -149,9 +229,20 @@ public class AppBuilder {
 
     private final JPanel dietResCardPanel = new JPanel();
     private final CardLayout dietResCardLayout = new CardLayout();
+    private ViewRecipesInteractor viewRecipesInteractor;
 
     /*
     End of DietRes variables
+     */
+
+    /*
+    Start of Generate By Ingredients Variables (UC2)
+     */
+
+    private GenerateByIngredientsViewModel generateByIngredientsViewModel;
+
+    /*
+    End of Generate By Ingredients Variables
      */
 
     public AppBuilder addMainView() {
@@ -181,18 +272,36 @@ public class AppBuilder {
     Start of UserRecipe Methods
      */
 
+    public AppBuilder addViewUserRecipeDetailsUseCase() {
+        userRecipeDetailsViewModel = new UserRecipeDetailsViewModel();
+
+        userRecipeDetailsWindow = new UserRecipeDetailsWindow(userRecipeDetailsViewModel);
+
+        final ViewUserRecipeDetailsPresenter viewUserRecipeDetailsPresenter =
+                new ViewUserRecipeDetailsPresenter(userRecipesViewModel, userRecipeDetailsViewModel);
+
+        final ViewUserRecipeDetailsInteractor viewUserRecipeDetailsInteractor =
+                new ViewUserRecipeDetailsInteractor(fileDataAccessObject, viewUserRecipeDetailsPresenter,
+                        viewRecipesInteractor);
+
+        final ViewUserRecipeDetailsController viewUserRecipeDetailsController =
+                new ViewUserRecipeDetailsController(viewUserRecipeDetailsInteractor);
+
+        userRecipesView.addViewRecipeDetailsUseCase(viewUserRecipeDetailsController);
+
+        return this;
+    }
+
     public AppBuilder addUserRecipesWindow() {
         this.userRecipeCardPanel.setLayout(userRecipeCardLayout);
 
         this.userRecipesViewManager = new UserRecipesViewManager(this.userRecipeCardLayout,
                 this.userRecipeCardPanel, this.userRecipesViewManagerModel);
 
-
         this.userRecipeWindowModel = new UserRecipeWindowModel();
 
-        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
-                userRecipesViewManager, userRecipesViewManagerModel, userRecipeWindowModel);
-
+        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel
+        );
 
         return this;
     }
@@ -205,28 +314,47 @@ public class AppBuilder {
         this.userRecipeCardPanel.add(this.userRecipesView, userRecipesView.getViewName());
         this.userRecipeWindowModel.addPropertyChangeListener(this.userRecipesWindow);
 
-        userRecipesWindow.addUserRecipesView(userRecipesView, userRecipesViewModel);
         return this;
     }
 
-    public AppBuilder addIngredientUseCase() {
-        AddIngredientPresenter addIngredientPresenter = new AddIngredientPresenter(this.addRecipeViewModel);
-        AddIngredientInteractor addIngredientInteractor =
-                new AddIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(), addIngredientPresenter);
-        AddIngredientController addIngredientController = new AddIngredientController(addIngredientInteractor);
+    public AppBuilder addRecipeIngredientUseCase() {
+        final AddRecipeIngredientPresenter addIngredientPresenter =
+                new AddRecipeIngredientPresenter(this.addRecipeViewModel);
+        final AddRecipeIngredientInteractor addIngredientInteractor =
+                new AddRecipeIngredientInteractor(new MealDbIngredientDataAccess(),
+                        addIngredientPresenter);
+        final AddRecipeIngredientController addIngredientController =
+                new AddRecipeIngredientController(addIngredientInteractor);
 
         this.addRecipeView.addIngredientUseCase(addIngredientController);
 
         return this;
     }
 
-    public AppBuilder addUserRecipesCancelButtonUseCase() {
-        ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
+    public AppBuilder addAddRecipeUseCase() {
+        final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        ViewRecipesInteractor viewRecipesInteractor =
+        final AddRecipePresenter addRecipePresenter =
+                new AddRecipePresenter(new ViewRecipesController(
+                        new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject)),
+                        addRecipeViewModel);
+        final AddRecipeInteractor addRecipeInteractor =
+                new AddRecipeInteractor(fileDataAccessObject, addRecipePresenter);
+        final AddRecipeController addRecipeController = new AddRecipeController(addRecipeInteractor);
+
+        this.addRecipeView.addAddRecipeUseCase(addRecipeController);
+
+        return this;
+    }
+
+    public AppBuilder addUserRecipesCancelButtonUseCase() {
+        final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
+                this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
+
+        final ViewRecipesInteractor viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
-        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
+        final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         addRecipeView.addCancelButtonUseCase(viewRecipesController);
 
@@ -234,12 +362,11 @@ public class AppBuilder {
     }
 
     public AppBuilder addViewRecipesUseCase() {
-        ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
+        final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        ViewRecipesInteractor viewRecipesInteractor =
-                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
-        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
+        viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
+        final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
 
@@ -257,11 +384,11 @@ public class AppBuilder {
     }
 
     public AppBuilder addViewCreatorUseCase() {
-        ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(this.userRecipesViewManagerModel,
-                this.addRecipeViewModel);
+        final ViewCreatorPresenter viewCreatorPresenter = new ViewCreatorPresenter(
+                this.userRecipesViewManagerModel, this.addRecipeViewModel);
 
-        ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
-        SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
+        final ViewCreatorInteractor viewCreatorInteractor = new ViewCreatorInteractor(viewCreatorPresenter);
+        final SwitchViewController switchViewController = new SwitchViewController(viewCreatorInteractor);
 
         userRecipesView.addViewCreatorUseCase(switchViewController);
 
@@ -272,33 +399,66 @@ public class AppBuilder {
     End of UserRecipe methods
      */
 
-
-
-    /**
-     Start of Favorites Methods
+    /*
+    Start of Inventory Methods
      */
 
+    public AppBuilder addInventoryView() {
+        final MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
+        final InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
+
+        final SearchIngredientsPresenter searchPresenter =
+                new SearchIngredientsPresenter(searchIngredientsViewModel);
+        final SearchIngredientsInteractor searchInteractor =
+                new SearchIngredientsInteractor(searchPresenter, dataAccess);
+        final SearchIngredientsController searchController =
+                new SearchIngredientsController(searchInteractor);
+
+        final AddIngredientPresenter addPresenter = new AddIngredientPresenter(addIngredientViewModel);
+        final AddIngredientInteractor addInteractor =
+                new AddIngredientInteractor(addPresenter, inventoryDataObject);
+        final AddIngredientController addController = new AddIngredientController(addInteractor);
+
+        final RemoveIngredientPresenter removePresenter =
+                new RemoveIngredientPresenter(removeIngredientViewModel);
+        final RemoveIngredientInteractor removeInteractor =
+                new RemoveIngredientInteractor(removePresenter, inventoryDataObject);
+        final RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
+
+        inventoryView = new InventoryView(searchController, addController, removeController,
+                searchIngredientsViewModel, inventory);
+
+        mainView.addInventoryTab(inventoryView);
+
+        return this;
+    }
+
+    /*
+    End of Inventory Methods
+    */
+
+    /*
+    Start of Favorites Methods
+     */
 
     public AppBuilder addAddFavoriteUseCase() {
-        AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
+        final AddFavoritePresenter addFavoritePresenter = new AddFavoritePresenter(this.addFavoriteViewModel);
 
-        MealDbRecipeDetailsGateway recipeDetailsGateway = new MealDbRecipeDetailsGateway();
+        final MealDbRecipeDetailsGateway recipeDetailsGateway = new MealDbRecipeDetailsGateway();
 
-        AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
-                this.favoriteDataAccess, addFavoritePresenter, recipeDetailsGateway);
+        final AddFavoriteInteractor addFavoriteInteractor = new AddFavoriteInteractor(
+                this.favoriteDataAccess, this.favoriteDataAccess, addFavoritePresenter, recipeDetailsGateway);
 
         this.addFavoriteController = new AddFavoriteController(addFavoriteInteractor);
 
         return this;
     }
 
-
-
     public AppBuilder addViewFavoritesUseCase() {
-        ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
+        final ViewFavoritePresenter viewFavoritePresenter = new ViewFavoritePresenter(
                 this.viewFavoriteViewModel);
 
-        ViewFavoriteInteractor viewFavoriteInteractor = new ViewFavoriteInteractor(
+        final ViewFavoriteInteractor viewFavoriteInteractor = new ViewFavoriteInteractor(
                 this.favoriteDataAccess, viewFavoritePresenter);
 
         this.viewFavoriteController = new ViewFavoriteController(viewFavoriteInteractor);
@@ -306,43 +466,58 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addRemoveFavoriteUseCase() {
+        final RemoveFavoritePresenter removeFavoritePresenter = new RemoveFavoritePresenter(
+                this.removeFavoriteViewModel, this.viewFavoriteViewModel);
+
+        final RemoveFavoriteInteractor removeFavoriteInteractor = new RemoveFavoriteInteractor(
+                this.favoriteDataAccess, this.favoriteDataAccess, removeFavoritePresenter);
+
+        this.removeFavoriteController = new RemoveFavoriteController(removeFavoriteInteractor);
+
+        return this;
+    }
 
     public AppBuilder addFavoritesView() {
-        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel, this.viewRecipeDetailsController);
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel, this.viewRecipeDetailsController,
+                this.removeFavoriteController);
         this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
         this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
 
         return this;
     }
 
-
     public AppBuilder addViewFavoritesButton() {
         mainWindow.addViewFavoriteButton(this.viewFavoriteController);
         return this;
     }
 
-
     public AddFavoriteController getAddFavoriteController() {
         return addFavoriteController;
     }
-
 
     public ViewFavoriteController getViewFavoritesController() {
         return viewFavoriteController;
     }
 
-    /**
-     End of Favorites Methods
+    /*
+    End of Favorites Methods
      */
 
-     /*
+    /*
     Start of DietRes Methods
      */
-    public AppBuilder addAddDietResUseCase() {
-        AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
 
-        AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
-                this.restrictionDataAccess, addDietResPresenter);
+    public AppBuilder addAddDietResUseCase() {
+        final AddDietResPresenter addDietResPresenter = new AddDietResPresenter(this.addDietResViewModel);
+
+        final MealDbIngredientGateway ingredientGateway = new MealDbIngredientGateway();
+
+        final AddDietResInteractor addDietResInteractor = new AddDietResInteractor(
+                this.restrictionDataAccess,
+                addDietResPresenter,
+                ingredientGateway
+        );
 
         this.addDietResController = new AddDietResController(addDietResInteractor);
 
@@ -350,9 +525,10 @@ public class AppBuilder {
     }
 
     public AppBuilder addRemoveDietResUseCase() {
-        RemoveDietResPresenter removeDietResPresenter = new RemoveDietResPresenter(this.removeDietResViewModel);
+        final RemoveDietResPresenter removeDietResPresenter =
+                new RemoveDietResPresenter(this.removeDietResViewModel);
 
-        RemoveDietResInteractor removeDietResInteractor = new RemoveDietResInteractor(
+        final RemoveDietResInteractor removeDietResInteractor = new RemoveDietResInteractor(
                 this.restrictionDataAccess, removeDietResPresenter);
 
         this.removeDietResController = new RemoveDietResController(removeDietResInteractor);
@@ -390,10 +566,11 @@ public class AppBuilder {
     }
 
     public AppBuilder addViewRestrictionsUseCase() {
-        ViewRestrictionsPresenter viewRestrictionsPresenter = new ViewRestrictionsPresenter(
+        final ViewRestrictionsPresenter viewRestrictionsPresenter = new ViewRestrictionsPresenter(
                 this.dietResWindowModel, this.dietResViewManagerModel, this.dietResViewModel);
 
-        ViewRestrictionsInteractor viewRestrictionsInteractor = new ViewRestrictionsInteractor(this.restrictionDataAccess, viewRestrictionsPresenter);
+        final ViewRestrictionsInteractor viewRestrictionsInteractor =
+                new ViewRestrictionsInteractor(this.restrictionDataAccess, viewRestrictionsPresenter);
         this.viewRestrictionsController = new ViewRestrictionsController(viewRestrictionsInteractor);
 
         mainWindow.addViewRestrictionsUseCase(viewRestrictionsController);
@@ -411,15 +588,20 @@ public class AppBuilder {
     }
 
     public AppBuilder addGenerateWithInventoryUseCase() {
-        RecipeGateway recipeGateway = new MealDbRecipeGateway();
+        final MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
+        recipeGateway.preloadAllRecipes();
 
-        InMemoryInventoryReader inMemoryInventoryReader = new InMemoryInventoryReader();
-        inMemoryInventoryReader.add("");
-        inMemoryInventoryReader.add("cheese");
+        final InventoryReaderFromInventory inventoryReader =
+                new InventoryReaderFromInventory(this.inventory);
 
-        GenerateWithInventoryViewModel generateWithInventoryViewModel = new GenerateWithInventoryViewModel();
+        final GenerateWithInventoryViewModel generateWithInventoryViewModel =
+                new GenerateWithInventoryViewModel();
 
-        GenerateByInventoryPanel panel = getGenerateByInventoryPanel(generateWithInventoryViewModel, inMemoryInventoryReader, recipeGateway);
+        final GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
+                generateWithInventoryViewModel,
+                inventoryReader,
+                recipeGateway
+        );
 
         this.mainView.addGenerateByInventoryPanel(panel);
 
@@ -428,34 +610,42 @@ public class AppBuilder {
 
     private GenerateByInventoryPanel getGenerateByInventoryPanel(
             GenerateWithInventoryViewModel generateWithInventoryViewModel,
-            InMemoryInventoryReader inMemoryInventoryReader,
+            InventoryReader inventoryReader,
             RecipeGateway recipeGateway) {
 
-        GenerateWithInventoryOutputBoundary presenter =
+        final GenerateWithInventoryOutputBoundary presenter =
                 new GenerateWithInventoryPresenter(generateWithInventoryViewModel);
 
-        GenerateWithInventoryInputBoundary interactor =
-                new GenerateWithInventoryInteractor(inMemoryInventoryReader, recipeGateway, presenter);
+        final DietaryRestrictionCheckerInterface dietResChecker = new DietaryRestrictionChecker();
 
-        GenerateWithInventoryController generateWithInventoryController =
+        final GenerateWithInventoryInputBoundary interactor =
+                new GenerateWithInventoryInteractor(inventoryReader,
+                        recipeGateway,
+                        presenter,
+                        this.restrictionDataAccess,
+                        dietResChecker);
+
+        final GenerateWithInventoryController generateWithInventoryController =
                 new GenerateWithInventoryController(interactor);
 
-        MealDbCuisineDataAccessObject cuisineDao = new MealDbCuisineDataAccessObject();
-        FilterByCuisinePresenter cuisinePresenter =
+        // cuisines dropdown wiring
+        final MealDbCuisineDataAccessObject cuisineDao = new MealDbCuisineDataAccessObject();
+
+        final FilterByCuisinePresenter cuisinePresenter =
                 new FilterByCuisinePresenter(generateWithInventoryViewModel);
-        FilterByCuisineInteractor cuisineInteractor =
+        final FilterByCuisineInteractor cuisineInteractor =
                 new FilterByCuisineInteractor(cuisineDao, cuisinePresenter);
-        FilterByCuisineController cuisineController =
+        final FilterByCuisineController cuisineController =
                 new FilterByCuisineController(cuisineInteractor);
 
-        GetAvailableCuisinesPresenter listPresenter =
+        final GetAvailableCuisinesPresenter listPresenter =
                 new GetAvailableCuisinesPresenter(generateWithInventoryViewModel);
-        GetAvailableCuisinesInteractor listInteractor =
+        final GetAvailableCuisinesInteractor listInteractor =
                 new GetAvailableCuisinesInteractor(cuisineDao, listPresenter);
-        GetAvailableCuisinesController cuisinesController =
+        final GetAvailableCuisinesController cuisinesController =
                 new GetAvailableCuisinesController(listInteractor);
 
-        GenerateByInventoryPanel panel = new GenerateByInventoryPanel(
+        final GenerateByInventoryPanel panel = new GenerateByInventoryPanel(
                 generateWithInventoryController,
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
@@ -473,16 +663,44 @@ public class AppBuilder {
         viewRecipeDetailsViewModel = new ViewRecipeDetailsViewModel();
         recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel);
 
-        ViewRecipeDetailsOutputBoundary outputBoundary =
+        final ViewRecipeDetailsOutputBoundary outputBoundary =
                 new ViewRecipeDetailsPresenter(viewRecipeDetailsViewModel);
 
-        ViewRecipeDetailsInputBoundary interactor =
+        final ViewRecipeDetailsInputBoundary interactor =
                 new ViewRecipeDetailsInteractor(
                         new MealDbRecipeDetailsGateway(),
                         outputBoundary
                 );
 
         viewRecipeDetailsController = new ViewRecipeDetailsController(interactor);
+
+        return this;
+    }
+
+    public AppBuilder addGenerateByIngredientsUseCase() {
+        this.generateByIngredientsViewModel = new GenerateByIngredientsViewModel();
+
+        final GenerateByIngredientsOutputBoundary presenter =
+                new GenerateByIngredientsPresenter(this.generateByIngredientsViewModel);
+
+        final RecipeByIngredientsGateway gateway = new MealDbRecipeByIngredientsGateway();
+
+        final GenerateByIngredientsInputBoundary interactor =
+                new GenerateByIngredientsInteractor(gateway, presenter);
+
+        final GenerateByIngredientsController controller =
+                new GenerateByIngredientsController(interactor);
+
+        final GenerateByIngredientsPanel panel =
+                new GenerateByIngredientsPanel(
+                        controller,
+                        this.generateByIngredientsViewModel,
+                        this.viewRecipeDetailsController,
+                        this.addFavoriteController,
+                        this.addFavoriteViewModel
+                );
+
+        this.mainView.addGenerateByIngredientsPanel(panel);
 
         return this;
     }
