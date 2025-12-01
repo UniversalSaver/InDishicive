@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import adapters.DietResViewManagerModel;
+import adapters.UserRecipesViewManagerModel;
 import adapters.dietary_restriction.add_diet_res.AddDietResController;
 import adapters.dietary_restriction.add_diet_res.AddDietResPresenter;
 import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
@@ -56,9 +57,6 @@ import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientControl
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientPresenter;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
-import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsController;
-import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsPresenter;
-import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
 import adapters.user_recipe.view_recipes.view_detailed_recipe.UserRecipeDetailsViewModel;
@@ -71,7 +69,6 @@ import logic.dietary_restriction.DietaryRestrictionChecker;
 import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.favorites.FavoriteDataAccessObject;
-import databases.generate_recipe.InventoryReaderFromInventory;
 import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
@@ -79,10 +76,7 @@ import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDBIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.user_recipe.FileDataAccessObject;
-import entity.Ingredient;
 import entity.Inventory;
-import logic.dietary_restriction.DietaryRestrictionChecker;
-import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
 import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
@@ -96,11 +90,13 @@ import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
-import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
+import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
+import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
 import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientInteractor;
 import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
@@ -114,9 +110,6 @@ import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
 import view.favorite_view.FavoriteView;
-import view.generate_recipe_view.GenerateByIngredientsPanel;
-import view.inventory.GenerateByInventoryPanel;
-import view.fav_view.FavoriteView;
 import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
@@ -177,7 +170,7 @@ public class AppBuilder {
      */
 
     private InventoryView inventoryView;
-    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final Inventory inventory = new Inventory(new ArrayList<>());
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
@@ -302,7 +295,6 @@ public class AppBuilder {
 
         userRecipeDetailsWindow = new UserRecipeDetailsWindow(userRecipeDetailsViewModel);
 
-        final ViewUserRecipeDetailsPresenter viewUserRecipeDetailsPresenter =
         viewUserRecipeDetailsPresenter =
                 new ViewUserRecipeDetailsPresenter(userRecipesViewModel, userRecipeDetailsViewModel);
 
@@ -394,12 +386,9 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        final ViewRecipesInteractor viewRecipesInteractor =
+        viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
-		viewRecipesInteractor =
-				new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
-		ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         final AddRecipePresenter addRecipePresenter =
                 new AddRecipePresenter(viewRecipesController, addRecipeViewModel);
@@ -421,10 +410,9 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        final ViewRecipesInteractor viewRecipesInteractor =
+        viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
-        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         addRecipeView.addCancelButtonUseCase(viewRecipesController);
 
@@ -442,8 +430,6 @@ public class AppBuilder {
 
         viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
-        ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
-        viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
