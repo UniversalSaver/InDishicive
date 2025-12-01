@@ -4,7 +4,6 @@ import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryCon
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.favorites.add_favorite.AddFavoriteController;
-import adapters.favorites.add_favorite.AddFavoriteViewModel;
 
 import javax.swing.*;
 
@@ -21,16 +20,13 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
     private final JList<String> list = new JList<>(model);
 
     private final GenerateWithInventoryViewModel viewModel;
-    private final AddFavoriteViewModel addFavoriteViewModel;
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel vm,
                                     ViewRecipeDetailsController detailsController,
-                                    AddFavoriteController addFavoriteController,
-                                    AddFavoriteViewModel addFavoriteViewModel) {
+                                    AddFavoriteController addFavoriteController) {
 
         this.viewModel = vm;
-        this.addFavoriteViewModel = addFavoriteViewModel;
 
         setLayout(new BorderLayout());
 
@@ -79,7 +75,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         });
 
         vm.addPropertyChangeListener(this);
-        addFavoriteViewModel.addPropertyChangeListener(this);
     }
 
     @Override
@@ -103,22 +98,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                 );
             }
             model.clear();
-        } else if (AddFavoriteViewModel.FAVORITE_ADDED.equals(name)) {
-            String msg = addFavoriteViewModel.getState().getStatusMessage();
-            JOptionPane.showMessageDialog(
-                    this,
-                    msg,
-                    "Successfully Added!",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        } else if (AddFavoriteViewModel.FAVORITE_FAILED.equals(name)) {
-            String msg = addFavoriteViewModel.getState().getStatusMessage();
-            JOptionPane.showMessageDialog(
-                    this,
-                    msg,
-                    "Adding to Favorites Failed!",
-                    JOptionPane.WARNING_MESSAGE
-            );
         }
     }
 
