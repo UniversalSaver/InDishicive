@@ -36,9 +36,6 @@ import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryVie
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
-import adapters.user_recipe.add_recipe.*;
-import adapters.user_recipe.add_recipe.add_ingredient.*;
-import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.inventory.add_ingredient.AddIngredientController;
 import adapters.inventory.add_ingredient.AddIngredientPresenter;
 import adapters.inventory.add_ingredient.AddIngredientViewModel;
@@ -55,6 +52,7 @@ import adapters.user_recipe.add_recipe.SwitchViewController;
 import adapters.user_recipe.add_recipe.ViewCreatorPresenter;
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientController;
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientPresenter;
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
@@ -64,11 +62,8 @@ import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDeta
 import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsPresenter;
 import databases.dietary_restriction.DietResDataAccessObject;
 import databases.dietary_restriction.MealDbIngredientGateway;
-import databases.generate_recipe.InventoryReaderFromInventory;
-import logic.dietary_restriction.DietaryRestrictionChecker;
-import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
-import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import databases.favorites.FavoriteDataAccessObject;
+import databases.generate_recipe.InventoryReaderFromInventory;
 import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
@@ -77,6 +72,8 @@ import databases.inventory.MealDBIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Inventory;
+import logic.dietary_restriction.DietaryRestrictionChecker;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
 import logic.dietary_restriction.remove_restriction.RemoveDietResInteractor;
 import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
@@ -90,6 +87,7 @@ import logic.generate_recipe.generate_by_ingredients.RecipeByIngredientsGateway;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInputBoundary;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryInteractor;
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
@@ -104,12 +102,12 @@ import logic.user_recipe.delete_recipe.DeleteUserRecipeInteractor;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsOutputBoundary;
-import view.inventory.GenerateByInventoryPanel;
-import view.generate_recipe_view.GenerateByIngredientsPanel;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
 import view.favorite_view.FavoriteView;
+import view.generate_recipe_view.GenerateByIngredientsPanel;
+import view.inventory.GenerateByInventoryPanel;
 import view.inventory.InventoryView;
 import view.user_recipe_view.AddRecipeView;
 import view.user_recipe_view.UserRecipesView;
@@ -345,12 +343,17 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Adds the delete recipe use case to the application builder.
+     *
+     * @return this AppBuilder instance for method chaining
+     */
     public AppBuilder addDeleteUserRecipeUseCase() {
-        DeleteUserRecipeInteractor deleteUserRecipeInteractor = new DeleteUserRecipeInteractor(
+        final DeleteUserRecipeInteractor deleteUserRecipeInteractor = new DeleteUserRecipeInteractor(
                 viewRecipesInteractor, fileDataAccessObject, viewUserRecipeDetailsPresenter
         );
 
-        DeleteUserRecipeController deleteUserRecipeController =
+        final DeleteUserRecipeController deleteUserRecipeController =
                 new DeleteUserRecipeController(deleteUserRecipeInteractor);
 
         userRecipesView.addDeleteRecipeUseCase(deleteUserRecipeController);
