@@ -1,11 +1,19 @@
 package logic.generate_recipe.generate_with_inventory;
 
-import entity.Recipe;
-
 import java.util.List;
 
-public interface RecipeGateway {
+import entity.Recipe;
 
+/**
+ * Gateway for finding recipes based on available inventory items.
+ */
+public interface RecipeGateway {
+    /**
+     * Finds recipes that can be made using the given inventory items.
+     *
+     * @param have the set of available ingredient names
+     * @return a list of matching recipes
+     */
     List<Recipe> findByInventory(java.util.Set<String> have);
 
 }
