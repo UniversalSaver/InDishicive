@@ -7,6 +7,7 @@ import java.util.Set;
 
 import entity.Ingredient;
 import entity.Recipe;
+import logic.dietary_restriction.DietaryRestrictionChecker;
 import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
@@ -19,12 +20,11 @@ public class GenerateByIngredientsInteractor implements GenerateByIngredientsInp
 
     public GenerateByIngredientsInteractor(RecipeByIngredientsGateway gateway,
                                            GenerateByIngredientsOutputBoundary presenter,
-                                           DietResDataAccessInterface dietResDataAccessInterface,
-                                           DietaryRestrictionCheckerInterface dietaryRestrictionChecker) {
+                                           DietResDataAccessInterface dietResDataAccessInterface) {
         this.gateway = gateway;
         this.presenter = presenter;
         this.dietResDataAccessInterface = dietResDataAccessInterface;
-        this.dietaryRestrictionChecker = dietaryRestrictionChecker;
+        this.dietaryRestrictionChecker = new DietaryRestrictionChecker();
     }
 
     @Override
