@@ -52,6 +52,7 @@ import adapters.user_recipe.add_recipe.SwitchViewController;
 import adapters.user_recipe.add_recipe.ViewCreatorPresenter;
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientController;
 import adapters.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientPresenter;
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.UserRecipeWindowModel;
 import adapters.user_recipe.view_recipes.UserRecipesViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
@@ -69,7 +70,6 @@ import databases.generate_recipe.MealDbRecipeGateway;
 import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDbIngredientDataAccess;
 import databases.user_recipe.FileDataAccessObject;
-import entity.Ingredient;
 import entity.Inventory;
 import logic.dietary_restriction.DietaryRestrictionChecker;
 import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
@@ -97,8 +97,10 @@ import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
 import logic.user_recipe.add_recipe.add_ingredient.AddRecipeIngredientInteractor;
 import logic.user_recipe.add_recipe.view_recipe_creator.ViewCreatorInteractor;
+import logic.user_recipe.delete_recipe.DeleteUserRecipeInteractor;
 import logic.user_recipe.view_recipes.ViewRecipesInteractor;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInteractor;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsOutputBoundary;
 import view.MainView;
 import view.diet_res_view.DietResView;
 import view.diet_res_view.DietResViewManager;
@@ -143,6 +145,10 @@ public class AppBuilder {
     private AddRecipeView addRecipeView;
     private AddRecipeViewModel addRecipeViewModel;
 
+    private ViewRecipesInteractor viewRecipesInteractor;
+    private ViewUserRecipeDetailsOutputBoundary viewUserRecipeDetailsPresenter;
+
+
     private final UserRecipesViewManagerModel userRecipesViewManagerModel = new UserRecipesViewManagerModel();
     private UserRecipesViewManager userRecipesViewManager;
 
@@ -161,7 +167,7 @@ public class AppBuilder {
      */
 
     private InventoryView inventoryView;
-    private final Inventory inventory = new Inventory(new ArrayList<Ingredient>());
+    private final Inventory inventory = new Inventory(new ArrayList<>());
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
@@ -213,7 +219,6 @@ public class AppBuilder {
 
     private final JPanel dietResCardPanel = new JPanel();
     private final CardLayout dietResCardLayout = new CardLayout();
-    private ViewRecipesInteractor viewRecipesInteractor;
 
     /*
     End of DietRes variables
@@ -287,7 +292,7 @@ public class AppBuilder {
 
         userRecipeDetailsWindow = new UserRecipeDetailsWindow(userRecipeDetailsViewModel);
 
-        final ViewUserRecipeDetailsPresenter viewUserRecipeDetailsPresenter =
+        viewUserRecipeDetailsPresenter =
                 new ViewUserRecipeDetailsPresenter(userRecipesViewModel, userRecipeDetailsViewModel);
 
         final ViewUserRecipeDetailsInteractor viewUserRecipeDetailsInteractor =
@@ -338,6 +343,24 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the delete recipe use case to the application builder.
+     *
+     * @return this AppBuilder instance for method chaining
+     */
+    public AppBuilder addDeleteUserRecipeUseCase() {
+        final DeleteUserRecipeInteractor deleteUserRecipeInteractor = new DeleteUserRecipeInteractor(
+                viewRecipesInteractor, fileDataAccessObject, viewUserRecipeDetailsPresenter
+        );
+
+        final DeleteUserRecipeController deleteUserRecipeController =
+                new DeleteUserRecipeController(deleteUserRecipeInteractor);
+
+        userRecipesView.addDeleteRecipeUseCase(deleteUserRecipeController);
+
+        return this;
+    }
+
+    /**
      * Adds the recipe ingredient use case to the application builder.
      *
      * @return this AppBuilder instance for method chaining
@@ -365,7 +388,7 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        final ViewRecipesInteractor viewRecipesInteractor =
+        viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
@@ -389,7 +412,7 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        final ViewRecipesInteractor viewRecipesInteractor =
+        viewRecipesInteractor =
                 new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
@@ -407,7 +430,8 @@ public class AppBuilder {
         final ViewRecipesPresenter viewRecipesPresenter = new ViewRecipesPresenter(
                 this.userRecipeWindowModel, this.userRecipesViewManagerModel, this.userRecipesViewModel);
 
-        viewRecipesInteractor = new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
+        viewRecipesInteractor =
+                new ViewRecipesInteractor(viewRecipesPresenter, this.fileDataAccessObject);
         final ViewRecipesController viewRecipesController = new ViewRecipesController(viewRecipesInteractor);
 
         mainWindow.addViewRecipesUseCase(viewRecipesController);
