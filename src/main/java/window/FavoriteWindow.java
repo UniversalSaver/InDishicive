@@ -1,6 +1,6 @@
 package window;
 import adapters.favorites.view_favorite.ViewFavoriteViewModel;
-import view.fav_view.FavoriteView;
+import view.favorite_view.FavoriteView;
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
