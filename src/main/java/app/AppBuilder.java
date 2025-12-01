@@ -347,7 +347,7 @@ public class AppBuilder {
         final AddRecipeIngredientPresenter addIngredientPresenter =
                 new AddRecipeIngredientPresenter(this.addRecipeViewModel);
         final AddRecipeIngredientInteractor addIngredientInteractor =
-                new AddRecipeIngredientInteractor(new FromMemoryMealRecipeDataAccessObject(),
+                new AddRecipeIngredientInteractor(new MealDbIngredientDataAccess(),
                         addIngredientPresenter);
         final AddRecipeIngredientController addIngredientController =
                 new AddRecipeIngredientController(addIngredientInteractor);
