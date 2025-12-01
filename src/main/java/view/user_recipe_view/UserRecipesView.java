@@ -1,6 +1,5 @@
 package view.user_recipe_view;
 
-import java.awt.*;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -27,7 +26,8 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
     public static final int PANEL_WIDTH = 600;
     public static final int PANEL_HEIGHT = 350;
 
-    private DeleteUserRecipeController deleteUserRecipeController;
+    private transient DeleteUserRecipeController deleteUserRecipeController;
+    private transient ViewUserRecipeDetailsController viewRecipeDetailsController;
 
     private final String viewName;
 
@@ -37,7 +37,6 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
     private final JPanel addRecipesPanel;
     private final JLabel viewDetailsErrorLabel = new JLabel();
 
-    private ViewUserRecipeDetailsController viewRecipeDetailsController;
 
     private final JLabel numberOfRecipesLabel = new JLabel();
 
@@ -75,7 +74,7 @@ public class UserRecipesView extends JPanel implements PropertyChangeListener {
 	}
 
     /**
-     * Adds the delete use recipe use case to the controller
+     * Adds the delete use recipe use case to the controller.
      * @param controller controller for use case
      */
     public void addDeleteRecipeUseCase(DeleteUserRecipeController controller) {

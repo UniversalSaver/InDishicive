@@ -1,9 +1,11 @@
 package adapters.user_recipe.delete_recipe;
 
-import com.sun.source.doctree.EndElementTree;
 import logic.user_recipe.delete_recipe.DeleteUserRecipeInputBoundary;
 import logic.user_recipe.delete_recipe.DeleteUserRecipeInputData;
 
+/**
+ * The controller for the delete user recipe use case
+ */
 public class DeleteUserRecipeController {
     private final DeleteUserRecipeInputBoundary deleteUserRecipeInteractor;
 

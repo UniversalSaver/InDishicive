@@ -1,6 +1,15 @@
 package databases.user_recipe;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,13 +19,13 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import logic.user_recipe.delete_recipe.DeleteUserRecipeDataAccessInterface;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import entity.Ingredient;
 import entity.UserRecipe;
 import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
+import logic.user_recipe.delete_recipe.DeleteUserRecipeDataAccessInterface;
 import logic.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsDataAccessInterface;
 
@@ -35,6 +44,8 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
 
     static final char COMPONENT_SEPARATOR = '\t';
     static final char RECIPE_SEPARATOR = '\n';
+
+    static final String TEMPORARY_FILE_PATH = "temp_file.tsv";
 
     private final Map<String, Integer> headerPositions = new HashMap<>();
 
@@ -59,12 +70,12 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
 
 	@Override
 	public String addRecipe(UserRecipe recipe) {
-		String returnMessage;
+		final String returnMessage;
 
         if (recipeExists(recipe)) {
 			returnMessage = "Recipe with that name already exists";
 		} else {
-            returnMessage = addRecipeToDatabase(recipe);
+            returnMessage = addRecipeToDatabase(recipe, filePath);
         }
 
 		return returnMessage;
@@ -84,29 +95,36 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
         if (recipeExists(new UserRecipe(title, new ArrayList<>(), "", ""))) {
             this.userRecipes.removeIf(userRecipe -> userRecipe.getTitle().equals(title));
 
-            File file = new File(filePath);
-            if (file.delete()) {
-                writeHeader(filePath);
+            try {
+                writeHeader(TEMPORARY_FILE_PATH);
 
                 for (UserRecipe recipe : userRecipes) {
 
-                    if (!addRecipeToDatabase(recipe).equals(AddRecipeDataAccessInterface.ADDED_MESSAGE)) {
+                    if (!addRecipeToDatabase(recipe, TEMPORARY_FILE_PATH)
+                            .equals(AddRecipeDataAccessInterface.ADDED_MESSAGE)) {
                         throw new CorruptDataException("Couldn't add already existing recipes back");
                     }
                 }
+
+                final Path sourceFile = Paths.get(TEMPORARY_FILE_PATH);
+                final Path destinationFile = Paths.get(filePath);
+                Files.copy(sourceFile, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+
+                Files.delete(sourceFile);
+            } catch (IOException ex) {
+                result = "Couldn't access the recipe file";
             }
         } else {
             result = "Recipe with that name does not exist";
         }
 
-
         return result;
     }
 
-    private String addRecipeToDatabase(UserRecipe recipe) {
+    private String addRecipeToDatabase(UserRecipe recipe, String file) {
         String returnMessage = AddRecipeDataAccessInterface.ADDED_MESSAGE;
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             final String name = replaceWithEscapes(recipe.getTitle());
             final String description = replaceWithEscapes(recipe.getDescription());
             final String steps = replaceWithEscapes(recipe.getSteps());
