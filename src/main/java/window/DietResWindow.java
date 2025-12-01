@@ -1,29 +1,33 @@
 package window;
 
-import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
+
 public class DietResWindow extends JFrame implements PropertyChangeListener {
 
-    private final DietResWindowModel dietResWindowModel;
-
     /**
+     * Given cardPanel and dietResWindowModel, creates a new DietResWindow.
      * @param cardPanel The panel containing the views (managed by DietResViewManager)
      * @param dietResWindowModel The model deciding if this window is visible
      */
     public DietResWindow(JPanel cardPanel, DietResWindowModel dietResWindowModel) {
-        super("Dietary Restricted Ingredients");
+        super("Restrictions List");
 
-        this.dietResWindowModel = dietResWindowModel;
+        dietResWindowModel.addPropertyChangeListener(this);
 
-        this.dietResWindowModel.addPropertyChangeListener(this);
+        final int width = 300;
+        final int height = 400;
 
-        this.setSize(600, 400);
-        this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        this.setSize(width, height);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
         if (cardPanel != null) {
