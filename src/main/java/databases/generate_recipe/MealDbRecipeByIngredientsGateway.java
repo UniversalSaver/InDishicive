@@ -21,6 +21,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Implementation of the RecipeByIngredientsGateway that interfaces with TheMealDB API.
+ * This gateway searches for recipes that contain all provided ingredients by:
+ * 1. Fetching lists of recipes for each individual ingredient from the API.
+ * 2. Computing the intersection of these lists to identify recipes common to all ingredients.
+ * 3. Retrieving full recipe details (instructions, specific measurements, etc.) for the matching IDs.
+ */
 public class MealDbRecipeByIngredientsGateway implements RecipeByIngredientsGateway {
 
     private static final Logger LOGGER = Logger.getLogger(MealDbRecipeByIngredientsGateway.class.getName());
