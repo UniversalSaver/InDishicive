@@ -462,7 +462,7 @@ public class AppBuilder {
      */
     public AppBuilder addInventoryView() {
         final MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
-        final InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
+        final InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject();
 
         final SearchIngredientsPresenter searchPresenter =
                 new SearchIngredientsPresenter(searchIngredientsViewModel);
@@ -483,7 +483,7 @@ public class AppBuilder {
         final RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
 
         inventoryView = new InventoryView(searchController, addController, removeController,
-                searchIngredientsViewModel, inventory);
+                searchIngredientsViewModel, inventoryDataObject);
 
         mainView.addInventoryTab(inventoryView);
 
