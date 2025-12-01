@@ -22,11 +22,13 @@ import entity.Ingredient;
 import entity.UserRecipe;
 import logic.user_recipe.add_recipe.AddRecipeDataAccessInterface;
 import logic.user_recipe.view_recipes.ViewRecipesDataAccessInterface;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsDataAccessInterface;
 
 /**
  * A class to access the files for user created recipes.
  */
-public class FileDataAccessObject implements ViewRecipesDataAccessInterface, AddRecipeDataAccessInterface {
+public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
+        AddRecipeDataAccessInterface, ViewUserRecipeDetailsDataAccessInterface {
 
     static final String USER_RECIPE_FILE_HEADER = "title\tingredients\tsteps\tdescription";
     static final int HEADER_LENGTH = 4;
@@ -65,37 +67,55 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 
         if (recipeExists(recipe)) {
 			returnMessage = "Recipe with that name already exists";
-		}
-
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-			final String name = replaceWithEscapes(recipe.getTitle());
-			final String description = replaceWithEscapes(recipe.getDescription());
-			final String steps = replaceWithEscapes(recipe.getSteps());
-			final String ingredients = getIngredientsString(recipe);
-
-			if ("Please choose a name without special characters".equals(ingredients)
-                    || "Please choose an amount without special characters".equals(ingredients)) {
-				returnMessage = ingredients;
-			}
-
-			final String recipeString = name + '\t'
-                    + ingredients + '\t'
-                    + steps + '\t'
-                    + description + '\n';
-
-			writer.append(recipeString);
-		} catch (IOException fileReadingException) {
-			returnMessage = "File corrupted";
-		}
+		} else {
+            returnMessage = addRecipeToDatabase(recipe, returnMessage);
+        }
 
 		return returnMessage;
 	}
 
-	@Override
+    private String addRecipeToDatabase(UserRecipe recipe, String returnMessage) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            final String name = replaceWithEscapes(recipe.getTitle());
+            final String description = replaceWithEscapes(recipe.getDescription());
+            final String steps = replaceWithEscapes(recipe.getSteps());
+            final String ingredients = getIngredientsString(recipe);
+
+            if ("Please choose a name without special characters".equals(ingredients)
+                    || "Please choose an amount without special characters".equals(ingredients)) {
+                returnMessage = ingredients;
+            }
+
+            final String recipeString = name + '\t'
+                    + ingredients + '\t'
+                    + steps + '\t'
+                    + description + '\n';
+
+            writer.append(recipeString);
+        } catch (IOException fileReadingException) {
+            returnMessage = "File corrupted";
+        }
+        return returnMessage;
+    }
+
+    @Override
 	public List<UserRecipe> getUserRecipes() {
 		this.updateUserRecipes();
 		return this.userRecipes;
 	}
+
+    @Override
+    public UserRecipe getRecipeByTitle(String recipeTitle) {
+        UserRecipe result = null;
+        final List<UserRecipe> updatedUserRecipes = getUserRecipes();
+
+        for (UserRecipe userRecipe : updatedUserRecipes) {
+            if (userRecipe.getTitle().equals(recipeTitle)) {
+                result = userRecipe;
+            }
+        }
+        return result;
+    }
 
 	private static String getIngredientsString(UserRecipe recipe) {
         StringBuilder result = new StringBuilder();
@@ -135,6 +155,7 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface, Add
 		for (UserRecipe userRecipe : userRecipes) {
 			if (userRecipe.getTitle().equals(recipe.getTitle())) {
 				recipeExists = true;
+                break;
 			}
 		}
 		return recipeExists;
