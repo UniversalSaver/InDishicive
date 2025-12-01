@@ -28,13 +28,7 @@ public class MealDbRandomRecipeGateway implements RandomRecipeGateway {
             }
 
             String body = response.body().string();
-            JSONObject root = new JSONObject(body);
-            if (root.isNull("meals")) return Optional.empty();
-
-            JSONArray meals = root.getJSONArray("meals");
-            if (meals.isEmpty()) return Optional.empty();
-
-            return Optional.of(parseRecipe(meals.getJSONObject(0)));
+            return getRecipeFromBody(body);
 
         } catch (IOException | org.json.JSONException e) {
             e.printStackTrace();
@@ -42,7 +36,19 @@ public class MealDbRandomRecipeGateway implements RandomRecipeGateway {
         }
     }
 
-    // Helper to parse JSON to Entity (similar to your existing Gateways)
+    private Optional<Recipe> getRecipeFromBody(String body) {
+        Optional<Recipe> result = Optional.empty();
+        JSONObject root = new JSONObject(body);
+
+        if (!root.isNull("meals")) {
+            JSONArray meals = root.getJSONArray("meals");
+            if (!meals.isEmpty()) {
+                result = Optional.of(parseRecipe(meals.getJSONObject(0)));
+            }
+        }
+        return result;
+    }
+
     private Recipe parseRecipe(JSONObject m) {
         String title = m.optString("strMeal", "");
         String instructions = m.optString("strInstructions", "");
@@ -50,6 +56,12 @@ public class MealDbRandomRecipeGateway implements RandomRecipeGateway {
         String youtube = m.optString("strYoutube", "");
         String category = m.optString("strCategory", "");
 
+        List<Ingredient> ingredients = getIngredients(m);
+
+        return new Recipe(title, ingredients, instructions, image, youtube, category);
+    }
+
+    private List<Ingredient> getIngredients(JSONObject m) {
         List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 1; i <= 20; i++) {
             String ing = m.optString("strIngredient" + i, "").trim();
@@ -58,6 +70,6 @@ public class MealDbRandomRecipeGateway implements RandomRecipeGateway {
                 ingredients.add(new Ingredient(ing, measure));
             }
         }
-        return new Recipe(title, ingredients, instructions, image, youtube, category);
+        return ingredients;
     }
 }
