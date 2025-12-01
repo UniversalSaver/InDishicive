@@ -25,6 +25,7 @@ public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBounda
             presenter.present(new ViewRecipeDetailsOutputData(
                     "",
                     java.util.List.of(),
+                    "",
                     ""
             ));
             return;
@@ -35,7 +36,8 @@ public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBounda
                 recipe.getIngredients().stream()
                         .map(i -> i.getName() + ": " + i.getAmount())
                         .collect(Collectors.toList()),
-                recipe.getSteps()
+                recipe.getSteps(),
+                recipe.getYoutubeLink()
         ));
     }
 }
