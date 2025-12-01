@@ -26,6 +26,10 @@ import adapters.dietary_restriction.view_diet_res.DietResViewModel;
 import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
 import adapters.dietary_restriction.view_diet_res.ViewRestrictionsState;
 
+/**
+ * The main view panel for managing dietary restrictions.
+ * Allows users to view the list of restrictions, add new ones, and remove existing ones.
+ */
 public class DietResView extends JPanel implements PropertyChangeListener {
     private final String viewName;
 
