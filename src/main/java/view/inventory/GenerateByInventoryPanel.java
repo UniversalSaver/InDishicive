@@ -14,13 +14,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+/**
+ * The panel for generating from inventory.
+ */
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
     private final DefaultListModel<String> model = new DefaultListModel<>();
     private final JList<String> list = new JList<>(model);
 
     private final GenerateWithInventoryViewModel viewModel;
-    private final AddFavoriteViewModel addFavoriteViewModel;
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel vm,
@@ -30,7 +32,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                                     RandomRecipeController randomRecipeController) {
 
         this.viewModel = vm;
-        this.addFavoriteViewModel = addFavoriteViewModel;
 
         setLayout(new BorderLayout());
 
@@ -88,7 +89,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         });
 
         vm.addPropertyChangeListener(this);
-        addFavoriteViewModel.addPropertyChangeListener(this);
     }
 
     @Override
@@ -112,22 +112,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                 );
             }
             model.clear();
-        } else if (AddFavoriteViewModel.FAVORITE_ADDED.equals(name)) {
-            String msg = addFavoriteViewModel.getState().getStatusMessage();
-            JOptionPane.showMessageDialog(
-                    this,
-                    msg,
-                    "Successfully Added!",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-        } else if (AddFavoriteViewModel.FAVORITE_FAILED.equals(name)) {
-            String msg = addFavoriteViewModel.getState().getStatusMessage();
-            JOptionPane.showMessageDialog(
-                    this,
-                    msg,
-                    "Adding to Favorites Failed!",
-                    JOptionPane.WARNING_MESSAGE
-            );
         }
     }
 }

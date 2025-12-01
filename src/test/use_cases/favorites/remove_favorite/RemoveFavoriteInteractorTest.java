@@ -12,7 +12,11 @@ import logic.favorites.favorite_recipes.FavoriteDataAccessInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for the RemoveFavoriteInteractor use case.
@@ -28,7 +32,7 @@ class RemoveFavoriteInteractorTest {
     void setUp() {
         mockDataAccess = new MockFavoriteDataAccess();
         mockPresenter = new MockPresenter();
-        interactor = new RemoveFavoriteInteractor(mockDataAccess, mockPresenter);
+        interactor = new RemoveFavoriteInteractor(mockDataAccess, mockDataAccess, mockPresenter);
     }
 
     @Test
@@ -64,7 +68,7 @@ class RemoveFavoriteInteractorTest {
         // check if fail view was called with correct message
         assertFalse(mockPresenter.successCalled);
         assertTrue(mockPresenter.failCalled);
-        assertEquals("Recipe is not favorite!", mockPresenter.errorMessage);
+        assertEquals("Recipe is not in favorites!", mockPresenter.errorMessage);
 
         // check that no recipe was removed
         assertEquals(0, mockDataAccess.removedRecipes.size());
@@ -198,5 +202,6 @@ class RemoveFavoriteInteractorTest {
             errorMessage = null;
             outputData = null;
         }
+        
     }
 }

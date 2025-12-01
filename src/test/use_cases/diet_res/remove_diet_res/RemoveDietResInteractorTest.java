@@ -1,4 +1,4 @@
-package use_cases.remove_diet_res;
+package use_cases.diet_res.remove_diet_res;
 
 import entity.Ingredient;
 import org.junit.jupiter.api.Test;
