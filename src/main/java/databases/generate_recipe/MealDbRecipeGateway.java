@@ -1,7 +1,11 @@
 package databases.generate_recipe;
 
+import java.io.IOException;
+import java.util.*;
+
 import entity.Ingredient;
 import entity.Recipe;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -9,8 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 
-import java.io.IOException;
-import java.util.*;
 
 public class MealDbRecipeGateway implements RecipeGateway {
 
@@ -20,10 +22,10 @@ public class MealDbRecipeGateway implements RecipeGateway {
     private final OkHttpClient client = new OkHttpClient();
 
     private final Map<String, Recipe> cache = new LinkedHashMap<>();
-    private boolean cacheLoaded = false;
+    private boolean cacheLoaded;
 
     private String get(String url) throws IOException {
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(url)
                 .build();
 
@@ -54,24 +56,24 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
 
         for (char c = 'a'; c <= 'z'; c++) {
-            String url = BASE_URL + "search.php?f=" + c;
+            final String url = BASE_URL + "search.php?f=" + c;
             try {
-                String body = get(url);
+                final String body = get(url);
                 if (body == null) {
                     continue;
                 }
 
-                JSONObject root = new JSONObject(body);
-                JSONArray meals = root.optJSONArray("meals");
+                final JSONObject root = new JSONObject(body);
+                final JSONArray meals = root.optJSONArray("meals");
                 if (meals == null) {
                     continue;
                 }
 
                 for (int i = 0; i < meals.length(); i++) {
-                    JSONObject m = meals.getJSONObject(i);
-                    Recipe recipe = parseFullRecipe(m);
+                    final JSONObject m = meals.getJSONObject(i);
+                    final Recipe recipe = parseFullRecipe(m);
 
-                    String title = recipe.getTitle();
+                    final String title = recipe.getTitle();
                     if (title == null || title.isBlank()) {
                         continue;
                     }
@@ -79,8 +81,9 @@ public class MealDbRecipeGateway implements RecipeGateway {
                     cache.putIfAbsent(title, recipe);
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+            catch (IOException exception) {
+                exception.printStackTrace();
             }
         }
 
@@ -94,12 +97,12 @@ public class MealDbRecipeGateway implements RecipeGateway {
         }
 
         ensureCacheLoaded();
-        Set<String> available = new HashSet<>();
+        final Set<String> available = new HashSet<>();
         for (String raw : have) {
             if (raw == null) {
                 continue;
             }
-            String normalized = raw.trim().toLowerCase();
+            final String normalized = raw.trim().toLowerCase();
             if (!normalized.isEmpty()) {
                 available.add(normalized);
             }
@@ -109,7 +112,7 @@ public class MealDbRecipeGateway implements RecipeGateway {
             return List.of();
         }
 
-        List<Recipe> result = new ArrayList<>();
+        final List<Recipe> result = new ArrayList<>();
 
         for (Recipe recipe : cache.values()) {
             if (allIngredientsInInventory(recipe, available)) {
@@ -121,16 +124,16 @@ public class MealDbRecipeGateway implements RecipeGateway {
     }
 
     private Recipe parseFullRecipe(JSONObject m) {
-        String title = m.optString("strMeal", "");
-        String instructions = m.optString("strInstructions", "");
-        String image = m.optString("strMealThumb", "");
-        String youtube = m.optString("strYoutube", "");
-        String category = m.optString("strCategory", "");
+        final String title = m.optString("strMeal", "");
+        final String instructions = m.optString("strInstructions", "");
+        final String image = m.optString("strMealThumb", "");
+        final String youtube = m.optString("strYoutube", "");
+        final String category = m.optString("strCategory", "");
 
-        List<Ingredient> ingredients = new ArrayList<>();
+        final List<Ingredient> ingredients = new ArrayList<>();
         for (int i = 1; i <= MAX_INGREDIENTS; i++) {
-            String ing = m.optString("strIngredient" + i, "").trim();
-            String measure = m.optString("strMeasure" + i, "").trim();
+            final String ing = m.optString("strIngredient" + i, "").trim();
+            final String measure = m.optString("strMeasure" + i, "").trim();
             if (ing.isEmpty()) {
                 continue;
             }
@@ -145,7 +148,7 @@ public class MealDbRecipeGateway implements RecipeGateway {
             if (ing == null || ing.getName() == null) {
                 return false;
             }
-            String name = ing.getName().trim().toLowerCase();
+            final String name = ing.getName().trim().toLowerCase();
             if (name.isEmpty()) {
                 continue;
             }

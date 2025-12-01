@@ -22,41 +22,42 @@ public class MealDbRecipeDetailsGateway implements RecipeDetailsGateway {
 
     @Override
     public Recipe findByTitle(String title) {
-        String url = API_BASE + title.replace(" ", "%20");
-        Request request = new Request.Builder().url(url).build();
+        final String url = API_BASE + title.replace(" ", "%20");
+        final Request request = new Request.Builder().url(url).build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
                 return null;
             }
-            String body = response.body().string();
-            JSONObject root = new JSONObject(body);
+            final String body = response.body().string();
+            final JSONObject root = new JSONObject(body);
             if (root.isNull("meals")) {
                 return null;
             }
-            JSONArray meals = root.getJSONArray("meals");
+            final JSONArray meals = root.getJSONArray("meals");
             if (meals.isEmpty()) {
                 return null;
             }
-            JSONObject meal = meals.getJSONObject(0);
+            final JSONObject meal = meals.getJSONObject(0);
 
-            String mealTitle = meal.getString("strMeal");
-            String instructions = meal.optString("strInstructions", "");
-            String image = meal.optString("strMealThumb", "");
-            String youtube = meal.optString("strYoutube", "");
-            String category = meal.optString("strCategory", "");
+            final String mealTitle = meal.getString("strMeal");
+            final String instructions = meal.optString("strInstructions", "");
+            final String image = meal.optString("strMealThumb", "");
+            final String youtube = meal.optString("strYoutube", "");
+            final String category = meal.optString("strCategory", "");
 
-            List<Ingredient> ingredients = new ArrayList<>();
+            final List<Ingredient> ingredients = new ArrayList<>();
             for (int i = 1; i <= 20; i++) {
-                String ingName = meal.optString("strIngredient" + i, "").trim();
-                String ingMeasure = meal.optString("strMeasure" + i, "").trim();
+                final String ingName = meal.optString("strIngredient" + i, "").trim();
+                final String ingMeasure = meal.optString("strMeasure" + i, "").trim();
                 if (ingName.isEmpty()) break;
                 ingredients.add(new Ingredient(ingName, ingMeasure));
             }
 
             return new Recipe(mealTitle, ingredients, instructions, image, youtube, category);
 
-        } catch (IOException e) {
+        }
+        catch (IOException exception) {
             return null;
         }
     }
