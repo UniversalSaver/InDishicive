@@ -10,6 +10,10 @@ import javax.swing.WindowConstants;
 
 import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
 
+/**
+ * The window responsible for displaying the dietary restrictions interface.
+ * It listens for property changes from the DietResWindowModel to control its own visibility.
+ */
 public class DietResWindow extends JFrame implements PropertyChangeListener {
 
     /**
