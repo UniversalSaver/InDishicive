@@ -5,17 +5,26 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import entity.Ingredient;
 import entity.Recipe;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
+import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
 public class GenerateByIngredientsInteractor implements GenerateByIngredientsInputBoundary {
 
     private final RecipeByIngredientsGateway gateway;
     private final GenerateByIngredientsOutputBoundary presenter;
+    private final DietResDataAccessInterface dietResDataAccessInterface;
+    private final DietaryRestrictionCheckerInterface dietaryRestrictionChecker;
 
     public GenerateByIngredientsInteractor(RecipeByIngredientsGateway gateway,
-                                           GenerateByIngredientsOutputBoundary presenter) {
+                                           GenerateByIngredientsOutputBoundary presenter,
+                                           DietResDataAccessInterface dietResDataAccessInterface,
+                                           DietaryRestrictionCheckerInterface dietaryRestrictionChecker) {
         this.gateway = gateway;
         this.presenter = presenter;
+        this.dietResDataAccessInterface = dietResDataAccessInterface;
+        this.dietaryRestrictionChecker = dietaryRestrictionChecker;
     }
 
     @Override
@@ -24,10 +33,12 @@ public class GenerateByIngredientsInteractor implements GenerateByIngredientsInp
 
         final List<Recipe> recipes = gateway.findByIngredients(cleaned);
 
-        final List<String> titles = new ArrayList<>();
-        for (Recipe r : recipes) {
-            titles.add(r.getTitle());
-        }
+        final List<Ingredient> restrictions = dietResDataAccessInterface.getResIngredients();
+
+        final List<String> titles = recipes.stream()
+                .filter(recipe -> !dietaryRestrictionChecker.containsRestrictedIngredient(recipe, restrictions))
+                .map(Recipe::getTitle)
+                .toList();
 
         final GenerateByIngredientsOutputData out =
                 new GenerateByIngredientsOutputData(titles);
