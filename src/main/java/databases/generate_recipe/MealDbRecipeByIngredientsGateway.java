@@ -69,7 +69,6 @@ public class MealDbRecipeByIngredientsGateway implements RecipeByIngredientsGate
 
         final List<String> cleaned = cleanIngredients(ingredients);
         if (!cleaned.isEmpty()) {
-            // We need to map Title -> Thumb AND Title -> ID
             final Map<String, String> titleToThumb = new LinkedHashMap<>();
             final Map<String, String> titleToId = new LinkedHashMap<>();
 
