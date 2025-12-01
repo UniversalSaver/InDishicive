@@ -68,7 +68,6 @@ import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
 import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDbIngredientDataAccess;
-import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
 import entity.Inventory;
@@ -802,7 +801,9 @@ public class AppBuilder {
         final RecipeByIngredientsGateway gateway = new MealDbRecipeByIngredientsGateway();
 
         final GenerateByIngredientsInputBoundary interactor =
-                new GenerateByIngredientsInteractor(gateway, presenter);
+                new GenerateByIngredientsInteractor(gateway,
+                                                    presenter,
+                                                    this.restrictionDataAccess);
 
         final GenerateByIngredientsController controller =
                 new GenerateByIngredientsController(interactor);
