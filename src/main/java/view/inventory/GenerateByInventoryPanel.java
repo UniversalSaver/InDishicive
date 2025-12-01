@@ -4,7 +4,6 @@ import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryCon
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.favorites.add_favorite.AddFavoriteController;
-import adapters.favorites.add_favorite.AddFavoriteViewModel;
 import adapters.generate_recipe.random_recipe.RandomRecipeController;
 
 import javax.swing.*;
@@ -28,7 +27,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                                     GenerateWithInventoryViewModel vm,
                                     ViewRecipeDetailsController detailsController,
                                     AddFavoriteController addFavoriteController,
-                                    AddFavoriteViewModel addFavoriteViewModel,
                                     RandomRecipeController randomRecipeController) {
 
         this.viewModel = vm;

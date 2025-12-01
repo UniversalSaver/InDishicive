@@ -797,7 +797,6 @@ public class AppBuilder {
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
                 this.addFavoriteController,
-                this.addFavoriteViewModel,
                 this.randomRecipeController
         );
     }

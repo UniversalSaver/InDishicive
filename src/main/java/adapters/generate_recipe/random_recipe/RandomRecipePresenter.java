@@ -6,8 +6,10 @@ import entity.Recipe;
 import logic.generate_recipe.random_recipe.RandomRecipeOutputBoundary;
 
 import javax.swing.JOptionPane;
-import java.util.stream.Collectors;
 
+/**
+ * A presenter for the random recipe use case.
+ */
 public class RandomRecipePresenter implements RandomRecipeOutputBoundary {
     private final ViewRecipeDetailsViewModel recipeDetailsViewModel;
 
@@ -28,8 +30,7 @@ public class RandomRecipePresenter implements RandomRecipeOutputBoundary {
         state.setTitle(recipe.getTitle());
         state.setInstructions(recipe.getSteps());
         state.setIngredients(recipe.getIngredients().stream()
-                .map(i -> i.getName() + ": " + i.getAmount())
-                .collect(Collectors.toList()));
+                .map(i -> i.getName() + ": " + i.getAmount()).toList());
         return state;
     }
 

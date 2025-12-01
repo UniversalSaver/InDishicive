@@ -7,6 +7,9 @@ import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A concrete interactor for the input boundary.
+ */
 public class RandomRecipeInteractor implements RandomRecipeInputBoundary {
     private final RandomRecipeGateway randomRecipeGateway;
     private final DietResDataAccessInterface dietResDataAccess;

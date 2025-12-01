@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A database access object meant for use with the random recipe use case.
+ */
 public class MealDbRandomRecipeGateway implements RandomRecipeGateway {
     private static final String RANDOM_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
     private final OkHttpClient client = new OkHttpClient();
