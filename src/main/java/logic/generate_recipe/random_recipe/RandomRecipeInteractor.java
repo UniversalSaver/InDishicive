@@ -23,27 +23,28 @@ public class RandomRecipeInteractor implements RandomRecipeInputBoundary {
     @Override
     public void execute() {
         List<Ingredient> restrictedIngredients = dietResDataAccess.getResIngredients();
+        int maxRetries = 5;
 
-        boolean recipeFound = findAndPresentSafeRecipe(restrictedIngredients);
+        boolean recipeFound = findAndPresentSafeRecipe(restrictedIngredients, maxRetries);
 
         if (!recipeFound) {
             presenter.prepareFailView("Could not find a recipe matching your restrictions after multiple attempts.");
         }
     }
 
-    private boolean findAndPresentSafeRecipe(List<Ingredient> restrictedIngredients) {
+    private boolean findAndPresentSafeRecipe(List<Ingredient> restrictedIngredients, int maxRetries) {
         boolean found = false;
+        for (int i = 0; i < maxRetries && !found; i++) {
+            Optional<Recipe> recipeOpt = randomRecipeGateway.getRandomRecipe();
 
-        Optional<Recipe> recipeOpt = randomRecipeGateway.getRandomRecipe();
-
-        if (recipeOpt.isPresent()) {
-            Recipe recipe = recipeOpt.get();
-            if (isSafeToEat(recipe, restrictedIngredients)) {
-                presenter.prepareSuccessView(recipe);
-                found = true;
+            if (recipeOpt.isPresent()) {
+                Recipe recipe = recipeOpt.get();
+                if (isSafeToEat(recipe, restrictedIngredients)) {
+                    presenter.prepareSuccessView(recipe);
+                    found = true;
+                }
             }
         }
-
         return found;
     }
 
