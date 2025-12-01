@@ -1,7 +1,7 @@
 package view.inventory;
 
-import adapters.filter_by_cuisine.FilterByCuisineController;
-import adapters.generate_with_inventory.GenerateWithInventoryController;
+import adapters.favorites.add_favorite.AddFavoriteViewModel;
+import adapters.generate_recipe.filter_by_cuisine.FilterByCuisineController;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
@@ -23,6 +23,7 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
     private final JList<String> list = new JList<>(model);
 
     private final GenerateWithInventoryViewModel viewModel;
+    private final AddFavoriteViewModel addFavoriteViewModel;
 
     private final FilterByCuisineController filterController;
     private final JComboBox<String> cuisineBox = new JComboBox<>();
@@ -32,10 +33,12 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
                                     GenerateWithInventoryViewModel vm,
                                     ViewRecipeDetailsController detailsController,
                                     AddFavoriteController addFavoriteController,
-                                    RandomRecipeController randomRecipeController) {
-                                    FilterByCuisineController filterController) {
+                                    RandomRecipeController randomRecipeController,
+                                    FilterByCuisineController filterController,
+                                    AddFavoriteViewModel addFavoriteViewModel) {
 
         this.viewModel = vm;
+        this.addFavoriteViewModel = addFavoriteViewModel;
         this.filterController = filterController;
 
         setLayout(new BorderLayout());

@@ -27,8 +27,8 @@ import adapters.favorites.remove_favorites.RemoveFavoriteViewModel;
 import adapters.favorites.view_favorite.ViewFavoriteController;
 import adapters.favorites.view_favorite.ViewFavoritePresenter;
 import adapters.favorites.view_favorite.ViewFavoriteViewModel;
-import adapters.filter_by_cuisine.FilterByCuisineController;
-import adapters.filter_by_cuisine.FilterByCuisinePresenter;
+import adapters.generate_recipe.filter_by_cuisine.FilterByCuisineController;
+import adapters.generate_recipe.filter_by_cuisine.FilterByCuisinePresenter;
 import adapters.get_available_cuisines.GetAvailableCuisinesController;
 import adapters.get_available_cuisines.GetAvailableCuisinesPresenter;
 import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsController;
@@ -68,6 +68,7 @@ import databases.dietary_restriction.DietResDataAccessObject;
 import databases.dietary_restriction.MealDbIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.InventoryReaderFromInventory;
+import databases.generate_recipe.MealDbCuisineDataAccessObject;
 import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
@@ -83,7 +84,7 @@ import logic.dietary_restriction.view_restrictions.ViewRestrictionsInteractor;
 import logic.favorites.add_favorite.AddFavoriteInteractor;
 import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
 import logic.favorites.view_favorite.ViewFavoriteInteractor;
-import logic.filter_by_cuisine.FilterByCuisineInteractor;
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineInteractor;
 import logic.get_available_cuisines.GetAvailableCuisinesInteractor;
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInputBoundary;
 import logic.generate_recipe.generate_by_ingredients.GenerateByIngredientsInteractor;
@@ -818,8 +819,9 @@ public class AppBuilder {
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
                 this.addFavoriteController,
-                this.addFavoriteViewModel,
-                cuisineController
+                randomRecipeController,
+                cuisineController,
+                addFavoriteViewModel
         );
 
         cuisinesController.execute();

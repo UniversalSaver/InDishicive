@@ -1,8 +1,8 @@
-package interface_adapter.get_available_cuisines;
+package adapters.get_available_cuisines;
 
-import interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel;
-import use_case.get_available_cuisines.GetAvailableCuisinesOutputBoundary;
-import use_case.get_available_cuisines.GetAvailableCuisinesOutputData;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import logic.get_available_cuisines.GetAvailableCuisinesOutputBoundary;
+import logic.get_available_cuisines.GetAvailableCuisinesOutputData;
 
 import java.util.ArrayList;
 import java.util.List;

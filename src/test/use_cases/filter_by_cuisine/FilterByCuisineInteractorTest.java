@@ -1,7 +1,7 @@
 package use_cases.filter_by_cuisine;
 
 import org.junit.jupiter.api.Test;
-import use_case.filter_by_cuisine.*;
+import logic.generate_recipe.filter_by_cuisine.*;
 
 import java.util.List;
 
