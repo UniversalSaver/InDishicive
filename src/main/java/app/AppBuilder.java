@@ -801,8 +801,12 @@ public class AppBuilder {
 
         final RecipeByIngredientsGateway gateway = new MealDbRecipeByIngredientsGateway();
 
+        final DietaryRestrictionCheckerInterface dietaryRestrictionChecker = new DietaryRestrictionChecker();
         final GenerateByIngredientsInputBoundary interactor =
-                new GenerateByIngredientsInteractor(gateway, presenter);
+                new GenerateByIngredientsInteractor(gateway,
+                                                    presenter,
+                                                    this.restrictionDataAccess,
+                                                    dietaryRestrictionChecker);
 
         final GenerateByIngredientsController controller =
                 new GenerateByIngredientsController(interactor);
