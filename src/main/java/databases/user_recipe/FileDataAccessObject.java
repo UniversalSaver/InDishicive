@@ -84,14 +84,15 @@ public class FileDataAccessObject implements ViewRecipesDataAccessInterface,
             if ("Please choose a name without special characters".equals(ingredients)
                     || "Please choose an amount without special characters".equals(ingredients)) {
                 returnMessage = ingredients;
+            } else {
+
+                final String recipeString = name + '\t'
+                        + ingredients + '\t'
+                        + steps + '\t'
+                        + description + '\n';
+
+                writer.append(recipeString);
             }
-
-            final String recipeString = name + '\t'
-                    + ingredients + '\t'
-                    + steps + '\t'
-                    + description + '\n';
-
-            writer.append(recipeString);
         } catch (IOException fileReadingException) {
             returnMessage = "File corrupted";
         }
