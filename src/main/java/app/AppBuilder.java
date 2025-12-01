@@ -67,7 +67,7 @@ import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
 import databases.inventory.InventoryDataAccessObject;
-import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.MealDbIngredientDataAccess;
 import databases.test_DAO.FromMemoryMealRecipeDataAccessObject;
 import databases.user_recipe.FileDataAccessObject;
 import entity.Ingredient;
@@ -462,7 +462,7 @@ public class AppBuilder {
      * @return this AppBuilder instance for method chaining
      */
     public AppBuilder addInventoryView() {
-        final MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+        final MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
         final InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(inventory);
 
         final SearchIngredientsPresenter searchPresenter =
