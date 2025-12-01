@@ -33,7 +33,7 @@ public class ViewRecipesPresenter implements ViewRecipesOutputBoundary {
             recipeSummaries.add(new RecipeSummary(recipe.getTitle(), recipe.getDescription()));
         }
 
-        userRecipesViewModel.setState(new ViewRecipesState(recipeSummaries, recipeSummaries.size()));
+        userRecipesViewModel.setState(new ViewRecipesState(recipeSummaries, recipeSummaries.size(), null));
         userRecipesViewModel.firePropertyChange(UserRecipesViewModel.SET_SUMMARIES);
 
         userRecipeWindowModel.firePropertyChange(UserRecipeWindowModel.SET_VISIBLE);

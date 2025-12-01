@@ -13,6 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
+import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
+import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInputData;
+
 /**
  * A user recipe visual. Used for showing a basic description of the recipe.
  */
@@ -23,16 +27,16 @@ public class UserRecipeVisual extends JPanel {
     public static final int INFO_WIDTH = 550;
     public static final int INFO_HEIGHT = 100;
 
-    private String title;
-    private String description;
+    private final String title;
+    private final String description;
 
-    private JPanel infoPanel = new JPanel();
-    private JPanel infoPanelNames = new JPanel();
-    private JPanel infoPanelData = new JPanel();
+    private final JPanel infoPanel = new JPanel();
+    private final JPanel infoPanelNames = new JPanel();
+    private final JPanel infoPanelData = new JPanel();
 
-    private JPanel infoPanelButtons = new JPanel();
-    private JButton deleteButton = new JButton("Delete");
-    private JButton viewButton = new JButton("View");
+    private final JPanel infoPanelButtons = new JPanel();
+    private final JButton deleteButton = new JButton("Delete");
+    private final JButton viewButton = new JButton("View");
 
     public UserRecipeVisual(String title, String description) {
         this.title = title;
@@ -52,6 +56,26 @@ public class UserRecipeVisual extends JPanel {
         infoPanelButtons.add(this.viewButton);
 
         this.add(infoPanelButtons);
+    }
+
+    /**
+     * This adds the view use case to the button.
+     * @param viewUserRecipeDetailsController controller to be called for execution
+     */
+    public void addViewUseCase(ViewUserRecipeDetailsController viewUserRecipeDetailsController) {
+        viewButton.addActionListener(buttonPress -> {
+            viewUserRecipeDetailsController.execute(new ViewUserRecipeDetailsInputData(title));
+        });
+    }
+
+    /**
+     * Adds the delete user recipe use case to the delete button.
+     * @param deleteUserRecipeController controller for the use case
+     */
+    public void addDeleteUserRecipeUseCase(DeleteUserRecipeController deleteUserRecipeController) {
+        deleteButton.addActionListener(buttonPress -> {
+            deleteUserRecipeController.execute(title);
+        });
     }
 
     private void createInfoPanel() {

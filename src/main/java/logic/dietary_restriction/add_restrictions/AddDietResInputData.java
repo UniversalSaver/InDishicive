@@ -12,6 +12,7 @@ public class AddDietResInputData {
     public AddDietResInputData(String ingredientName) {
         this.ingredient = new Ingredient(ingredientName, "");
     }
+
     public Ingredient getIngredient() {
         return ingredient;
     }
