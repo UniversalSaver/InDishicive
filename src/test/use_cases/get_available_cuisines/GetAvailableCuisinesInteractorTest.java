@@ -1,7 +1,12 @@
 package use_cases.get_available_cuisines;
 
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import adapters.generate_recipe.get_available_cuisines.GetAvailableCuisinesPresenter;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesDataAccessInterface;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesInteractor;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesOutputBoundary;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesOutputData;
 import org.junit.jupiter.api.Test;
-import use_case.get_available_cuisines.*;
 
 import java.util.List;
 
@@ -34,8 +39,8 @@ class GetAvailableCuisinesInteractorTest {
 
     @Test
     void presenterAddsAnyAndFiresToVm() {
-        var vm = new interface_adapter.generate_with_inventory.GenerateWithInventoryViewModel();
-        var presenter = new interface_adapter.get_available_cuisines.GetAvailableCuisinesPresenter(vm);
+        var vm = new GenerateWithInventoryViewModel();
+        var presenter = new GetAvailableCuisinesPresenter(vm);
 
         presenter.present(new GetAvailableCuisinesOutputData(List.of("Italian", "Mexican")));
 

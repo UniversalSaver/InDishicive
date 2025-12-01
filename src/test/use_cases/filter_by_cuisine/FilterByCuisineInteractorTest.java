@@ -1,7 +1,10 @@
 package use_cases.filter_by_cuisine;
 
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineDataAccessInterface;
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineInteractor;
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineOutputBoundary;
+import logic.generate_recipe.filter_by_cuisine.FilterByCuisineOutputData;
 import org.junit.jupiter.api.Test;
-import use_case.filter_by_cuisine.*;
 
 import java.util.List;
 
@@ -30,6 +33,6 @@ class FilterByCuisineInteractorTest {
 
         assertNotNull(pres.last);
         assertEquals("Any", pres.last.getCuisine());
-        assertTrue(pres.last.getRecipeTitles().isEmpty(), "Interactor should pass empty list for 'Any'");
+        assertTrue(pres.last.getRecipeTitles().isEmpty());
     }
 }

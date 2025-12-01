@@ -1,4 +1,4 @@
-package use_case.get_available_cuisines;
+package logic.generate_recipe.get_available_cuisines;
 
 import java.util.ArrayList;
 import java.util.List;

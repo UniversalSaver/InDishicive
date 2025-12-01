@@ -1,6 +1,6 @@
-package interface_adapter.get_available_cuisines;
+package adapters.generate_recipe.get_available_cuisines;
 
-import use_case.get_available_cuisines.GetAvailableCuisinesInputBoundary;
+import logic.generate_recipe.get_available_cuisines.GetAvailableCuisinesInputBoundary;
 
 public class GetAvailableCuisinesController {
 
