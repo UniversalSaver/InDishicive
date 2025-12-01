@@ -1,14 +1,16 @@
 package adapters.dietary_restriction.remove_diet_res;
 
-import adapters.ViewModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import adapters.ViewModel;
 
 public class RemoveDietResViewModel extends ViewModel<RemoveDietResState> {
     public static final String RESTRICTION_REMOVED = "restriction_removed";
     public static final String RESTRICTION_REMOVE_FAILED = "restriction_remove_failed";
 
     private RemoveDietResState state = new RemoveDietResState();
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     public RemoveDietResViewModel() {
         super("remove_restriction");
@@ -23,8 +25,6 @@ public class RemoveDietResViewModel extends ViewModel<RemoveDietResState> {
     public RemoveDietResState getState() {
         return state;
     }
-
-    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     @Override
     public void firePropertyChange(String propertyName) {
