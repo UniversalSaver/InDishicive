@@ -1,6 +1,7 @@
 package logic.user_recipe.add_recipe.add_ingredient;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +29,7 @@ public class AddRecipeIngredientInteractor implements AddRecipeIngredientInputBo
 		if (listOfIngredients == null) {
 			addIngredientPresenter.presentFailView();
 		} else {
+            listOfIngredients.sort(Comparator.comparing(Ingredient::getName));
 			addIngredientPresenter.presentSuccessView(getOutputData(listOfIngredients));
 		}
 	}
