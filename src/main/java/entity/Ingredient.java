@@ -22,10 +22,20 @@ public class Ingredient {
         this.name = name;
         this.amount = amount;
     }
+
+    /**
+     * Gets the name of this ingredient
+     * @return the ingredient name
+     */
     public String getName() {
         return name;
     }
-    public String getAmount(){
+
+    /**
+     * Gets the amount of this ingredient
+     * @return the ingredient amount
+     */
+    public String getAmount() {
         return amount;
     }
 

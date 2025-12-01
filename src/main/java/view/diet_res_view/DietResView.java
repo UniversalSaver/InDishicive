@@ -1,36 +1,44 @@
 package view.diet_res_view;
 
-import interface_adapter.add_diet_res.AddDietResController;
-import interface_adapter.add_diet_res.AddDietResState;
-import interface_adapter.add_diet_res.AddDietResViewModel;
-import interface_adapter.remove_diet_res.RemoveDietResController;
-import interface_adapter.remove_diet_res.RemoveDietResState;
-import interface_adapter.remove_diet_res.RemoveDietResViewModel;
-import interface_adapter.view_diet_res.DietResViewModel;
-import interface_adapter.view_diet_res.ViewRestrictionsController;
-import interface_adapter.view_diet_res.ViewRestrictionsState;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import adapters.dietary_restriction.add_diet_res.AddDietResController;
+import adapters.dietary_restriction.add_diet_res.AddDietResState;
+import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResState;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResViewModel;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsState;
+
+/**
+ * The main view panel for managing dietary restrictions.
+ * Allows users to view the list of restrictions, add new ones, and remove existing ones.
+ */
 public class DietResView extends JPanel implements PropertyChangeListener {
     private final String viewName;
 
-    private final DietResViewModel dietResViewModel;
-    private final AddDietResViewModel addDietResViewModel;
-    private final RemoveDietResViewModel removeDietResViewModel;
+    private final transient AddDietResController addDietResController;
+    private final transient ViewRestrictionsController viewRestrictionsController;
+    private final transient RemoveDietResController removeDietResController;
 
-    private final AddDietResController addDietResController;
-    private final ViewRestrictionsController viewRestrictionsController;
-    private final RemoveDietResController removeDietResController;
-
-    private final JScrollPane scrollPane;
     private final JPanel restIngrPanel;
-    private final JTextArea newRestArea;
-    private final JButton addDietResButton;
+    private final JTextField newRestField;
 
     public DietResView(DietResViewModel dietResViewModel,
                        AddDietResViewModel addDietResViewModel,
@@ -39,63 +47,75 @@ public class DietResView extends JPanel implements PropertyChangeListener {
                        ViewRestrictionsController viewRestrictionsController,
                        RemoveDietResController removeDietResController) {
 
-        this.dietResViewModel = dietResViewModel;
-        this.addDietResViewModel = addDietResViewModel;
-        this.removeDietResViewModel = removeDietResViewModel;
-
         this.addDietResController = addDietResController;
         this.viewRestrictionsController = viewRestrictionsController;
         this.removeDietResController = removeDietResController;
 
-        this.viewName = dietResViewModel.VIEW_NAME;
+        this.viewName = DietResViewModel.VIEW_NAME;
 
-        this.dietResViewModel.addPropertyChangeListener(this);
-        this.addDietResViewModel.addPropertyChangeListener(this);
-        this.removeDietResViewModel.addPropertyChangeListener(this);
+        dietResViewModel.addPropertyChangeListener(this);
+        addDietResViewModel.addPropertyChangeListener(this);
+        removeDietResViewModel.addPropertyChangeListener(this);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel(DietResViewModel.RESTRICTIONS_LABEL);
+        final int padding = 10;
+        this.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
+
+        final JLabel title = new JLabel(DietResViewModel.RESTRICTIONS_LABEL);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(title);
+
+        this.add(Box.createVerticalStrut(padding));
 
         restIngrPanel = new JPanel();
         restIngrPanel.setLayout(new BoxLayout(restIngrPanel, BoxLayout.Y_AXIS));
 
-        scrollPane = new JScrollPane(restIngrPanel);
+        final JScrollPane scrollPane = new JScrollPane(restIngrPanel);
+
         this.add(scrollPane);
 
-        JPanel inputPanel = new JPanel();
+        this.add(Box.createVerticalStrut(padding));
+
+        final JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
-        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
-        newRestArea = new JTextArea(2, 20);
-        newRestArea.setLineWrap(true);
-        JScrollPane inputScroll = new JScrollPane(newRestArea);
+        final int heightInputPanel = 30;
+        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, heightInputPanel));
 
-        addDietResButton = new JButton("Add Restriction");
+        final int columns = 20;
 
-        inputPanel.add(inputScroll);
+        newRestField = new JTextField(columns);
+        final JButton addDietResButton = new JButton("Add");
+
+        inputPanel.add(newRestField);
+
+        final int widthH = 5;
+
+        inputPanel.add(Box.createHorizontalStrut(widthH));
         inputPanel.add(addDietResButton);
 
         this.add(inputPanel);
 
-        addDietResButton.addActionListener(e -> {
-            String ingredientName = newRestArea.getText().trim();
-            if (!ingredientName.isEmpty()) {
-                addDietResController.execute(ingredientName);
-                newRestArea.setText("");
-            }
-        });
+        addDietResButton.addActionListener(event -> handleAdd());
+
+        newRestField.addActionListener(event -> handleAdd());
+    }
+
+    private void handleAdd() {
+        final String ingredientName = newRestField.getText().trim();
+        if (!ingredientName.isEmpty()) {
+            addDietResController.execute(ingredientName);
+            newRestField.setText("");
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        String propertyName = evt.getPropertyName();
+        final String propertyName = evt.getPropertyName();
 
         if ("state".equals(propertyName)) {
-            if (evt.getNewValue() instanceof ViewRestrictionsState) {
-                ViewRestrictionsState state = (ViewRestrictionsState) evt.getNewValue();
+            if (evt.getNewValue() instanceof ViewRestrictionsState state) {
                 if (state.getError() != null) {
                     JOptionPane.showMessageDialog(this, state.getError());
                     state.setError(null);
@@ -108,14 +128,14 @@ public class DietResView extends JPanel implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this, "Ingredient added successfully.");
         }
         else if (AddDietResViewModel.RESTRICTION_ADD_FAILED.equals(propertyName)) {
-            AddDietResState state = (AddDietResState) evt.getNewValue();
+            final AddDietResState state = (AddDietResState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, state.getStatusMessage());
         }
         else if (RemoveDietResViewModel.RESTRICTION_REMOVED.equals(propertyName)) {
-            viewRestrictionsController.execute(); // Refresh list
+            viewRestrictionsController.execute();
         }
         else if (RemoveDietResViewModel.RESTRICTION_REMOVE_FAILED.equals(propertyName)) {
-            RemoveDietResState state = (RemoveDietResState) evt.getNewValue();
+            final RemoveDietResState state = (RemoveDietResState) evt.getNewValue();
             JOptionPane.showMessageDialog(this, state.getMessage());
         }
     }
