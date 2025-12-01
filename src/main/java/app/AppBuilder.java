@@ -117,6 +117,9 @@ import window.MainWindow;
 import window.RecipeDetailsWindow;
 import window.UserRecipeDetailsWindow;
 import window.UserRecipesWindow;
+import logic.generate_recipe.random_recipe.*;
+import databases.generate_recipe.MealDbRandomRecipeGateway;
+import adapters.generate_recipe.random_recipe.*;
 
 /**
  * An object that will build the app given what windows to include.
@@ -193,10 +196,18 @@ public class AppBuilder {
 
     private final RemoveFavoriteViewModel removeFavoriteViewModel = new RemoveFavoriteViewModel();
     private RemoveFavoriteController removeFavoriteController;
-
     /*
     End of Favorites Variables
      */
+
+    /*
+    Start of Random Recipe Variables
+    */
+    private RandomRecipeController randomRecipeController;
+    /*
+    End of Random Recipe Variables
+     */
+
     /*
     Start of DietRes variables
     */
@@ -519,6 +530,8 @@ public class AppBuilder {
     */
 
     /*
+
+    /**
     Start of Favorites Methods
      */
 
@@ -783,7 +796,8 @@ public class AppBuilder {
                 generateWithInventoryController,
                 generateWithInventoryViewModel,
                 viewRecipeDetailsController,
-                this.addFavoriteController
+                this.addFavoriteController,
+                this.randomRecipeController
         );
     }
 
@@ -807,6 +821,27 @@ public class AppBuilder {
 
         viewRecipeDetailsController = new ViewRecipeDetailsController(interactor);
 
+        return this;
+    }
+
+    /**
+     * Adds the random recipe use case.
+     * @return this builder
+     */
+    public AppBuilder addRandomRecipeUseCase() {
+        RandomRecipeGateway randomGateway = new MealDbRandomRecipeGateway();
+
+        // Use existing viewRecipeDetailsViewModel so the details window pops up automatically
+        RandomRecipeOutputBoundary presenter = new RandomRecipePresenter(this.viewRecipeDetailsViewModel);
+
+        // Use existing restrictionDataAccess to filter ingredients
+        RandomRecipeInputBoundary interactor = new RandomRecipeInteractor(
+                randomGateway,
+                this.restrictionDataAccess,
+                presenter
+        );
+
+        this.randomRecipeController = new RandomRecipeController(interactor);
         return this;
     }
 
