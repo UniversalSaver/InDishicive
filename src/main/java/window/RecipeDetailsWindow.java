@@ -7,12 +7,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 
 public class RecipeDetailsWindow extends JFrame implements PropertyChangeListener {
 
     private final JLabel titleLabel = new JLabel();
     private final JTextArea ingredientsArea = new JTextArea();
     private final JTextArea instructionsArea = new JTextArea();
+    private final JButton youtubeButton = new JButton("Watch on YouTube");
+
+    private String youtubeLink = "";
 
     public RecipeDetailsWindow(ViewRecipeDetailsViewModel viewModel) {
         super("Recipe Details");
@@ -28,6 +32,10 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
         instructionsArea.setEditable(false);
         instructionsArea.setLineWrap(true);
         instructionsArea.setWrapStyleWord(true);
+
+        youtubeButton.setVisible(false); // Hidden by default
+        youtubeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        youtubeButton.addActionListener(e -> openYoutubeLink());
 
         JPanel top = new JPanel(new BorderLayout());
         top.add(titleLabel, BorderLayout.CENTER);
@@ -47,11 +55,28 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
 
         JPanel bottom = new JPanel();
         bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
+        bottom.add(Box.createVerticalStrut(10));
+        bottom.add(youtubeButton);
+        bottom.add(Box.createVerticalStrut(10));
 
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(top, BorderLayout.NORTH);
         getContentPane().add(center, BorderLayout.CENTER);
         getContentPane().add(bottom, BorderLayout.SOUTH);
+    }
+    private void openYoutubeLink() {
+        if (youtubeLink == null || youtubeLink.isEmpty()) {
+            return;
+        }
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(youtubeLink));
+            } else {
+                JOptionPane.showMessageDialog(this, "Browser not supported.");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error opening YouTube link: " + e.getMessage());
+        }
     }
 
     @Override
@@ -68,6 +93,10 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
         titleLabel.setText(state.getTitle());
         ingredientsArea.setText(String.join("\n", state.getIngredients()));
         instructionsArea.setText(state.getInstructions());
+
+        //If the YouTube link exists, then the button appears.
+        this.youtubeLink = state.getYoutubeLink();
+        youtubeButton.setVisible(youtubeLink != null && !youtubeLink.trim().isEmpty());
 
         if (!this.isVisible()) {
             this.setVisible(true);

@@ -1,11 +1,15 @@
 package logic.user_recipe.view_recipes;
 
-import entity.UserRecipe;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
+import entity.UserRecipe;
+
+/**
+ * An implementation of the respective interface.
+ */
 public class ViewRecipesInteractor implements ViewRecipesInputBoundary {
 
     private final ViewRecipesOutputBoundary viewRecipesPresenter;
@@ -20,16 +24,16 @@ public class ViewRecipesInteractor implements ViewRecipesInputBoundary {
     @Override
     public void execute() {
 
-        List<UserRecipe> userRecipes = viewRecipesDataAccess.getUserRecipes();
+        final List<UserRecipe> userRecipes = viewRecipesDataAccess.getUserRecipes();
 
-        List<ViewRecipesOutputData> viewRecipesOutputData = getRecipeData(userRecipes);
+        final List<ViewRecipesOutputData> viewRecipesOutputData = getRecipeData(userRecipes);
 
         viewRecipesPresenter.prepareSuccessView(viewRecipesOutputData);
     }
 
     @NotNull
     private static List<ViewRecipesOutputData> getRecipeData(List<UserRecipe> userRecipes) {
-        List<ViewRecipesOutputData> result = new ArrayList<>();
+        final List<ViewRecipesOutputData> result = new ArrayList<>();
 
         for (UserRecipe userRecipe : userRecipes) {
             result.add(new ViewRecipesOutputData(userRecipe.getTitle(), userRecipe.getDescription()));

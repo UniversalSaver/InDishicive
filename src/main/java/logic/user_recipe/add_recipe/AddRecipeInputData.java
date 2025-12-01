@@ -2,6 +2,10 @@ package logic.user_recipe.add_recipe;
 
 import java.util.List;
 
+/**
+ * A data object for use of the interactor. Includes information required about a user recipe.
+ * Data will not change after creation.
+ */
 public class AddRecipeInputData {
     private final List<String> ingredientNames;
     private final List<String> ingredientAmounts;

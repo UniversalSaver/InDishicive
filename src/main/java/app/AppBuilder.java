@@ -19,7 +19,6 @@ import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
 import adapters.user_recipe.view_recipes.ViewRecipesController;
 import adapters.user_recipe.view_recipes.ViewRecipesPresenter;
 import logic.inventory.add_ingredient.AddIngredientInteractor;
-import logic.inventory.add_ingredient.InventoryDataAccessInterface;
 import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
 import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import javax.swing.JFrame;
@@ -52,6 +51,9 @@ import adapters.dietary_restriction.view_diet_res.ViewRestrictionsPresenter;
 import adapters.favorites.view_favorite.ViewFavoriteController;
 import adapters.favorites.view_favorite.ViewFavoritePresenter;
 import adapters.favorites.view_favorite.ViewFavoriteViewModel;
+import adapters.favorites.remove_favorites.RemoveFavoriteController;
+import adapters.favorites.remove_favorites.RemoveFavoritePresenter;
+import adapters.favorites.remove_favorites.RemoveFavoriteViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
@@ -72,6 +74,7 @@ import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryIntera
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
 import logic.favorites.view_favorite.ViewFavoriteInteractor;
+import logic.favorites.remove_favorite.RemoveFavoriteInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
@@ -163,12 +166,20 @@ public class AppBuilder {
     private FavoriteView favoriteView;
     private FavoriteWindow favoriteWindow;
 
-    private RandomRecipeController randomRecipeController;
-
-
+    private final RemoveFavoriteViewModel removeFavoriteViewModel = new RemoveFavoriteViewModel();
+    private RemoveFavoriteController removeFavoriteController;
     /*
     End of Favorites Variables
      */
+  
+    /*
+    Start of Random Recipe Variables
+    */
+    private RandomRecipeController randomRecipeController;
+    /*
+    End of Random Recipe Variables
+     */
+  
     /*
     Start of DietRes variables
     */
@@ -232,8 +243,8 @@ public class AppBuilder {
 
         this.userRecipeWindowModel = new UserRecipeWindowModel();
 
-        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel, userRecipeCardLayout,
-                userRecipesViewManager, userRecipesViewManagerModel, userRecipeWindowModel);
+        userRecipesWindow = new UserRecipesWindow(userRecipeCardPanel
+        );
 
 
         return this;
@@ -247,7 +258,6 @@ public class AppBuilder {
         this.userRecipeCardPanel.add(this.userRecipesView, userRecipesView.getViewName());
         this.userRecipeWindowModel.addPropertyChangeListener(this.userRecipesWindow);
 
-        userRecipesWindow.addUserRecipesView(userRecipesView, userRecipesViewModel);
         return this;
     }
 
@@ -395,9 +405,21 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addRemoveFavoriteUseCase() {
+        RemoveFavoritePresenter removeFavoritePresenter = new RemoveFavoritePresenter(
+                this.removeFavoriteViewModel, this.viewFavoriteViewModel);
+
+        RemoveFavoriteInteractor removeFavoriteInteractor = new RemoveFavoriteInteractor(
+                this.favoriteDataAccess, removeFavoritePresenter);
+
+        this.removeFavoriteController = new RemoveFavoriteController(removeFavoriteInteractor);
+
+        return this;
+    }
 
     public AppBuilder addFavoritesView() {
-        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel, this.viewRecipeDetailsController);
+        this.favoriteView = new FavoriteView(this.viewFavoriteViewModel, this.viewRecipeDetailsController,
+                this.removeFavoriteController);
         this.favoriteWindow = new FavoriteWindow(this.favoriteView, this.viewFavoriteViewModel);
         this.viewFavoriteViewModel.addPropertyChangeListener(this.favoriteWindow);
 

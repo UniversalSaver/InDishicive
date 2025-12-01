@@ -16,16 +16,21 @@ import javax.swing.SwingConstants;
 import entity.Recipe;
 import adapters.favorites.view_favorite.ViewFavoriteViewModel;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import adapters.favorites.remove_favorites.RemoveFavoriteController;
 
 
 public class FavoriteView extends JPanel implements PropertyChangeListener{
     private final ViewFavoriteViewModel viewModel;
     private final ViewRecipeDetailsController viewRecipeDetailsController;
+    private final RemoveFavoriteController removeFavoriteController;
     private final JPanel cardsPanel;
 
-    public FavoriteView(ViewFavoriteViewModel viewModel, ViewRecipeDetailsController viewRecipeDetailsController) {
+    public FavoriteView(ViewFavoriteViewModel viewModel, ViewRecipeDetailsController viewRecipeDetailsController,
+                        RemoveFavoriteController removeFavoriteController) {
+
         this.viewModel = viewModel;
         this.viewRecipeDetailsController = viewRecipeDetailsController;
+        this.removeFavoriteController = removeFavoriteController;
 
         setLayout(new BorderLayout());
 
@@ -64,7 +69,7 @@ public class FavoriteView extends JPanel implements PropertyChangeListener{
         cardsPanel.removeAll();
 
         for(Recipe recipe : recipes){
-            RecipeCard card = new RecipeCard(recipe, viewRecipeDetailsController);
+            RecipeCard card = new RecipeCard(recipe, viewRecipeDetailsController, removeFavoriteController);
             cardsPanel.add(card);
             cardsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         }

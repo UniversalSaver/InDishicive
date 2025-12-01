@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entity.Recipe;
+import adapters.favorites.remove_favorites.RemoveFavoriteController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 /**
@@ -20,7 +21,9 @@ import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
  */
 public class RecipeCard extends JPanel {
 
-    public RecipeCard(Recipe recipe, ViewRecipeDetailsController viewRecipeDetailsController) {
+    public RecipeCard(Recipe recipe, ViewRecipeDetailsController viewRecipeDetailsController,
+                      RemoveFavoriteController removeFavoriteController) {
+
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 1),
@@ -46,13 +49,21 @@ public class RecipeCard extends JPanel {
         showButton.addActionListener(e -> viewRecipeDetailsController.execute(recipe.getTitle()));
         add(showButton, gbc);
 
+        JButton deleteButton = new JButton("X");
+        deleteButton.setPreferredSize(new Dimension(45, 25));
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.weightx = 0;
+        deleteButton.addActionListener(e -> removeFavoriteController.execute(recipe));
+        add(deleteButton, gbc);
 
         JLabel categoryLabel = new JLabel(recipe.getCategory());
         categoryLabel.setForeground(Color.GRAY);
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         add(categoryLabel, gbc);
     }
 }
