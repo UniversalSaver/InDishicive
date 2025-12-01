@@ -5,14 +5,16 @@ import java.util.List;
 
 public class ViewRestrictionsState {
     private List<String> restrictions = new ArrayList<>();
-    private String error = null;
+    private String error;
 
     public ViewRestrictionsState(ViewRestrictionsState copy) {
         this.restrictions = new ArrayList<>(copy.restrictions);
         this.error = copy.error;
     }
 
-    public ViewRestrictionsState() {}
+    public ViewRestrictionsState() {
+        // Nothing to initialize
+    }
 
     public List<String> getRestrictions() {
         return restrictions;
