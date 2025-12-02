@@ -1,9 +1,12 @@
 package logic.generate_recipe.generate_with_inventory;
 
-import entity.Recipe;
-
 import java.util.List;
 
+import entity.Recipe;
+
+/**
+ * Interactor for generating recipes based on inventory.
+ */
 public class GenerateWithInventoryInteractor implements GenerateWithInventoryInputBoundary {
 
     private final InventoryReader inventoryReader;
@@ -18,8 +21,11 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
         this.presenter = presenter;
     }
 
+    /**
+     * Executes the use case to generate recipes based on inventory.
+     */
     public void execute() {
-        List<String> titles = recipeGateway.findByInventory(inventoryReader.getAll())
+        final List<String> titles = recipeGateway.findByInventory(inventoryReader.getAll())
                 .stream()
                 .map(Recipe::getTitle)
                 .toList();
