@@ -11,6 +11,7 @@ public class Inventory {
 
     /**
      * Creates a new inventory based on the given ingredients.
+     *
      * @param ingredients a list of the ingredients currently in the inventory
      */
     public Inventory(List<Ingredient> ingredients) {
@@ -19,6 +20,7 @@ public class Inventory {
 
     /**
      * Adds an ingredient to the inventory.
+     *
      * @param ingredient the ingredient to add
      */
     public void addIngredient(Ingredient ingredient) {
@@ -27,6 +29,7 @@ public class Inventory {
 
     /**
      * Removes an ingredient from the inventory.
+     *
      * @param ingredient the ingredient to remove
      * @return true if the ingredient was removed, false if it was not found
      */
@@ -58,3 +61,4 @@ public class Inventory {
     public List<Ingredient> getIngredients() {
         return Collections.unmodifiableList(ingredients);
     }
+}
