@@ -34,10 +34,12 @@ public class GenerateWithInventoryPresenter implements GenerateWithInventoryOutp
 
             final List<String> page = viewModel.getNextPage(PAGE_SIZE);
             if (page.isEmpty()) {
-                viewModel.setErrorMessage("No more recipes to show. Please add more ingredients!");
+                viewModel.setErrorMessage(
+                        "No more recipes to show. Please add more ingredients!");
                 viewModel.setState(List.of());
                 viewModel.firePropertyChange("error");
-            } else {
+            }
+            else {
                 viewModel.setErrorMessage("");
                 viewModel.setState(page);
                 viewModel.firePropertyChange("recipes");

@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import adapters.ViewModel;
+
+/**
+ * View model for the "generate with inventory" use case.
+ * Holds all recipe titles, paging state, and any error message.
+ */
 public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
 
     private List<String> allTitles = new ArrayList<>();
@@ -13,6 +19,9 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
     private int offset;
     private String errorMessage = "";
 
+    /**
+     * Creates a new view model for the generate-with-inventory view.
+     */
     public GenerateWithInventoryViewModel() {
         super("generate_with_inventory");
         setState(List.of());
@@ -24,6 +33,11 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         setState(new ArrayList<>(titles));
     }
 
+    /**
+     * Gets all stored recipe titles.
+     *
+     * @return a copy of the list of all titles
+     */
     public List<String> getAllTitles() {
         return new ArrayList<>(allTitles);
     }
@@ -52,6 +66,11 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * Gets the current error message.
+     *
+     * @return the error message text
+     */
     public String getErrorMessage() {
         return errorMessage;
     }

@@ -22,6 +22,9 @@ import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryVie
 import adapters.generate_recipe.random_recipe.RandomRecipeController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
+/**
+ * Panel for generating recipes using the user's inventory.
+ */
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
     private final DefaultListModel<String> model = new DefaultListModel<>();
