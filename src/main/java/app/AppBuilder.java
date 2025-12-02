@@ -33,16 +33,12 @@ import adapters.generate_recipe.generate_by_ingredients.GenerateByIngredientsVie
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryPresenter;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
-import adapters.generate_recipe.random_recipe.RandomRecipeController;
-import adapters.generate_recipe.random_recipe.RandomRecipePresenter;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsPresenter;
 import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
 import adapters.inventory.add_ingredient.AddIngredientController;
 import adapters.inventory.add_ingredient.AddIngredientPresenter;
 import adapters.inventory.add_ingredient.AddIngredientViewModel;
-import adapters.inventory.missing_ingredients.MissingIngredientsController;
-import adapters.inventory.missing_ingredients.MissingIngredientsPresenter;
 import adapters.inventory.remove_ingredient.RemoveIngredientController;
 import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
 import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
@@ -68,7 +64,6 @@ import databases.dietary_restriction.DietResDataAccessObject;
 import databases.dietary_restriction.MealDbIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
 import databases.generate_recipe.InventoryReaderFromInventory;
-import databases.generate_recipe.MealDbRandomRecipeGateway;
 import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
 import databases.generate_recipe.MealDbRecipeGateway;
@@ -93,15 +88,10 @@ import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryIntera
 import logic.generate_recipe.generate_with_inventory.GenerateWithInventoryOutputBoundary;
 import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.generate_recipe.generate_with_inventory.RecipeGateway;
-import logic.generate_recipe.random_recipe.RandomRecipeGateway;
-import logic.generate_recipe.random_recipe.RandomRecipeInputBoundary;
-import logic.generate_recipe.random_recipe.RandomRecipeInteractor;
-import logic.generate_recipe.random_recipe.RandomRecipeOutputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import logic.inventory.add_ingredient.AddIngredientInteractor;
-import logic.inventory.missing_ingredients.MissingIngredientsInteractor;
 import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
 import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
@@ -127,6 +117,9 @@ import window.MainWindow;
 import window.RecipeDetailsWindow;
 import window.UserRecipeDetailsWindow;
 import window.UserRecipesWindow;
+import logic.generate_recipe.random_recipe.*;
+import databases.generate_recipe.MealDbRandomRecipeGateway;
+import adapters.generate_recipe.random_recipe.*;
 
 /**
  * An object that will build the app given what windows to include.
@@ -181,7 +174,6 @@ public class AppBuilder {
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
-    private MissingIngredientsController missingIngredientsController;
 
     /*
     End of Inventory Variables
@@ -810,26 +802,13 @@ public class AppBuilder {
     }
 
     /**
-     * Adds the missing ingredients use case to the application builder.
-     *
-     * @return this AppBuilder instance for method chaining
-     */
-    public AppBuilder addMissingIngredientsUseCase() {
-        final InventoryDataAccessObject inventoryDao = new InventoryDataAccessObject();
-        final MissingIngredientsPresenter presenter = new MissingIngredientsPresenter(recipeDetailsWindow);
-        final MissingIngredientsInteractor interactor = new MissingIngredientsInteractor(inventoryDao, presenter);
-        missingIngredientsController = new MissingIngredientsController(interactor);
-        return this;
-    }
-
-    /**
      * Adds the view recipe details use case to the application builder.
      *
      * @return this AppBuilder instance for method chaining
      */
     public AppBuilder addViewRecipeDetailsUseCase() {
         viewRecipeDetailsViewModel = new ViewRecipeDetailsViewModel();
-        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel, missingIngredientsController);
+        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel);
 
         final ViewRecipeDetailsOutputBoundary outputBoundary =
                 new ViewRecipeDetailsPresenter(viewRecipeDetailsViewModel);
@@ -847,16 +826,16 @@ public class AppBuilder {
 
     /**
      * Adds the random recipe use case.
-     *
      * @return this builder
      */
     public AppBuilder addRandomRecipeUseCase() {
-        final RandomRecipeGateway randomGateway = new MealDbRandomRecipeGateway();
+        RandomRecipeGateway randomGateway = new MealDbRandomRecipeGateway();
 
-        final RandomRecipeOutputBoundary presenter =
-                new RandomRecipePresenter(this.viewRecipeDetailsViewModel);
+        // Use existing viewRecipeDetailsViewModel so the details window pops up automatically
+        RandomRecipeOutputBoundary presenter = new RandomRecipePresenter(this.viewRecipeDetailsViewModel);
 
-        final RandomRecipeInputBoundary interactor = new RandomRecipeInteractor(
+        // Use existing restrictionDataAccess to filter ingredients
+        RandomRecipeInputBoundary interactor = new RandomRecipeInteractor(
                 randomGateway,
                 this.restrictionDataAccess,
                 presenter

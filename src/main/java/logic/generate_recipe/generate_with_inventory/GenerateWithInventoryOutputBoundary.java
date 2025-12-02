@@ -1,8 +1,5 @@
 package logic.generate_recipe.generate_with_inventory;
 
-/**
- * Output boundary for generating recipes with inventory.
- */
 public interface GenerateWithInventoryOutputBoundary {
     /**
      * Prepares the view for the generated recipes.

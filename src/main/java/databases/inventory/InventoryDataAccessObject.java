@@ -1,5 +1,14 @@
 package databases.inventory;
 
+import databases.user_recipe.InaccessibleFileException;
+import entity.Ingredient;
+import logic.inventory.add_ingredient.InventoryDataAccessInterface;
+import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,23 +16,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import entity.Ingredient;
-import logic.inventory.add_ingredient.InventoryDataAccessInterface;
-import logic.inventory.missing_ingredients.InventoryReaderInterface;
-import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
-
 /**
  * Data Access Object for managing inventory operations with file persistence.
  * Stores inventory in a JSON file and automatically saves on add/remove operations.
  */
-public class InventoryDataAccessObject implements InventoryDataAccessInterface,
-        RemoveIngredientDataAccessInterface, InventoryReaderInterface {
-
-    private static final int JSON_INDENT = 4;
+public class InventoryDataAccessObject implements InventoryDataAccessInterface, RemoveIngredientDataAccessInterface {
 
     private final String filePath;
     private List<Ingredient> ingredients;
@@ -47,7 +44,8 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
 
     @Override
     public void addIngredient(Ingredient ingredient) {
-        final boolean exists = ingredients.stream()
+        // Check if ingredient already exists (by name)
+        boolean exists = ingredients.stream()
                 .anyMatch(existing -> existing.getName().equalsIgnoreCase(ingredient.getName()));
 
         if (!exists) {
@@ -58,7 +56,7 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
 
     @Override
     public boolean removeIngredient(Ingredient ingredient) {
-        final boolean removed = ingredients.removeIf(existing ->
+        boolean removed = ingredients.removeIf(existing ->
                 existing.getName().equalsIgnoreCase(ingredient.getName())
         );
 
@@ -90,7 +88,7 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
      * If the file doesn't exist, starts with an empty inventory.
      */
     private void loadInventory() {
-        final File file = new File(filePath);
+        File file = new File(filePath);
 
         if (!file.exists()) {
             ingredients = new ArrayList<>();
@@ -98,23 +96,22 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
         }
 
         try {
-            final String jsonContent = Files.readString(file.toPath());
+            String jsonContent = Files.readString(file.toPath());
 
             if (jsonContent.isBlank()) {
                 ingredients = new ArrayList<>();
                 return;
             }
 
-            final JSONArray jsonArray = new JSONArray(jsonContent);
+            JSONArray jsonArray = new JSONArray(jsonContent);
             ingredients = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                final JSONObject ingredientJson = jsonArray.getJSONObject(i);
+                JSONObject ingredientJson = jsonArray.getJSONObject(i);
                 ingredients.add(jsonToIngredient(ingredientJson));
             }
 
-        }
-        catch (IOException | JSONException ex) {
+        } catch (IOException | JSONException e) {
             ingredients = new ArrayList<>();
         }
     }
@@ -122,22 +119,26 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
     /**
      * Saves the entire inventory to the JSON file.
      * Rewrites the file completely.
-     * @throws RuntimeException if saving fails
      */
     private void saveInventoryToFile() {
         try (FileWriter writer = new FileWriter(filePath)) {
-            final JSONArray jsonArray = new JSONArray();
-
-            for (Ingredient ingredient : ingredients) {
-                jsonArray.put(ingredientToJson(ingredient));
-            }
-
-            writer.write(jsonArray.toString(JSON_INDENT));
-
+            JSONArray jsonArray = ingredientsToJsonArray();
+            writer.write(jsonArray.toString(4));
+        } catch (IOException e) {
+            throw new InaccessibleFileException("Failed to save inventory to " + filePath);
         }
-        catch (IOException ex) {
-            throw new RuntimeException("Failed to save inventory to " + filePath, ex);
+    }
+
+    /**
+     * Converts the ingredients list to a JSONArray.
+     * @return JSONArray containing all ingredients
+     */
+    private JSONArray ingredientsToJsonArray() {
+        JSONArray jsonArray = new JSONArray();
+        for (Ingredient ingredient : ingredients) {
+            jsonArray.put(ingredientToJson(ingredient));
         }
+        return jsonArray;
     }
 
     /**
@@ -146,7 +147,7 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
      * @return JSONObject representation of the ingredient
      */
     private JSONObject ingredientToJson(Ingredient ingredient) {
-        final JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject();
         json.put("name", ingredient.getName());
         json.put("amount", ingredient.getAmount());
         return json;
@@ -158,8 +159,8 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
      * @return Ingredient object
      */
     private Ingredient jsonToIngredient(JSONObject json) {
-        final String name = json.getString("name");
-        final String amount = json.getString("amount");
+        String name = json.getString("name");
+        String amount = json.getString("amount");
         return new Ingredient(name, amount);
     }
 }

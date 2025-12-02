@@ -7,9 +7,6 @@ import entity.Recipe;
 import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
-/**
- * Interactor for generating recipes based on inventory.
- */
 public class GenerateWithInventoryInteractor implements GenerateWithInventoryInputBoundary {
 
     private final InventoryReader inventoryReader;
@@ -34,10 +31,13 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
      * Executes the generate recipe with inventory use case.
      */
     public void execute() {
+        // Get potential recipes based on inventory
         final List<Recipe> allRecipes = recipeGateway.findByInventory(inventoryReader.getAll());
 
+        // Get the user's dietary restrictions
         final List<Ingredient> restrictions = dietResDataAccessInterface.getResIngredients();
 
+        // Filter recipes using the DietaryRestrictionChecker
         final List<String> titles = allRecipes.stream()
                 .filter(recipe -> {
                     return !dietaryRestrictionCheckerInterface.containsRestrictedIngredient(

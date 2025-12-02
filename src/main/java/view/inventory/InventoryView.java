@@ -1,23 +1,5 @@
 package view.inventory;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
 import adapters.inventory.add_ingredient.AddIngredientController;
 import adapters.inventory.remove_ingredient.RemoveIngredientController;
 import adapters.inventory.search_ingredients.SearchIngredientsController;
@@ -26,14 +8,14 @@ import adapters.inventory.search_ingredients.SearchIngredientsViewModel;
 import databases.inventory.InventoryDataAccessObject;
 import entity.Ingredient;
 
-/**
- * View for managing inventory.
- */
-public class InventoryView extends JPanel implements PropertyChangeListener {
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-    private static final int LAYOUT_GAP = 10;
-    private static final int SMALL_GAP = 5;
-    private static final int TEXT_FIELD_COLUMNS = 10;
+public class InventoryView extends JPanel implements PropertyChangeListener {
 
     private final SearchIngredientsController searchIngredientsController;
     private final AddIngredientController addIngredientController;
@@ -62,25 +44,17 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
 
         this.searchIngredientsViewModel.addPropertyChangeListener(this);
 
-        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));
+        setLayout(new BorderLayout(10, 10));
 
         // Search Panel
-        final JPanel searchPanel = new JPanel(new BorderLayout(SMALL_GAP, SMALL_GAP));
+        JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
         searchPanel.setBorder(BorderFactory.createTitledBorder("Search Ingredients"));
 
         searchField = new JTextField();
         searchField.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent event) {
-                search();
-            }
-
-            public void removeUpdate(DocumentEvent event) {
-                search();
-            }
-
-            public void insertUpdate(DocumentEvent event) {
-                search();
-            }
+            public void changedUpdate(DocumentEvent e) { search(); }
+            public void removeUpdate(DocumentEvent e) { search(); }
+            public void insertUpdate(DocumentEvent e) { search(); }
         });
 
         searchResultsModel = new DefaultListModel<>();
@@ -92,14 +66,14 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         searchPanel.add(new JScrollPane(searchResultsList), BorderLayout.SOUTH);
 
         // Add Panel
-        final JPanel addPanel = new JPanel(new FlowLayout());
-        final JLabel amountLabel = new JLabel("Amount:");
-        amountField = new JTextField(TEXT_FIELD_COLUMNS);
-        final JButton addButton = new JButton("Add to Inventory");
+        JPanel addPanel = new JPanel(new FlowLayout());
+        JLabel amountLabel = new JLabel("Amount:");
+        amountField = new JTextField(10);
+        JButton addButton = new JButton("Add to Inventory");
 
-        addButton.addActionListener(event -> {
-            final String selected = searchResultsList.getSelectedValue();
-            final String amount = amountField.getText();
+        addButton.addActionListener(e -> {
+            String selected = searchResultsList.getSelectedValue();
+            String amount = amountField.getText();
 
             if (selected != null && !amount.isEmpty()) {
                 addIngredientController.execute(selected, amount);
@@ -114,18 +88,18 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         addPanel.add(addButton);
 
         // Inventory Panel
-        final JPanel inventoryPanel = new JPanel(new BorderLayout(SMALL_GAP, SMALL_GAP));
+        JPanel inventoryPanel = new JPanel(new BorderLayout(5, 5));
         inventoryPanel.setBorder(BorderFactory.createTitledBorder("My Inventory"));
 
         inventoryModel = new DefaultListModel<>();
         inventoryList = new JList<>(inventoryModel);
         inventoryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        final JButton removeButton = new JButton("Remove Selected");
-        removeButton.addActionListener(event -> {
-            final String selected = inventoryList.getSelectedValue();
+        JButton removeButton = new JButton("Remove Selected");
+        removeButton.addActionListener(e -> {
+            String selected = inventoryList.getSelectedValue();
             if (selected != null) {
-                final String ingredientName = selected.split(" - ")[0];
+                String ingredientName = selected.split(" - ")[0];
                 removeIngredientController.execute(ingredientName);
                 updateInventoryList();
                 JOptionPane.showMessageDialog(this, "Removed: " + ingredientName);
@@ -136,7 +110,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         inventoryPanel.add(removeButton, BorderLayout.SOUTH);
 
         // Layout
-        final JPanel leftPanel = new JPanel(new BorderLayout());
+        JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(searchPanel, BorderLayout.CENTER);
         leftPanel.add(addPanel, BorderLayout.SOUTH);
 
@@ -149,7 +123,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
     }
 
     private void search() {
-        final String query = searchField.getText();
+        String query = searchField.getText();
         searchIngredientsController.execute(query);
     }
 
@@ -163,15 +137,15 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("searchSuccess".equals(evt.getPropertyName())) {
-            final SearchIngredientsState state = searchIngredientsViewModel.getState();
+            SearchIngredientsState state = searchIngredientsViewModel.getState();
             searchResultsModel.clear();
             for (String ingredient : state.getIngredients()) {
                 searchResultsModel.addElement(ingredient);
             }
-        }
-        else if ("searchFail".equals(evt.getPropertyName())) {
-            final SearchIngredientsState state = searchIngredientsViewModel.getState();
+        } else if ("searchFail".equals(evt.getPropertyName())) {
+            SearchIngredientsState state = searchIngredientsViewModel.getState();
             JOptionPane.showMessageDialog(this, "Error: " + state.getError());
         }
     }
 }
+

@@ -4,7 +4,7 @@ package databases.inventory;
  * Exception thrown when there is a failure accessing ingredient data from an external source.
  */
 public class IngredientDataAccessException extends Exception {
-
+    
     /**
      * Constructs an IngredientDataAccessException with the specified detail message.
      * @param message the detail message
@@ -12,7 +12,7 @@ public class IngredientDataAccessException extends Exception {
     public IngredientDataAccessException(String message) {
         super(message);
     }
-
+    
     /**
      * Constructs an IngredientDataAccessException with the specified detail message and cause.
      * @param message the detail message
@@ -22,3 +22,6 @@ public class IngredientDataAccessException extends Exception {
         super(message, cause);
     }
 }
+
+
+

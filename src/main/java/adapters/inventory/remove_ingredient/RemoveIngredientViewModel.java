@@ -9,12 +9,11 @@ import adapters.ViewModel;
  */
 public class RemoveIngredientViewModel extends ViewModel<Void> {
 
-    /**
-     * Property name for when an ingredient is successfully removed.
-     */
+    /** Property name for when an ingredient is successfully removed */
     public static final String INGREDIENT_REMOVED_PROPERTY = "ingredientRemoved";
 
     public RemoveIngredientViewModel() {
         super("remove_ingredient");
     }
 }
+

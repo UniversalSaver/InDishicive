@@ -9,12 +9,11 @@ import adapters.ViewModel;
  */
 public class AddIngredientViewModel extends ViewModel<Void> {
 
-    /**
-     * Property name for when an ingredient is successfully added.
-     */
+    /** Property name for when an ingredient is successfully added */
     public static final String INGREDIENT_ADDED_PROPERTY = "ingredientAdded";
 
     public AddIngredientViewModel() {
         super("add_recipe_ingredient");
     }
 }
+
