@@ -5,13 +5,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import entity.Ingredient;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.inventory.add_ingredient.InventoryDataAccessInterface;
 import logic.inventory.missing_ingredients.InventoryReaderInterface;
 import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
@@ -21,7 +24,7 @@ import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
  * Stores inventory in a JSON file and automatically saves on add/remove operations.
  */
 public class InventoryDataAccessObject implements InventoryDataAccessInterface,
-        RemoveIngredientDataAccessInterface, InventoryReaderInterface {
+        RemoveIngredientDataAccessInterface, InventoryReaderInterface, InventoryReader {
 
     private static final int JSON_INDENT = 4;
 
@@ -83,6 +86,20 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
      */
     public List<Ingredient> getAllIngredients() {
         return new ArrayList<>(ingredients);
+    }
+
+    @Override
+    public Set<String> getAll() {
+        final Set<String> names = new HashSet<>();
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient != null && ingredient.getName() != null) {
+                final String name = ingredient.getName().trim().toLowerCase();
+                if (!name.isEmpty()) {
+                    names.add(name);
+                }
+            }
+        }
+        return names;
     }
 
     /**
