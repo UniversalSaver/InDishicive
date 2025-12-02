@@ -41,6 +41,8 @@ import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsViewModel;
 import adapters.inventory.add_ingredient.AddIngredientController;
 import adapters.inventory.add_ingredient.AddIngredientPresenter;
 import adapters.inventory.add_ingredient.AddIngredientViewModel;
+import adapters.inventory.missing_ingredients.MissingIngredientsController;
+import adapters.inventory.missing_ingredients.MissingIngredientsPresenter;
 import adapters.inventory.remove_ingredient.RemoveIngredientController;
 import adapters.inventory.remove_ingredient.RemoveIngredientPresenter;
 import adapters.inventory.remove_ingredient.RemoveIngredientViewModel;
@@ -99,6 +101,7 @@ import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInputBoundary;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsInteractor;
 import logic.generate_recipe.view_recipe_details.ViewRecipeDetailsOutputBoundary;
 import logic.inventory.add_ingredient.AddIngredientInteractor;
+import logic.inventory.missing_ingredients.MissingIngredientsInteractor;
 import logic.inventory.remove_ingredient.RemoveIngredientInteractor;
 import logic.inventory.search_ingredients.SearchIngredientsInteractor;
 import logic.user_recipe.add_recipe.AddRecipeInteractor;
@@ -178,6 +181,7 @@ public class AppBuilder {
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
+    private MissingIngredientsController missingIngredientsController;
 
     /*
     End of Inventory Variables
@@ -806,13 +810,26 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the missing ingredients use case to the application builder.
+     *
+     * @return this AppBuilder instance for method chaining
+     */
+    public AppBuilder addMissingIngredientsUseCase() {
+        final InventoryDataAccessObject inventoryDao = new InventoryDataAccessObject();
+        final MissingIngredientsPresenter presenter = new MissingIngredientsPresenter(recipeDetailsWindow);
+        final MissingIngredientsInteractor interactor = new MissingIngredientsInteractor(inventoryDao, presenter);
+        missingIngredientsController = new MissingIngredientsController(interactor);
+        return this;
+    }
+
+    /**
      * Adds the view recipe details use case to the application builder.
      *
      * @return this AppBuilder instance for method chaining
      */
     public AppBuilder addViewRecipeDetailsUseCase() {
         viewRecipeDetailsViewModel = new ViewRecipeDetailsViewModel();
-        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel);
+        recipeDetailsWindow = new RecipeDetailsWindow(viewRecipeDetailsViewModel, missingIngredientsController);
 
         final ViewRecipeDetailsOutputBoundary outputBoundary =
                 new ViewRecipeDetailsPresenter(viewRecipeDetailsViewModel);

@@ -16,7 +16,7 @@ public class AddIngredientInteractor implements AddIngredientInputBoundary {
      * @param addIngredientPresenter the presenter for preparing output
      * @param inventoryDataAccess the data access interface for inventory operations
      */
-    public AddIngredientInteractor(AddIngredientOutputBoundary addIngredientPresenter, 
+    public AddIngredientInteractor(AddIngredientOutputBoundary addIngredientPresenter,
                                     InventoryDataAccessInterface inventoryDataAccess) {
         this.addIngredientPresenter = addIngredientPresenter;
         this.inventoryDataAccess = inventoryDataAccess;
@@ -29,9 +29,8 @@ public class AddIngredientInteractor implements AddIngredientInputBoundary {
      */
     @Override
     public void execute(String ingredientName, String amount) {
-        Ingredient ingredient = new Ingredient(ingredientName, amount);
+        final Ingredient ingredient = new Ingredient(ingredientName, amount);
         inventoryDataAccess.addIngredient(ingredient);
         addIngredientPresenter.prepareSuccessView();
     }
 }
-

@@ -127,5 +127,5 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             }
             model.clear();
         }
+        }
     }
-}

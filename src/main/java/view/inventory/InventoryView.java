@@ -31,9 +31,9 @@ import entity.Ingredient;
  */
 public class InventoryView extends JPanel implements PropertyChangeListener {
 
-    private static final int GAP_SIZE = 10;
+    private static final int LAYOUT_GAP = 10;
     private static final int SMALL_GAP = 5;
-    private static final int AMOUNT_FIELD_COLUMNS = 10;
+    private static final int TEXT_FIELD_COLUMNS = 10;
 
     private final SearchIngredientsController searchIngredientsController;
     private final AddIngredientController addIngredientController;
@@ -62,7 +62,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
 
         this.searchIngredientsViewModel.addPropertyChangeListener(this);
 
-        setLayout(new BorderLayout(GAP_SIZE, GAP_SIZE));
+        setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));
 
         // Search Panel
         final JPanel searchPanel = new JPanel(new BorderLayout(SMALL_GAP, SMALL_GAP));
@@ -94,7 +94,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         // Add Panel
         final JPanel addPanel = new JPanel(new FlowLayout());
         final JLabel amountLabel = new JLabel("Amount:");
-        amountField = new JTextField(AMOUNT_FIELD_COLUMNS);
+        amountField = new JTextField(TEXT_FIELD_COLUMNS);
         final JButton addButton = new JButton("Add to Inventory");
 
         addButton.addActionListener(event -> {
