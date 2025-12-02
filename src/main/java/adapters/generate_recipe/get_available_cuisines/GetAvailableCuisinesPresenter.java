@@ -8,17 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAvailableCuisinesPresenter implements GetAvailableCuisinesOutputBoundary {
-    private final GenerateWithInventoryViewModel vm;
 
-    public GetAvailableCuisinesPresenter(GenerateWithInventoryViewModel vm) {
-        this.vm = vm;
+    private final GenerateWithInventoryViewModel viewModel;
+
+    public GetAvailableCuisinesPresenter(final GenerateWithInventoryViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @Override
-    public void present(GetAvailableCuisinesOutputData output) {
-        List<String> list = new ArrayList<>();
+    public void present(final GetAvailableCuisinesOutputData output) {
+        final List<String> list = new ArrayList<>();
         list.add("Any");
-        if (output.getCuisines() != null) list.addAll(output.getCuisines());
-        vm.setCuisines(list);
+
+        if (output.getCuisines() != null) {
+            list.addAll(output.getCuisines());
+        }
+
+        viewModel.setCuisines(list);
     }
 }
