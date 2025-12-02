@@ -73,7 +73,7 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
      * @param addIngredientController a controller which will be called for the button
      */
     public void addIngredientUseCase(AddRecipeIngredientController addIngredientController) {
-        addIngredientButton.addActionListener(e -> addIngredientController.execute());
+        addIngredientButton.addActionListener(event -> addIngredientController.execute());
     }
 
     /**
@@ -100,7 +100,7 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
             case AddRecipeViewModel.ADD_INGREDIENT -> addIngredient((List<String>) evt.getNewValue());
             case AddRecipeViewModel.DATABASE_NOT_FOUND -> addIngredientWarning();
             case AddRecipeViewModel.ADD_RECIPE_FAIL ->
-                    recipeFail(((List<String>) evt.getNewValue()).get(0));
+                recipeFail(((List<String>) evt.getNewValue()).get(0));
             default -> throw new UnsupportedOperationException("Improper property change call");
         }
     }
@@ -193,6 +193,9 @@ public class AddRecipeView extends JPanel implements PropertyChangeListener {
         final JLabel descriptionLabel = new JLabel("Recipe Description:");
         final JLabel stepsLabel = new JLabel("Steps:");
         final JLabel ingredientsLabel = new JLabel("Ingredients:");
+
+        descriptionTextArea.setLineWrap(true);
+        stepsTextArea.setLineWrap(true);
 
         ingredientSelectPanel.setLayout(new BoxLayout(ingredientSelectPanel, BoxLayout.Y_AXIS));
         addIngredientButton.setAlignmentX(Component.CENTER_ALIGNMENT);
