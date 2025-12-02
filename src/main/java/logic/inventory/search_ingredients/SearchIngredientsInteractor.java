@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import databases.inventory.IngredientDataAccessException;
 
+/**
+ * Interactor for the search ingredients use case.
+ */
 public class SearchIngredientsInteractor implements SearchIngredientsInputBoundary {
 
     private final SearchIngredientsOutputBoundary searchIngredientsPresenter;
@@ -19,20 +22,21 @@ public class SearchIngredientsInteractor implements SearchIngredientsInputBounda
     @Override
     public void execute(String searchQuery) {
         try {
-            List<String> allIngredients = ingredientDataAccess.getAllIngredients();
-            
+            final List<String> allIngredients = ingredientDataAccess.getAllIngredients();
+
             if (searchQuery == null || searchQuery.trim().isEmpty()) {
                 searchIngredientsPresenter.prepareSuccessView(allIngredients);
-            } else {
-                String query = searchQuery.toLowerCase().trim();
-                List<String> filteredIngredients = allIngredients.stream()
+            }
+            else {
+                final String query = searchQuery.toLowerCase().trim();
+                final List<String> filteredIngredients = allIngredients.stream()
                         .filter(ingredient -> ingredient.toLowerCase().contains(query))
                         .collect(Collectors.toList());
                 searchIngredientsPresenter.prepareSuccessView(filteredIngredients);
             }
-        } catch (IngredientDataAccessException e) {
-            searchIngredientsPresenter.prepareFailView("Failed to search ingredients: " + e.getMessage());
+        }
+        catch (IngredientDataAccessException ex) {
+            searchIngredientsPresenter.prepareFailView("Failed to search ingredients: " + ex.getMessage());
         }
     }
 }
-

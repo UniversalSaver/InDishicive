@@ -2,7 +2,7 @@ package app;
 
 import java.awt.CardLayout;
 
-import databases.inventory.MealDBIngredientDataAccess;
+import databases.inventory.MealDbIngredientDataAccess;
 import databases.inventory.InventoryDataAccessObject;
 import entity.Ingredient;
 import entity.Inventory;
@@ -333,7 +333,7 @@ public class AppBuilder {
      */
 
     public AppBuilder addInventoryView() {
-        MealDBIngredientDataAccess dataAccess = new MealDBIngredientDataAccess();
+        MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
         InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject(); // Uses inventory.json by default
         
         SearchIngredientsPresenter searchPresenter = new SearchIngredientsPresenter(searchIngredientsViewModel);

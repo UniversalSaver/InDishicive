@@ -3,9 +3,12 @@ package adapters.inventory.search_ingredients;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * State for search ingredients view model.
+ */
 public class SearchIngredientsState {
     private List<String> ingredients = new ArrayList<>();
-    private String error = null;
+    private String error;
 
     public List<String> getIngredients() {
         return ingredients;
@@ -23,4 +26,3 @@ public class SearchIngredientsState {
         this.error = error;
     }
 }
-
