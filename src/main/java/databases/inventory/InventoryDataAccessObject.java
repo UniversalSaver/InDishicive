@@ -61,9 +61,9 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
 
     @Override
     public boolean removeIngredient(Ingredient ingredient) {
-        final boolean removed = ingredients.removeIf(existing ->
-                existing.getName().equalsIgnoreCase(ingredient.getName())
-        );
+        final boolean removed = ingredients.removeIf(existing -> {
+            return existing.getName().equalsIgnoreCase(ingredient.getName());
+        });
 
         if (removed) {
             saveInventoryToFile();
@@ -108,31 +108,24 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
      */
     private void loadInventory() {
         final File file = new File(filePath);
+        ingredients = new ArrayList<>();
 
-        if (!file.exists()) {
-            ingredients = new ArrayList<>();
-            return;
-        }
+        if (file.exists()) {
+            try {
+                final String jsonContent = Files.readString(file.toPath());
 
-        try {
-            final String jsonContent = Files.readString(file.toPath());
+                if (!jsonContent.isBlank()) {
+                    final JSONArray jsonArray = new JSONArray(jsonContent);
 
-            if (jsonContent.isBlank()) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        final JSONObject ingredientJson = jsonArray.getJSONObject(i);
+                        ingredients.add(jsonToIngredient(ingredientJson));
+                    }
+                }
+            }
+            catch (IOException | JSONException ex) {
                 ingredients = new ArrayList<>();
-                return;
             }
-
-            final JSONArray jsonArray = new JSONArray(jsonContent);
-            ingredients = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                final JSONObject ingredientJson = jsonArray.getJSONObject(i);
-                ingredients.add(jsonToIngredient(ingredientJson));
-            }
-
-        }
-        catch (IOException | JSONException ex) {
-            ingredients = new ArrayList<>();
         }
     }
 
