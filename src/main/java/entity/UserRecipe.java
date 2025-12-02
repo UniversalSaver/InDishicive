@@ -12,7 +12,7 @@ public class UserRecipe {
     private final String description;
 
     /**
-     * Creates a new user recipe from the given information
+     * Creates a new user recipe from the given information.
      * @param title the name of the dish
      * @param ingredients the list of ingredients
      * @param steps a paragraph of the steps required to create the dish
@@ -41,14 +41,23 @@ public class UserRecipe {
 		return ingredients;
 	}
 
-	@Override
+    /**
+     * Returns whether the user recipes are the same, which is only true if the titles are the same.
+     * @param obj   the reference object with which to compare.
+     * @return whether the recipes are the same
+     */
+    @Override
 	public boolean equals(Object obj) {
+        boolean result = false;
 		if (obj instanceof UserRecipe other) {
 
-			return getTitle().equals(other.getTitle()) && getIngredients().equals(other.getIngredients()) &&
-					getSteps().equals(other.getSteps()) && getDescription().equals(other.getDescription());
-		} else {
-			return false;
+			result = getTitle().equals(other.getTitle());
 		}
+        return result;
 	}
+
+    @Override
+    public int hashCode() {
+        return title.hashCode();
+    }
 }

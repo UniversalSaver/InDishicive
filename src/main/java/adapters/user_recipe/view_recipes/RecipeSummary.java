@@ -1,5 +1,8 @@
 package adapters.user_recipe.view_recipes;
 
+/**
+ * A data object meant for use by the ViewRecipesPresenter when showing User Recipes.
+ */
 public class RecipeSummary {
     private final String title;
     private final String description;

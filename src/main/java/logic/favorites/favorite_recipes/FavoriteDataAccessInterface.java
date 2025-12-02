@@ -1,28 +1,10 @@
 package logic.favorites.favorite_recipes;
-import entity.Recipe;
-import java.util.List;
 
 /**
  * Data Access Interface for managing favorite recipes.
+ * Extends all segregated interfaces following the Interface Segregation Principle.
  */
-public interface FavoriteDataAccessInterface {
-    
-    /**
-     * Saves a recipe to the favorites list.
-     * @param recipe the recipe to save
-     */
-    void saveFavorite(Recipe recipe);
-    
-    /**
-     * Retrieves all favorite recipes.
-     * @return list of all favorite recipes
-     */
-    List<Recipe> getFavorites();
-    
-    /**
-     * Checks if a recipe is already favorited.
-     * @param recipe the recipe to check
-     * @return true if the recipe is in favorites, false otherwise
-     */
-    boolean isFavorite(Recipe recipe);
+public interface FavoriteDataAccessInterface extends FavoriteReaderInterface,
+        FavoriteWriterInterface, FavoriteRemoverInterface {
 }
+

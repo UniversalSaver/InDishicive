@@ -2,7 +2,10 @@ package logic.generate_recipe.generate_with_inventory;
 
 import java.util.List;
 
+import entity.Ingredient;
 import entity.Recipe;
+import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
+import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
 
 /**
  * Interactor for generating recipes based on inventory.
@@ -12,21 +15,34 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
     private final InventoryReader inventoryReader;
     private final RecipeGateway recipeGateway;
     private final GenerateWithInventoryOutputBoundary presenter;
+    private final DietResDataAccessInterface dietResDataAccessInterface;
+    private final DietaryRestrictionCheckerInterface dietaryRestrictionCheckerInterface;
 
     public GenerateWithInventoryInteractor(InventoryReader inventoryReader,
                                            RecipeGateway recipeGateway,
-                                           GenerateWithInventoryOutputBoundary presenter) {
+                                           GenerateWithInventoryOutputBoundary presenter,
+                                           DietResDataAccessInterface dietResDataAccessInterface,
+                                           DietaryRestrictionCheckerInterface dietaryRestrictionCheckerInterface) {
         this.inventoryReader = inventoryReader;
         this.recipeGateway = recipeGateway;
         this.presenter = presenter;
+        this.dietResDataAccessInterface = dietResDataAccessInterface;
+        this.dietaryRestrictionCheckerInterface = dietaryRestrictionCheckerInterface;
     }
 
     /**
-     * Executes the use case to generate recipes based on inventory.
+     * Executes the generate recipe with inventory use case.
      */
     public void execute() {
-        final List<String> titles = recipeGateway.findByInventory(inventoryReader.getAll())
-                .stream()
+        final List<Recipe> allRecipes = recipeGateway.findByInventory(inventoryReader.getAll());
+
+        final List<Ingredient> restrictions = dietResDataAccessInterface.getResIngredients();
+
+        final List<String> titles = allRecipes.stream()
+                .filter(recipe -> {
+                    return !dietaryRestrictionCheckerInterface.containsRestrictedIngredient(
+                            recipe, restrictions);
+                })
                 .map(Recipe::getTitle)
                 .toList();
 

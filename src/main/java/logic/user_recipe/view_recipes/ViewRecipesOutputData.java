@@ -1,5 +1,8 @@
 package logic.user_recipe.view_recipes;
 
+/**
+ * A data class for the presenter to use for what recipes are in the database.
+ */
 public class ViewRecipesOutputData {
 
     private final String title;
@@ -13,6 +16,7 @@ public class ViewRecipesOutputData {
     public String getTitle() {
         return title;
     }
+
     public String getDescription() {
         return description;
     }

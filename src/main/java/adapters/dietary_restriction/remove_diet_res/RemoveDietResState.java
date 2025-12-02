@@ -2,9 +2,11 @@ package adapters.dietary_restriction.remove_diet_res;
 
 public class RemoveDietResState {
     private String message = "";
-    private boolean isSuccess = false;
+    private boolean isSuccess;
 
-    public RemoveDietResState() {}
+    public RemoveDietResState() {
+        // Nothing to initialize
+    }
 
     public String getMessage() {
         return message;

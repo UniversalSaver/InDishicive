@@ -11,7 +11,7 @@ public class RemoveDietResPresenter implements RemoveDietResOutputBoundary {
 
     @Override
     public void prepareSuccessView() {
-        RemoveDietResState state = viewModel.getState();
+        final RemoveDietResState state = viewModel.getState();
         state.setSuccess(true);
         state.setMessage("Ingredient removed from restrictions list.");
         viewModel.setState(state);
@@ -20,7 +20,7 @@ public class RemoveDietResPresenter implements RemoveDietResOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        RemoveDietResState state = viewModel.getState();
+        final RemoveDietResState state = viewModel.getState();
         state.setSuccess(false);
         state.setMessage(errorMessage);
         viewModel.setState(state);

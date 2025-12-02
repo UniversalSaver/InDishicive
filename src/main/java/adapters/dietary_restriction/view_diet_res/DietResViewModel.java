@@ -1,14 +1,16 @@
 package adapters.dietary_restriction.view_diet_res;
 
-import adapters.ViewModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+
+import adapters.ViewModel;
 
 public class DietResViewModel extends ViewModel<ViewRestrictionsState> {
     public static final String VIEW_NAME = "dietary_restrictions";
     public static final String RESTRICTIONS_LABEL = "Current Restrictions";
 
     private ViewRestrictionsState state = new ViewRestrictionsState();
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     public DietResViewModel() {
         super(VIEW_NAME);
@@ -23,8 +25,6 @@ public class DietResViewModel extends ViewModel<ViewRestrictionsState> {
     public ViewRestrictionsState getState() {
         return state;
     }
-
-    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     @Override
     public void firePropertyChange(String propertyName) {
