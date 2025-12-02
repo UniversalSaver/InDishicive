@@ -58,9 +58,9 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
 
     @Override
     public boolean removeIngredient(Ingredient ingredient) {
-        final boolean removed = ingredients.removeIf(existing -> {
-            return existing.getName().equalsIgnoreCase(ingredient.getName());
-        });
+        final boolean removed = ingredients.removeIf(existing ->
+                existing.getName().equalsIgnoreCase(ingredient.getName())
+        );
 
         if (removed) {
             saveInventoryToFile();

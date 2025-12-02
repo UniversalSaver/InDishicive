@@ -39,7 +39,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
     private final AddIngredientController addIngredientController;
     private final RemoveIngredientController removeIngredientController;
     private final SearchIngredientsViewModel searchIngredientsViewModel;
-    private final InventoryDataAccessObject inventoryDao;
+    private final InventoryDataAccessObject inventoryDAO;
 
     private final JTextField searchField;
     private final DefaultListModel<String> searchResultsModel;
@@ -52,19 +52,20 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
                          AddIngredientController addIngredientController,
                          RemoveIngredientController removeIngredientController,
                          SearchIngredientsViewModel searchIngredientsViewModel,
-                         InventoryDataAccessObject inventoryDao) {
+                         InventoryDataAccessObject inventoryDAO) {
 
         this.searchIngredientsController = searchIngredientsController;
         this.addIngredientController = addIngredientController;
         this.removeIngredientController = removeIngredientController;
         this.searchIngredientsViewModel = searchIngredientsViewModel;
-        this.inventoryDao = inventoryDao;
+        this.inventoryDAO = inventoryDAO;
 
         this.searchIngredientsViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout(LAYOUT_GAP, LAYOUT_GAP));
 
-        final JPanel searchPanel = new JPanel(new BorderLayout(5, 5));
+        // Search Panel
+        final JPanel searchPanel = new JPanel(new BorderLayout(SMALL_GAP, SMALL_GAP));
         searchPanel.setBorder(BorderFactory.createTitledBorder("Search Ingredients"));
 
         searchField = new JTextField();
@@ -90,6 +91,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(new JScrollPane(searchResultsList), BorderLayout.SOUTH);
 
+        // Add Panel
         final JPanel addPanel = new JPanel(new FlowLayout());
         final JLabel amountLabel = new JLabel("Amount:");
         amountField = new JTextField(TEXT_FIELD_COLUMNS);
@@ -111,7 +113,8 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         addPanel.add(amountField);
         addPanel.add(addButton);
 
-        final JPanel inventoryPanel = new JPanel(new BorderLayout(5, 5));
+        // Inventory Panel
+        final JPanel inventoryPanel = new JPanel(new BorderLayout(SMALL_GAP, SMALL_GAP));
         inventoryPanel.setBorder(BorderFactory.createTitledBorder("My Inventory"));
 
         inventoryModel = new DefaultListModel<>();
@@ -132,6 +135,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         inventoryPanel.add(new JScrollPane(inventoryList), BorderLayout.CENTER);
         inventoryPanel.add(removeButton, BorderLayout.SOUTH);
 
+        // Layout
         final JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(searchPanel, BorderLayout.CENTER);
         leftPanel.add(addPanel, BorderLayout.SOUTH);
@@ -139,6 +143,8 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
         add(leftPanel, BorderLayout.WEST);
         add(inventoryPanel, BorderLayout.CENTER);
 
+        // Initial load
+        updateInventoryList();
         searchIngredientsController.execute("");
     }
 
@@ -149,7 +155,7 @@ public class InventoryView extends JPanel implements PropertyChangeListener {
 
     private void updateInventoryList() {
         inventoryModel.clear();
-        for (Ingredient ingredient : inventoryDao.getAllIngredients()) {
+        for (Ingredient ingredient : inventoryDAO.getAllIngredients()) {
             inventoryModel.addElement(ingredient.getName() + " - " + ingredient.getAmount());
         }
     }
