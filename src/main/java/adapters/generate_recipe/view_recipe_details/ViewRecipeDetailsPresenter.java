@@ -25,6 +25,7 @@ public class ViewRecipeDetailsPresenter implements ViewRecipeDetailsOutputBounda
         state.setTitle(outputData.getTitle());
         state.setIngredients(outputData.getIngredients());
         state.setInstructions(outputData.getInstructions());
+        state.setYoutubeLink(outputData.getYoutubeLink());
 
         viewModel.setState(state);
         viewModel.firePropertyChange(ViewRecipeDetailsViewModel.DETAILS_PROPERTY);
