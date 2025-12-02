@@ -9,6 +9,7 @@ import java.util.List;
 public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
 
     private List<String> allTitles = new ArrayList<>();
+    private List<String> baseTitles = new ArrayList<>();
     private int offset = 0;
     private String errorMessage = "";
     private List<String> cuisines = new ArrayList<>();
@@ -28,6 +29,14 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         return new ArrayList<>(allTitles);
     }
 
+    public List<String> getBaseTitles() {
+        return new ArrayList<>(baseTitles);
+    }
+
+    public void setBaseTitles(List<String> titles) {
+        this.baseTitles = (titles == null) ? new ArrayList<>() : new ArrayList<>(titles);
+    }
+
     public List<String> getNextPage(int pageSize) {
         if (allTitles.isEmpty() || offset >= allTitles.size()) {
             return Collections.emptyList();
@@ -38,13 +47,8 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         return page;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+    public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
+    public String getErrorMessage() { return errorMessage; }
 
     public void setRecipes(List<String> titles) {
         this.allTitles = new ArrayList<>(titles);
@@ -58,7 +62,5 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         firePropertyChange("cuisines");
     }
 
-    public List<String> getCuisines() {
-        return new ArrayList<>(cuisines);
-    }
+    public List<String> getCuisines() { return new ArrayList<>(cuisines); }
 }

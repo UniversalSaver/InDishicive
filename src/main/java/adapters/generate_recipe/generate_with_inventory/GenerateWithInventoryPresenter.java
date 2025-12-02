@@ -7,6 +7,8 @@ import java.util.List;
 
 public class GenerateWithInventoryPresenter implements GenerateWithInventoryOutputBoundary {
 
+    private static final int PAGE_SIZE = 3;
+
     private final GenerateWithInventoryViewModel viewModel;
 
     public GenerateWithInventoryPresenter(GenerateWithInventoryViewModel viewModel) {
@@ -19,28 +21,30 @@ public class GenerateWithInventoryPresenter implements GenerateWithInventoryOutp
 
         if (allTitlesFromUseCase.isEmpty()) {
             viewModel.resetTitles(List.of());
+            viewModel.setBaseTitles(List.of());
             viewModel.setErrorMessage("Please add more ingredients!");
             viewModel.setState(List.of());
             viewModel.firePropertyChange("error");
+            return;
         }
 
-        else {
-            List<String> previousTitles = viewModel.getAllTitles();
-            if (!previousTitles.equals(allTitlesFromUseCase)) {
-                viewModel.resetTitles(allTitlesFromUseCase);
-            }
+        viewModel.setBaseTitles(allTitlesFromUseCase);
 
-            List<String> page = viewModel.getNextPage(3);
+        List<String> previousTitles = viewModel.getAllTitles();
+        if (!previousTitles.equals(allTitlesFromUseCase)) {
+            viewModel.resetTitles(allTitlesFromUseCase);
+        }
 
-            if (page.isEmpty()) {
-                viewModel.setErrorMessage("No more recipes to show. Please add more ingredients!");
-                viewModel.setState(List.of());
-                viewModel.firePropertyChange("error");
-            } else {
-                viewModel.setErrorMessage("");
-                viewModel.setState(page);
-                viewModel.firePropertyChange("recipes");
-            }
+        List<String> page = viewModel.getNextPage(PAGE_SIZE);
+
+        if (page.isEmpty()) {
+            viewModel.setErrorMessage("No more recipes to show. Please add more ingredients!");
+            viewModel.setState(List.of());
+            viewModel.firePropertyChange("error");
+        } else {
+            viewModel.setErrorMessage("");
+            viewModel.setState(page);
+            viewModel.firePropertyChange("recipes");
         }
     }
 }

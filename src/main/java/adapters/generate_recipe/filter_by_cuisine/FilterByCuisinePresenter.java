@@ -23,51 +23,70 @@ public class FilterByCuisinePresenter implements FilterByCuisineOutputBoundary {
     public void present(FilterByCuisineOutputData outputData) {
         String cuisine = outputData.getCuisine();
 
-        List<String> base = viewModel.getAllTitles();
-
         if ("Any".equalsIgnoreCase(cuisine)) {
-            if (base == null || base.isEmpty()) {
+            List<String> base = viewModel.getBaseTitles();
+            if (base.isEmpty()) {
                 viewModel.setErrorMessage("Please add more ingredients!");
                 viewModel.setState(List.of());
                 viewModel.firePropertyChange("error");
                 return;
             }
-            viewModel.setErrorMessage("");
-            viewModel.resetTitles(base);
+            List<String> previous = viewModel.getAllTitles();
+            if (!previous.equals(base)) {
+                viewModel.resetTitles(base);
+            }
             List<String> page = viewModel.getNextPage(PAGE_SIZE);
-            viewModel.setState(page);
-            viewModel.firePropertyChange("recipes");
+            if (page.isEmpty()) {
+                viewModel.setErrorMessage("No more recipes to show.");
+                viewModel.setState(List.of());
+                viewModel.firePropertyChange("error");
+            } else {
+                viewModel.setErrorMessage("");
+                viewModel.setState(page);
+                viewModel.firePropertyChange("recipes");
+            }
             return;
         }
 
-        // Otherwise intersect cuisine results with the base list (filter on top of generated)
-        List<String> titlesFromCuisine = outputData.getRecipeTitles();
-        if (titlesFromCuisine == null || titlesFromCuisine.isEmpty() || base == null || base.isEmpty()) {
-            viewModel.setErrorMessage("No recipes found for cuisine: " + cuisine);
+        List<String> base = viewModel.getBaseTitles();
+        if (base.isEmpty()) {
+            viewModel.setErrorMessage("Please add more ingredients!");
             viewModel.setState(List.of());
             viewModel.firePropertyChange("error");
             return;
         }
 
         Set<String> baseSet = new HashSet<>(base);
-        List<String> intersect = new ArrayList<>();
-        for (String t : titlesFromCuisine) {
-            if (baseSet.contains(t)) {
-                intersect.add(t);
+        List<String> fromApi = outputData.getRecipeTitles();
+        List<String> filtered = new ArrayList<>();
+        if (fromApi != null) {
+            for (String t : fromApi) {
+                if (baseSet.contains(t)) {
+                    filtered.add(t);
+                }
             }
         }
 
-        if (intersect.isEmpty()) {
-            viewModel.setErrorMessage("No matching recipes for your ingredients in: " + cuisine);
+        if (filtered.isEmpty()) {
+            viewModel.setErrorMessage("No recipes found for cuisine: " + cuisine);
             viewModel.setState(List.of());
             viewModel.firePropertyChange("error");
             return;
         }
 
-        viewModel.setErrorMessage("");
-        viewModel.resetTitles(intersect);
+        List<String> previous = viewModel.getAllTitles();
+        if (!previous.equals(filtered)) {
+            viewModel.resetTitles(filtered);
+        }
         List<String> page = viewModel.getNextPage(PAGE_SIZE);
-        viewModel.setState(page);
-        viewModel.firePropertyChange("recipes");
+        if (page.isEmpty()) {
+            viewModel.setErrorMessage("No more recipes to show.");
+            viewModel.setState(List.of());
+            viewModel.firePropertyChange("error");
+        } else {
+            viewModel.setErrorMessage("");
+            viewModel.setState(page);
+            viewModel.firePropertyChange("recipes");
+        }
     }
 }
