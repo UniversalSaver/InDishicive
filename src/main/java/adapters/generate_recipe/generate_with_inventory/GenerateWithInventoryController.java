@@ -9,11 +9,7 @@ public class GenerateWithInventoryController {
 
     private final GenerateWithInventoryInputBoundary interactor;
 
-    /**
-     * Creates a controller with the given interactor.
-     *
-     * @param interactor the use case interactor
-     */
+
     public GenerateWithInventoryController(GenerateWithInventoryInputBoundary interactor) {
         this.interactor = interactor;
     }

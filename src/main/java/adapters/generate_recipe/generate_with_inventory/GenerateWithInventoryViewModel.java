@@ -1,5 +1,6 @@
 package adapters.generate_recipe.generate_with_inventory;
 
+import adapters.ViewModel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,8 @@ import adapters.ViewModel;
 public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
 
     private List<String> allTitles = new ArrayList<>();
+    private List<String> baseTitles = new ArrayList<>();
+    private List<String> cuisines = new ArrayList<>();
     private int offset;
     private String errorMessage = "";
 
@@ -24,12 +27,7 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         setState(List.of());
     }
 
-    /**
-     * Resets the stored recipe titles and paging state.
-     *
-     * @param titles the new list of recipe titles
-     */
-    public void resetTitles(List<String> titles) {
+    public void resetTitles(final List<String> titles) {
         this.allTitles = new ArrayList<>(titles);
         this.offset = 0;
         setState(new ArrayList<>(titles));
@@ -44,33 +42,27 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         return new ArrayList<>(allTitles);
     }
 
-    /**
-     * Gets the next page of recipe titles.
-     *
-     * @param pageSize the maximum number of titles to return
-     * @return a list containing the next page of titles, or an empty list if none
-     */
-    public List<String> getNextPage(int pageSize) {
-        final List<String> page;
+    public List<String> getBaseTitles() {
+        return new ArrayList<>(baseTitles);
+    }
 
+    public void setBaseTitles(final List<String> titles) {
+        this.baseTitles = (titles == null) ? new ArrayList<>() : new ArrayList<>(titles);
+    }
+
+    public List<String> getNextPage(final int pageSize) {
+        final List<String> page;
         if (allTitles.isEmpty() || offset >= allTitles.size()) {
             page = Collections.emptyList();
-        }
-        else {
+        } else {
             final int to = Math.min(offset + pageSize, allTitles.size());
             page = new ArrayList<>(allTitles.subList(offset, to));
             offset = to;
         }
-
         return page;
     }
 
-    /**
-     * Sets the current error message.
-     *
-     * @param errorMessage the error message text
-     */
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
@@ -83,15 +75,19 @@ public class GenerateWithInventoryViewModel extends ViewModel<List<String>> {
         return errorMessage;
     }
 
-    /**
-     * Sets the recipes and updates the view state.
-     *
-     * @param titles the list of recipe titles to display
-     */
-    public void setRecipes(List<String> titles) {
+    public void setRecipes(final List<String> titles) {
         this.allTitles = new ArrayList<>(titles);
         this.offset = 0;
         setState(new ArrayList<>(titles));
         firePropertyChange("recipes");
+    }
+
+    public void setCuisines(final List<String> cuisines) {
+        this.cuisines = (cuisines == null) ? new ArrayList<>() : new ArrayList<>(cuisines);
+        firePropertyChange("cuisines");
+    }
+
+    public List<String> getCuisines() {
+        return new ArrayList<>(cuisines);
     }
 }
