@@ -58,3 +58,4 @@ public class Inventory {
     public List<Ingredient> getIngredients() {
         return Collections.unmodifiableList(ingredients);
     }
+}
