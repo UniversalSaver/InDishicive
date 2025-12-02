@@ -58,6 +58,6 @@ public class FromMemoryMealRecipeDataAccessObject implements RecipeDetailsGatewa
 
 	@NotNull
 	private List<Ingredient> getSortedIngredients() {
-		return ingredients.stream().sorted(Comparator.comparing(Ingredient::getName)).toList();
+		return new ArrayList<>(ingredients.stream().sorted(Comparator.comparing(Ingredient::getName)).toList());
 	}
 }

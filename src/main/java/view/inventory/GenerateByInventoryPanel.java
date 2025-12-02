@@ -1,9 +1,6 @@
 package view.inventory;
 
-import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
-import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
-import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
-import adapters.favorites.add_favorite.AddFavoriteController;
+import java.awt.BorderLayout;
 
 import javax.swing.*;
 
@@ -12,8 +9,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+import adapters.favorites.add_favorite.AddFavoriteController;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
+import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
+import adapters.generate_recipe.random_recipe.RandomRecipeController;
 
+/**
+ * Panel for generating recipes using the user's inventory.
+ */
 public class GenerateByInventoryPanel extends JPanel implements PropertyChangeListener {
 
     private final DefaultListModel<String> model = new DefaultListModel<>();
@@ -21,37 +33,55 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
     private final GenerateWithInventoryViewModel viewModel;
 
+    /**
+     * Creates a panel for generating recipes by inventory.
+     *
+     * @param controller           the generate-with-inventory controller
+     * @param viewModel            the view model for this use case
+     * @param detailsController    controller for viewing recipe details
+     * @param addFavoriteController controller for adding favorites
+     */
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
-                                    GenerateWithInventoryViewModel vm,
+                                    GenerateWithInventoryViewModel viewModel,
                                     ViewRecipeDetailsController detailsController,
-                                    AddFavoriteController addFavoriteController) {
+                                    AddFavoriteController addFavoriteController,
+                                    RandomRecipeController randomRecipeController) {
 
-        this.viewModel = vm;
+        this.viewModel = viewModel;
 
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Recipes you can make with your inventory");
-        JButton generate = new JButton("Generate Recipes");
 
-        JPanel top = new JPanel(new BorderLayout());
+        JButton generate = new JButton("Generate Recipes");
+        JButton randomButton = new JButton("Random Recipe"); // New Button
+
+        final JPanel top = new JPanel(new BorderLayout());
         top.add(title, BorderLayout.CENTER);
-        top.add(generate, BorderLayout.EAST);
+
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonsPanel.add(randomButton);
+        buttonsPanel.add(generate);
+
+        top.add(buttonsPanel, BorderLayout.EAST);
         add(top, BorderLayout.NORTH);
 
         add(new JScrollPane(list), BorderLayout.CENTER);
 
-        JButton details = new JButton("View Details");
+        final JButton details = new JButton("View Details");
         details.setEnabled(false);
 
-        JButton addToFavorites = new JButton("Add to Favorites");
+        final JButton addToFavorites = new JButton("Add to Favorites");
         addToFavorites.setEnabled(false);
 
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        bottom.add((addToFavorites));
+        final JPanel bottom = new JPanel();
+        bottom.add(addToFavorites);
         bottom.add(details);
         add(bottom, BorderLayout.SOUTH);
 
-        generate.addActionListener(e -> controller.execute());
+        generate.addActionListener(event -> controller.execute());
+
+        randomButton.addActionListener(e -> randomRecipeController.execute());
 
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -60,35 +90,35 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             }
         });
 
-        details.addActionListener(e -> {
-            String selected = list.getSelectedValue();
+        details.addActionListener(event -> {
+            final String selected = list.getSelectedValue();
             if (selected != null) {
                 detailsController.execute(selected);
             }
         });
 
-        addToFavorites.addActionListener(e -> {
-            String selected = list.getSelectedValue();
+        addToFavorites.addActionListener(event -> {
+            final String selected = list.getSelectedValue();
             if (selected != null) {
                 addFavoriteController.execute(selected);
             }
         });
 
-        vm.addPropertyChangeListener(this);
+        viewModel.addPropertyChangeListener(this);
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String name = evt.getPropertyName();
+    public void propertyChange(PropertyChangeEvent event) {
+        final String name = event.getPropertyName();
 
         if ("recipes".equals(name)) {
             @SuppressWarnings("unchecked")
-            List<String> titles = (List<String>) evt.getNewValue();
+            final List<String> titles = (List<String>) event.getNewValue();
             model.clear();
             titles.forEach(model::addElement);
-
-        } else if ("error".equals(name)) {
-            String msg = viewModel.getErrorMessage();
+        }
+        else if ("error".equals(name)) {
+            final String msg = viewModel.getErrorMessage();
             if (msg != null && !msg.isEmpty()) {
                 JOptionPane.showMessageDialog(
                         this,
@@ -100,5 +130,4 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             model.clear();
         }
     }
-
 }

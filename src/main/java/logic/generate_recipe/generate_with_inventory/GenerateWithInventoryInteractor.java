@@ -39,7 +39,10 @@ public class GenerateWithInventoryInteractor implements GenerateWithInventoryInp
 
         // Filter recipes using the DietaryRestrictionChecker
         final List<String> titles = allRecipes.stream()
-                .filter(recipe -> !dietaryRestrictionCheckerInterface.containsRestrictedIngredient(recipe, restrictions))
+                .filter(recipe -> {
+                    return !dietaryRestrictionCheckerInterface.containsRestrictedIngredient(
+                            recipe, restrictions);
+                })
                 .map(Recipe::getTitle)
                 .toList();
 

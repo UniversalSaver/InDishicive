@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import adapters.user_recipe.delete_recipe.DeleteUserRecipeController;
 import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsController;
 import logic.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDetailsInputData;
 
@@ -64,6 +65,16 @@ public class UserRecipeVisual extends JPanel {
     public void addViewUseCase(ViewUserRecipeDetailsController viewUserRecipeDetailsController) {
         viewButton.addActionListener(buttonPress -> {
             viewUserRecipeDetailsController.execute(new ViewUserRecipeDetailsInputData(title));
+        });
+    }
+
+    /**
+     * Adds the delete user recipe use case to the delete button.
+     * @param deleteUserRecipeController controller for the use case
+     */
+    public void addDeleteUserRecipeUseCase(DeleteUserRecipeController deleteUserRecipeController) {
+        deleteButton.addActionListener(buttonPress -> {
+            deleteUserRecipeController.execute(title);
         });
     }
 

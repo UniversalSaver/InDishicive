@@ -1,9 +1,13 @@
 package logic.generate_recipe.view_recipe_details;
 
-import entity.Recipe;
-
+import java.util.List;
 import java.util.stream.Collectors;
 
+import entity.Recipe;
+
+/**
+ * Interactor for viewing recipe details.
+ */
 public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBoundary {
 
     private final RecipeDetailsGateway gateway;
@@ -17,27 +21,29 @@ public class ViewRecipeDetailsInteractor implements ViewRecipeDetailsInputBounda
 
     @Override
     public void execute(ViewRecipeDetailsInputData inputData) {
-        String title = inputData.getTitle();
+        final String title = inputData.getTitle();
 
-        Recipe recipe = gateway.findByTitle(title);
+        final Recipe recipe = gateway.findByTitle(title);
 
         if (recipe == null) {
             presenter.present(new ViewRecipeDetailsOutputData(
                     "",
-                    java.util.List.of(),
+                    List.of(),
                     "",
                     ""
             ));
-            return;
         }
-
-        presenter.present(new ViewRecipeDetailsOutputData(
-                recipe.getTitle(),
-                recipe.getIngredients().stream()
-                        .map(i -> i.getName() + ": " + i.getAmount())
-                        .collect(Collectors.toList()),
-                recipe.getSteps(),
-                recipe.getYoutubeLink()
-        ));
+        else {
+            presenter.present(new ViewRecipeDetailsOutputData(
+                    recipe.getTitle(),
+                    recipe.getIngredients().stream()
+                            .map(ingredient -> {
+                                return ingredient.getName() + ": " + ingredient.getAmount();
+                            })
+                            .collect(Collectors.toList()),
+                    recipe.getSteps(),
+                    recipe.getYoutubeLink()
+            ));
+        }
     }
 }
