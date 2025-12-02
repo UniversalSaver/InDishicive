@@ -36,3 +36,9 @@ src/tests/
 .idea/jarRepositories.xml
 .idea/misc.xml
 .idea/modules.xml
+
+# Data files
+favorites.json
+inventory.json
+shopping_list.txt
+user_recipes.tsv
