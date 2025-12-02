@@ -15,7 +15,7 @@ public class Recipe {
     private final String category;
 
     /**
-     * Creates a recipe given all the information from it
+     * Creates a recipe given all the information from it.
      * @param title the name of the dish
      * @param ingredients a list of the ingredients
      * @param steps a paragraph string of the steps required
@@ -65,7 +65,7 @@ public class Recipe {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Recipe recipe = (Recipe) obj;
+        final Recipe recipe = (Recipe) obj;
         return Objects.equals(title, recipe.title);
     }
 

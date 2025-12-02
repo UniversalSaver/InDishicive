@@ -16,8 +16,8 @@ public class RemoveDietResController {
      * @param ingredientName The name of the ingredient to remove.
      */
     public void execute(String ingredientName) {
-        Ingredient ingredient = new Ingredient(ingredientName, "");
-        RemoveDietResInputData inputData = new RemoveDietResInputData(ingredient);
+        final Ingredient ingredient = new Ingredient(ingredientName, "");
+        final RemoveDietResInputData inputData = new RemoveDietResInputData(ingredient);
         interactor.execute(inputData);
     }
 }
