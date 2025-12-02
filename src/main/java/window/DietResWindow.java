@@ -1,55 +1,49 @@
 package window;
 
-import interface_adapter.DietResViewManagerModel;
-import interface_adapter.view_diet_res.DietResViewModel;
-import interface_adapter.view_diet_res.DietResWindowModel;
-import view.diet_res_view.DietResView;
-import view.diet_res_view.DietResViewManager;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import adapters.dietary_restriction.view_diet_res.DietResWindowModel;
+
+/**
+ * The window responsible for displaying the dietary restrictions interface.
+ * It listens for property changes from the DietResWindowModel to control its own visibility.
+ */
 public class DietResWindow extends JFrame implements PropertyChangeListener {
 
-    private final JPanel cardPanel;
-    private final CardLayout cardLayout;
-    private DietResWindowModel dietResWindowModel;
+    /**
+     * Given cardPanel and dietResWindowModel, creates a new DietResWindow.
+     * @param cardPanel The panel containing the views (managed by DietResViewManager)
+     * @param dietResWindowModel The model deciding if this window is visible
+     */
+    public DietResWindow(JPanel cardPanel, DietResWindowModel dietResWindowModel) {
+        super("Restrictions List");
 
-    private DietResView dietResView;
-    private DietResViewModel dietResViewModel;
+        dietResWindowModel.addPropertyChangeListener(this);
 
-    private DietResViewManagerModel dietResViewManagerModel;
-    private DietResViewManager dietResViewManager;
+        final int width = 300;
+        final int height = 400;
 
-    public DietResWindow(JPanel cardPanel, CardLayout cardLayout,
-                         DietResViewManager dietResViewManager,
-                         DietResViewManagerModel dietResViewManagerModel,
-                         DietResWindowModel dietResWindowModel) {
-        super("Dietary Restricted Ingredients");
+        this.setSize(width, height);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        this.setLayout(new BorderLayout());
 
-        this.setSize(600, 400);
-
-        this.cardPanel = cardPanel;
-        this.cardLayout = cardLayout;
-        this.dietResViewManager = dietResViewManager;
-        this.dietResViewManagerModel = dietResViewManagerModel;
-        this.dietResWindowModel = dietResWindowModel;
-
-
-        this.add(cardPanel);
-    }
-
-    public void addDietResView(DietResView dietResView, DietResViewModel dietResViewModel) {
-        this.dietResView = dietResView;
-        this.dietResViewModel = dietResViewModel;
+        if (cardPanel != null) {
+            this.add(cardPanel, BorderLayout.CENTER);
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if  (evt.getPropertyName().equals(DietResWindowModel.SET_VISIBLE)) {
+        if (DietResWindowModel.SET_VISIBLE.equals(evt.getPropertyName())) {
             this.setVisible(true);
+            this.toFront();
         }
     }
 }

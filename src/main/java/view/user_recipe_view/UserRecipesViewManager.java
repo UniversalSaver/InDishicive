@@ -1,24 +1,28 @@
 package view.user_recipe_view;
 
-import interface_adapter.UserRecipesViewManagerModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.CardLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JPanel;
+
+import adapters.UserRecipesViewManagerModel;
+
+/**
+ * A view manager for the user recipes views.
+ * Used to switch between panels.
+ */
 public class UserRecipesViewManager implements PropertyChangeListener {
 
-    public final String changeView;
+    private final String changeView;
 
     private final CardLayout cardLayout;
     private final JPanel views;
-    private final UserRecipesViewManagerModel userRecipesViewManagerModel;
 
-    public UserRecipesViewManager(CardLayout cardLayout, JPanel views, UserRecipesViewManagerModel userRecipesViewManagerModel) {
+    public UserRecipesViewManager(CardLayout cardLayout, JPanel views,
+                                  UserRecipesViewManagerModel userRecipesViewManagerModel) {
         this.cardLayout = cardLayout;
         this.views = views;
-        this.userRecipesViewManagerModel = userRecipesViewManagerModel;
 
         userRecipesViewManagerModel.addPropertyChangeListener(this);
 

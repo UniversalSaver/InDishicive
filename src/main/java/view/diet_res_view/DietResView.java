@@ -1,82 +1,157 @@
 package view.diet_res_view;
 
-import interface_adapter.view_diet_res.DietResViewModel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+import adapters.dietary_restriction.add_diet_res.AddDietResController;
+import adapters.dietary_restriction.add_diet_res.AddDietResState;
+import adapters.dietary_restriction.add_diet_res.AddDietResViewModel;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResController;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResState;
+import adapters.dietary_restriction.remove_diet_res.RemoveDietResViewModel;
+import adapters.dietary_restriction.view_diet_res.DietResViewModel;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsController;
+import adapters.dietary_restriction.view_diet_res.ViewRestrictionsState;
+
+/**
+ * The main view panel for managing dietary restrictions.
+ * Allows users to view the list of restrictions, add new ones, and remove existing ones.
+ */
 public class DietResView extends JPanel implements PropertyChangeListener {
     private final String viewName;
 
-    private final JScrollPane scrollPane;
+    private final transient AddDietResController addDietResController;
+    private final transient ViewRestrictionsController viewRestrictionsController;
+    private final transient RemoveDietResController removeDietResController;
 
-    private final DietResViewModel dietResViewModel;
+    private final JPanel restIngrPanel;
+    private final JTextField newRestField;
 
-    private final JButton addDietResButton;
+    public DietResView(DietResViewModel dietResViewModel,
+                       AddDietResViewModel addDietResViewModel,
+                       RemoveDietResViewModel removeDietResViewModel,
+                       AddDietResController addDietResController,
+                       ViewRestrictionsController viewRestrictionsController,
+                       RemoveDietResController removeDietResController) {
 
-    public DietResView(DietResViewModel dietResViewModel) {
-        this.dietResViewModel = dietResViewModel;
-        viewName = dietResViewModel.VIEW_NAME;
+        this.addDietResController = addDietResController;
+        this.viewRestrictionsController = viewRestrictionsController;
+        this.removeDietResController = removeDietResController;
 
-        this.addDietResButton = new JButton("Add Dietary Restriction");
+        this.viewName = DietResViewModel.VIEW_NAME;
+
+        dietResViewModel.addPropertyChangeListener(this);
+        addDietResViewModel.addPropertyChangeListener(this);
+        removeDietResViewModel.addPropertyChangeListener(this);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.add(new JLabel(viewName));
+        final int padding = 10;
+        this.setBorder(BorderFactory.createEmptyBorder(padding, padding, padding, padding));
 
-        JPanel restIngr = new JPanel();
-        restIngr.setLayout(new BoxLayout(restIngr, BoxLayout.Y_AXIS));
+        final JLabel title = new JLabel(DietResViewModel.RESTRICTIONS_LABEL);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(title);
 
-        scrollPane = new JScrollPane(restIngr);
+        this.add(Box.createVerticalStrut(padding));
 
-        restIngr.add(new DietResVisual("Tomato"));
-        restIngr.add(new DietResVisual("Beef"));
-        restIngr.add(new DietResVisual("Chicken"));
-        restIngr.add(new DietResVisual("Potato"));
-        restIngr.add(new DietResVisual("Sugar"));
+        restIngrPanel = new JPanel();
+        restIngrPanel.setLayout(new BoxLayout(restIngrPanel, BoxLayout.Y_AXIS));
 
-
-        JTextArea newRestArea = new JTextArea(10, 2);
-        newRestArea.setLineWrap(true);
-        newRestArea.setEditable(true);
-        newRestArea.setMaximumSize(new Dimension(300, 20));
-        JPanel addRestrictionPanel = new JPanel();
-        addRestrictionPanel.setLayout(new BoxLayout(addRestrictionPanel, BoxLayout.X_AXIS));
-
-        addRestrictionPanel.add(newRestArea);
-        addRestrictionPanel.add(addDietResButton);
-
-        addDietResButton.addActionListener(e -> {
-            restIngr.add(new DietResVisual(newRestArea.getText()));
-            Container parent = this.getParent();
-            parent.revalidate();
-            parent.repaint();
-
-        });
+        final JScrollPane scrollPane = new JScrollPane(restIngrPanel);
 
         this.add(scrollPane);
 
+        this.add(Box.createVerticalStrut(padding));
 
-        JPanel nmPanel = new JPanel();
-        nmPanel.add(new JLabel(String.format("You have added %s ingredients to your restricted list.", restIngr.getComponentCount())), BorderLayout.CENTER);
+        final JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 
-        JPanel pageBottom = new JPanel();
-        pageBottom.setLayout(new BoxLayout(pageBottom, BoxLayout.Y_AXIS));
-        pageBottom.setMaximumSize(new Dimension(300, 100));
-        pageBottom.add(nmPanel);
-        pageBottom.add(addRestrictionPanel);
+        final int heightInputPanel = 30;
+        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, heightInputPanel));
 
-        this.add(pageBottom);
+        final int columns = 20;
+
+        newRestField = new JTextField(columns);
+        final JButton addDietResButton = new JButton("Add");
+
+        inputPanel.add(newRestField);
+
+        final int widthH = 5;
+
+        inputPanel.add(Box.createHorizontalStrut(widthH));
+        inputPanel.add(addDietResButton);
+
+        this.add(inputPanel);
+
+        addDietResButton.addActionListener(event -> handleAdd());
+
+        newRestField.addActionListener(event -> handleAdd());
     }
 
-    public String getViewName() {
-        return viewName;
+    private void handleAdd() {
+        final String ingredientName = newRestField.getText().trim();
+        if (!ingredientName.isEmpty()) {
+            addDietResController.execute(ingredientName);
+            newRestField.setText("");
+        }
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        final String propertyName = evt.getPropertyName();
 
+        if ("state".equals(propertyName)) {
+            if (evt.getNewValue() instanceof ViewRestrictionsState state) {
+                if (state.getError() != null) {
+                    JOptionPane.showMessageDialog(this, state.getError());
+                    state.setError(null);
+                }
+                refreshList(state.getRestrictions());
+            }
+        }
+        else if (AddDietResViewModel.RESTRICTION_ADDED.equals(propertyName)) {
+            viewRestrictionsController.execute();
+            JOptionPane.showMessageDialog(this, "Ingredient added successfully.");
+        }
+        else if (AddDietResViewModel.RESTRICTION_ADD_FAILED.equals(propertyName)) {
+            final AddDietResState state = (AddDietResState) evt.getNewValue();
+            JOptionPane.showMessageDialog(this, state.getStatusMessage());
+        }
+        else if (RemoveDietResViewModel.RESTRICTION_REMOVED.equals(propertyName)) {
+            viewRestrictionsController.execute();
+        }
+        else if (RemoveDietResViewModel.RESTRICTION_REMOVE_FAILED.equals(propertyName)) {
+            final RemoveDietResState state = (RemoveDietResState) evt.getNewValue();
+            JOptionPane.showMessageDialog(this, state.getMessage());
+        }
+    }
+
+    private void refreshList(List<String> restrictions) {
+        restIngrPanel.removeAll();
+        if (restrictions != null) {
+            for (String restriction : restrictions) {
+                restIngrPanel.add(new DietResVisual(restriction, removeDietResController));
+            }
+        }
+        restIngrPanel.revalidate();
+        restIngrPanel.repaint();
+    }
+
+    public String getViewName() {
+        return viewName;
     }
 }

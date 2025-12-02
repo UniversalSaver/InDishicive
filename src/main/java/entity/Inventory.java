@@ -1,5 +1,6 @@
 package entity;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,10 +35,26 @@ public class Inventory {
     }
 
     /**
+     * Finds an ingredient in the inventory by name.
+     *
+     * @param name the name of the ingredient to find
+     * @return the ingredient with the matching name, or null if not found
+     */
+    public Ingredient findIngredientByName(String name) {
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient.getName().equals(name)) {
+                return ingredient;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Gets all ingredients currently in the inventory.
-     * @return a list of ingredients in the inventory
+     * Returns an unmodifiable view to prevent external mutation.
+     *
+     * @return an unmodifiable list of ingredients in the inventory
      */
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return Collections.unmodifiableList(ingredients);
     }
-}
