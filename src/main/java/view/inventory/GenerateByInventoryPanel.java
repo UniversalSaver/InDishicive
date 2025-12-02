@@ -1,10 +1,7 @@
 package view.inventory;
 
 import java.awt.BorderLayout;
-
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -20,8 +17,8 @@ import javax.swing.JScrollPane;
 import adapters.favorites.add_favorite.AddFavoriteController;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryController;
 import adapters.generate_recipe.generate_with_inventory.GenerateWithInventoryViewModel;
-import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 import adapters.generate_recipe.random_recipe.RandomRecipeController;
+import adapters.generate_recipe.view_recipe_details.ViewRecipeDetailsController;
 
 /**
  * Panel for generating recipes using the user's inventory.
@@ -40,6 +37,7 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
      * @param viewModel            the view model for this use case
      * @param detailsController    controller for viewing recipe details
      * @param addFavoriteController controller for adding favorites
+     * @param randomRecipeController controller for random recipe generation
      */
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel viewModel,
@@ -51,15 +49,15 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
         setLayout(new BorderLayout());
 
-        JLabel title = new JLabel("Recipes you can make with your inventory");
+        final JLabel title = new JLabel("Recipes you can make with your inventory");
 
-        JButton generate = new JButton("Generate Recipes");
-        JButton randomButton = new JButton("Random Recipe"); // New Button
+        final JButton generate = new JButton("Generate Recipes");
+        final JButton randomButton = new JButton("Random Recipe");
 
         final JPanel top = new JPanel(new BorderLayout());
         top.add(title, BorderLayout.CENTER);
 
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonsPanel.add(randomButton);
         buttonsPanel.add(generate);
 
@@ -74,17 +72,17 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         final JButton addToFavorites = new JButton("Add to Favorites");
         addToFavorites.setEnabled(false);
 
-        final JPanel bottom = new JPanel();
+        final JPanel bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         bottom.add(addToFavorites);
         bottom.add(details);
         add(bottom, BorderLayout.SOUTH);
 
         generate.addActionListener(event -> controller.execute());
 
-        randomButton.addActionListener(e -> randomRecipeController.execute());
+        randomButton.addActionListener(event -> randomRecipeController.execute());
 
-        list.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
+        list.addListSelectionListener(event -> {
+            if (!event.getValueIsAdjusting()) {
                 details.setEnabled(list.getSelectedValue() != null);
                 addToFavorites.setEnabled(list.getSelectedValue() != null);
             }
@@ -129,5 +127,5 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
             }
             model.clear();
         }
+        }
     }
-}
