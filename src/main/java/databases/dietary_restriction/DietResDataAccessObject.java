@@ -1,11 +1,5 @@
 package databases.dietary_restriction;
 
-import entity.Ingredient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,21 +7,28 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import entity.Ingredient;
+import logic.dietary_restriction.diet_res_ingredients.DietResDataAccessInterface;
+
 /**
  * Implementation of Dietary Restrictions Data Access Object.
  * Stores saved restricted ingredients in a JSON file.
  */
 public class DietResDataAccessObject implements DietResDataAccessInterface {
 
-    private final String fp;
+    private final String filePath;
     private List<Ingredient> resIngredients;
 
     public DietResDataAccessObject() {
         this("restrictions.json");
     }
 
-    public DietResDataAccessObject(String fp) {
-        this.fp = fp;
+    public DietResDataAccessObject(String filePath) {
+        this.filePath = filePath;
         this.resIngredients = new ArrayList<>();
         loadRestrictions();
     }
@@ -46,7 +47,7 @@ public class DietResDataAccessObject implements DietResDataAccessInterface {
      */
     @Override
     public void removeRestriction(Ingredient ingredient) {
-        boolean removed = resIngredients.removeIf(existing ->
+        final boolean removed = resIngredients.removeIf(existing ->
                 existing.getName().equalsIgnoreCase(ingredient.getName())
         );
 
@@ -71,7 +72,7 @@ public class DietResDataAccessObject implements DietResDataAccessInterface {
     }
 
     private void loadRestrictions() {
-        File file = new File(fp);
+        final File file = new File(filePath);
 
         if (!file.exists()) {
             resIngredients = new ArrayList<>();
@@ -79,48 +80,51 @@ public class DietResDataAccessObject implements DietResDataAccessInterface {
         }
 
         try {
-            String jsonContent = Files.readString(file.toPath());
-            if (jsonContent.isBlank()){
+            final String jsonContent = Files.readString(file.toPath());
+            if (jsonContent.isBlank()) {
                 resIngredients = new ArrayList<>();
                 return;
             }
 
-            JSONArray jsonArray = new JSONArray(jsonContent);
+            final JSONArray jsonArray = new JSONArray(jsonContent);
             resIngredients = new ArrayList<>();
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject ingredientObject = jsonArray.getJSONObject(i);
+                final JSONObject ingredientObject = jsonArray.getJSONObject(i);
                 resIngredients.add(jsonToIngredient(ingredientObject));
             }
 
-        } catch (IOException | JSONException e) {
+        }
+        catch (IOException | JSONException exception) {
             resIngredients = new ArrayList<>();
         }
     }
 
     private void saveRestrictionsToFile() {
-        try (FileWriter writer = new FileWriter(fp)) {
-            JSONArray jsonArray = new JSONArray();
+        final int indentFactor = 4;
+        try (FileWriter writer = new FileWriter(filePath)) {
+            final JSONArray jsonArray = new JSONArray();
 
             for (Ingredient ingredient : resIngredients) {
                 jsonArray.put(ingredientToJson(ingredient));
             }
 
-            writer.write(jsonArray.toString(4));
+            writer.write(jsonArray.toString(indentFactor));
 
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save restrictions to " + fp, e);
+        }
+        catch (IOException exception) {
+            throw new RuntimeException("Failed to save restrictions to " + filePath, exception);
         }
     }
 
     private JSONObject ingredientToJson(Ingredient ingredient) {
-        JSONObject jsonObj = new JSONObject();
+        final JSONObject jsonObj = new JSONObject();
         jsonObj.put("Name", ingredient.getName());
         return jsonObj;
     }
 
     private Ingredient jsonToIngredient(JSONObject jsonObj) {
-        String name = jsonObj.getString("Name");
+        final String name = jsonObj.getString("Name");
         return new Ingredient(name, "");
     }
 }

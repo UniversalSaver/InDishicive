@@ -2,7 +2,7 @@ package adapters.dietary_restriction.add_diet_res;
 
 public class AddDietResState {
     private String statusMessage = "";
-    private boolean isSuccess = false;
+    private boolean isSuccess;
 
     public String getStatusMessage() {
         return statusMessage;

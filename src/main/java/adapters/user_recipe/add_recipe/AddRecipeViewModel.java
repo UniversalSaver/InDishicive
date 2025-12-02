@@ -1,8 +1,8 @@
 package adapters.user_recipe.add_recipe;
 
-import adapters.ViewModel;
-
 import java.util.List;
+
+import adapters.ViewModel;
 
 /**
  * The Add Recipe View's model, which has a state of what ingredients can be added.

@@ -5,7 +5,7 @@ package logic.generate_recipe.generate_with_inventory;
  */
 public interface GenerateWithInventoryInputBoundary {
     /**
-     * Executes the use case.
+     * Runs the use case.
      */
     void execute();
 }
