@@ -31,6 +31,7 @@ public class RandomRecipePresenter implements RandomRecipeOutputBoundary {
         state.setInstructions(recipe.getSteps());
         state.setIngredients(recipe.getIngredients().stream()
                 .map(i -> i.getName() + ": " + i.getAmount()).toList());
+        state.setYoutubeLink(recipe.getYoutubeLink());
         return state;
     }
 

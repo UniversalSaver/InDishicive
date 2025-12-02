@@ -96,8 +96,11 @@ public class RecipeDetailsWindow extends JFrame implements PropertyChangeListene
 
         //If the YouTube link exists, then the button appears.
         this.youtubeLink = state.getYoutubeLink();
-        youtubeButton.setVisible(youtubeLink != null && !youtubeLink.trim().isEmpty());
+        boolean hasLink = youtubeLink != null && !youtubeLink.trim().isEmpty();
+        youtubeButton.setVisible(hasLink);
 
+        this.getContentPane().revalidate();
+        this.getContentPane().repaint();
         if (!this.isVisible()) {
             this.setVisible(true);
         }

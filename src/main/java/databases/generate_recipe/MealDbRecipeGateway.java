@@ -129,7 +129,6 @@ public class MealDbRecipeGateway implements RecipeGateway {
                     // ignore and continue loading others
                 }
             }
-
             cacheLoaded = true;
         }
     }
