@@ -34,8 +34,7 @@ public class MealDbCuisineDataAccessObject
 
         JSONArray meals = fetchMealsArray(
                 path,
-                // keep same failure prefix
-                "Error calling MealDB API: "                            // keep same exception prefix
+                "Error calling MealDB API: "
         );
         if (meals == null) {
             return titles;
@@ -58,8 +57,8 @@ public class MealDbCuisineDataAccessObject
 
         JSONArray meals = fetchMealsArray(
                 path,
-                // keep same failure prefix
-                "Error calling MealDB API (getAvailableCuisines): "     // keep same exception prefix
+
+                "Error calling MealDB API (getAvailableCuisines): "
         );
         if (meals == null) {
             return cuisines;
@@ -75,10 +74,7 @@ public class MealDbCuisineDataAccessObject
         return cuisines;
     }
 
-    /**
-     * Fetches the "meals" array from a MealDB endpoint, or returns null if unavailable.
-     * Keeps error messages identical to the original methods via the provided prefixes.
-     */
+
     private JSONArray fetchMealsArray(String path, String exceptionPrefix) {
         String url = BASE_URL + path;
         Request request = new Request.Builder().url(url).get().build();
@@ -92,7 +88,6 @@ public class MealDbCuisineDataAccessObject
             String responseBody = response.body().string();
             JSONObject root = new JSONObject(responseBody);
 
-            // When no meals, MealDB returns {"meals": null}
             if (root.isNull("meals")) {
                 return null;
             }

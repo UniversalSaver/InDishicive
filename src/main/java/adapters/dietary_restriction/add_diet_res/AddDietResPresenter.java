@@ -11,7 +11,7 @@ public class AddDietResPresenter implements AddDietResOutputBoundary {
 
     @Override
     public void prepareSuccessView() {
-        AddDietResState state = viewModel.getState();
+        final AddDietResState state = viewModel.getState();
         state.setStatusMessage("Ingredient added to restrictions list");
         state.setSuccess(true);
         viewModel.setState(state);
@@ -20,7 +20,7 @@ public class AddDietResPresenter implements AddDietResOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        AddDietResState state = viewModel.getState();
+        final AddDietResState state = viewModel.getState();
         state.setStatusMessage(errorMessage);
         state.setSuccess(false);
         viewModel.setState(state);

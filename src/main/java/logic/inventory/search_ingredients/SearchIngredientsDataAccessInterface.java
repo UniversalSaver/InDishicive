@@ -1,8 +1,8 @@
 package logic.inventory.search_ingredients;
 
-import databases.inventory.IngredientDataAccessException;
-
 import java.util.List;
+
+import databases.inventory.IngredientDataAccessException;
 
 /**
  * Interface for accessing ingredient data from an external source.
@@ -16,4 +16,3 @@ public interface SearchIngredientsDataAccessInterface {
      */
     List<String> getAllIngredients() throws IngredientDataAccessException;
 }
-

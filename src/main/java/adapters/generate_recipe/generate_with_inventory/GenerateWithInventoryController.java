@@ -6,6 +6,7 @@ public class GenerateWithInventoryController {
 
     private final GenerateWithInventoryInputBoundary interactor;
 
+
     public GenerateWithInventoryController(GenerateWithInventoryInputBoundary interactor) {
         this.interactor = interactor;
     }

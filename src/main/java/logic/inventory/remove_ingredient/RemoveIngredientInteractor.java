@@ -16,7 +16,7 @@ public class RemoveIngredientInteractor implements RemoveIngredientInputBoundary
      * @param removeIngredientPresenter the presenter for preparing output
      * @param inventoryDataAccess the data access interface for inventory operations
      */
-    public RemoveIngredientInteractor(RemoveIngredientOutputBoundary removeIngredientPresenter, 
+    public RemoveIngredientInteractor(RemoveIngredientOutputBoundary removeIngredientPresenter,
                                        RemoveIngredientDataAccessInterface inventoryDataAccess) {
         this.removeIngredientPresenter = removeIngredientPresenter;
         this.inventoryDataAccess = inventoryDataAccess;
@@ -29,13 +29,12 @@ public class RemoveIngredientInteractor implements RemoveIngredientInputBoundary
      */
     @Override
     public void execute(String ingredientName) {
-        Ingredient toRemove = inventoryDataAccess.findIngredientByName(ingredientName);
-        
+        final Ingredient toRemove = inventoryDataAccess.findIngredientByName(ingredientName);
+
         if (toRemove != null) {
             inventoryDataAccess.removeIngredient(toRemove);
         }
-        
+
         removeIngredientPresenter.prepareSuccessView();
     }
 }
-

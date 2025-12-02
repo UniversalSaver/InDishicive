@@ -1,8 +1,8 @@
 package adapters.inventory.search_ingredients;
 
-import logic.inventory.search_ingredients.SearchIngredientsOutputBoundary;
-
 import java.util.List;
+
+import logic.inventory.search_ingredients.SearchIngredientsOutputBoundary;
 
 /**
  * Presenter for the Search Ingredients use case.
@@ -18,7 +18,7 @@ public class SearchIngredientsPresenter implements SearchIngredientsOutputBounda
 
     @Override
     public void prepareSuccessView(List<String> ingredients) {
-        SearchIngredientsState state = new SearchIngredientsState();
+        final SearchIngredientsState state = new SearchIngredientsState();
         state.setIngredients(ingredients);
         searchIngredientsViewModel.setState(state);
         searchIngredientsViewModel.firePropertyChange(SearchIngredientsViewModel.SEARCH_SUCCESS_PROPERTY);
@@ -26,10 +26,9 @@ public class SearchIngredientsPresenter implements SearchIngredientsOutputBounda
 
     @Override
     public void prepareFailView(String error) {
-        SearchIngredientsState state = new SearchIngredientsState();
+        final SearchIngredientsState state = new SearchIngredientsState();
         state.setError(error);
         searchIngredientsViewModel.setState(state);
         searchIngredientsViewModel.firePropertyChange(SearchIngredientsViewModel.SEARCH_FAIL_PROPERTY);
     }
 }
-

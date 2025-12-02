@@ -19,7 +19,7 @@ public class ViewRestrictionsPresenter implements ViewRestrictionsOutputBoundary
 
     @Override
     public void prepareSuccessView(ViewRestrictionsOutputData outputData) {
-        ViewRestrictionsState state = dietResViewModel.getState();
+        final ViewRestrictionsState state = dietResViewModel.getState();
 
         state.setRestrictions(outputData.getRestrictions());
         this.dietResViewModel.setState(state);
