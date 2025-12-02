@@ -21,9 +21,7 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
     private final GenerateWithInventoryViewModel viewModel;
     private final AddFavoriteViewModel addFavoriteViewModel;
 
-    private final FilterByCuisineController filterController;
     private final JComboBox<String> cuisineBox = new JComboBox<>();
-    private final JButton applyFilter = new JButton("Filter");
 
     public GenerateByInventoryPanel(GenerateWithInventoryController controller,
                                     GenerateWithInventoryViewModel vm,
@@ -34,7 +32,6 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
 
         this.viewModel = vm;
         this.addFavoriteViewModel = addFavoriteViewModel;
-        this.filterController = filterController;
 
         setLayout(new BorderLayout());
 
@@ -48,6 +45,7 @@ public class GenerateByInventoryPanel extends JPanel implements PropertyChangeLi
         JPanel filterBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
         filterBar.add(new JLabel("Cuisine:"));
         filterBar.add(cuisineBox);
+        JButton applyFilter = new JButton("Filter");
         filterBar.add(applyFilter);
 
         JPanel topContainer = new JPanel(new BorderLayout());

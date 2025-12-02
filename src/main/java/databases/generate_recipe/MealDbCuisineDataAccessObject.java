@@ -30,18 +30,63 @@ public class MealDbCuisineDataAccessObject
         }
 
         String encodedCuisine = URLEncoder.encode(cuisine, StandardCharsets.UTF_8);
-        String url = BASE_URL + "filter.php?a=" + encodedCuisine;
+        String path = "filter.php?a=" + encodedCuisine;
 
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
+        JSONArray meals = fetchMealsArray(
+                path,
+                // keep same failure prefix
+                "Error calling MealDB API: "                            // keep same exception prefix
+        );
+        if (meals == null) {
+            return titles;
+        }
+
+        for (int i = 0; i < meals.length(); i++) {
+            JSONObject meal = meals.getJSONObject(i);
+            String title = meal.optString("strMeal", "").trim();
+            if (!title.isEmpty()) {
+                titles.add(title);
+            }
+        }
+        return titles;
+    }
+
+    @Override
+    public List<String> getAvailableCuisines() {
+        List<String> cuisines = new ArrayList<>();
+        String path = "list.php?a=list";
+
+        JSONArray meals = fetchMealsArray(
+                path,
+                // keep same failure prefix
+                "Error calling MealDB API (getAvailableCuisines): "     // keep same exception prefix
+        );
+        if (meals == null) {
+            return cuisines;
+        }
+
+        for (int i = 0; i < meals.length(); i++) {
+            JSONObject areaObj = meals.getJSONObject(i);
+            String area = areaObj.optString("strArea", "").trim();
+            if (!area.isEmpty()) {
+                cuisines.add(area);
+            }
+        }
+        return cuisines;
+    }
+
+    /**
+     * Fetches the "meals" array from a MealDB endpoint, or returns null if unavailable.
+     * Keeps error messages identical to the original methods via the provided prefixes.
+     */
+    private JSONArray fetchMealsArray(String path, String exceptionPrefix) {
+        String url = BASE_URL + path;
+        Request request = new Request.Builder().url(url).get().build();
 
         try (Response response = client.newCall(request).execute()) {
-
             if (!response.isSuccessful() || response.body() == null) {
                 System.err.println("MealDB request failed: " + response.code());
-                return titles;
+                return null;
             }
 
             String responseBody = response.body().string();
@@ -49,63 +94,13 @@ public class MealDbCuisineDataAccessObject
 
             // When no meals, MealDB returns {"meals": null}
             if (root.isNull("meals")) {
-                return titles;
+                return null;
             }
-
-            JSONArray meals = root.getJSONArray("meals");
-
-            for (int i = 0; i < meals.length(); i++) {
-                JSONObject meal = meals.getJSONObject(i);
-                String title = meal.optString("strMeal", "").trim();
-                if (!title.isEmpty()) {
-                    titles.add(title);
-                }
-            }
+            return root.getJSONArray("meals");
 
         } catch (IOException | JSONException e) {
-            System.err.println("Error calling MealDB API: " + e.getMessage());
+            System.err.println(exceptionPrefix + e.getMessage());
+            return null;
         }
-
-        return titles;
-    }
-
-    @Override
-    public List<String> getAvailableCuisines() {
-        List<String> cuisines = new ArrayList<>();
-        String url = BASE_URL + "list.php?a=list";
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) {
-                System.err.println("MealDB request failed: " + response.code());
-                return cuisines;
-            }
-
-            String responseBody = response.body().string();
-            JSONObject root = new JSONObject(responseBody);
-
-            if (root.isNull("meals")) {
-                return cuisines;
-            }
-
-            JSONArray meals = root.getJSONArray("meals");
-
-            for (int i = 0; i < meals.length(); i++) {
-                JSONObject areaObj = meals.getJSONObject(i);
-                String area = areaObj.optString("strArea", "").trim();
-                if (!area.isEmpty()) {
-                    cuisines.add(area);
-                }
-            }
-
-        } catch (IOException | JSONException e) {
-            System.err.println("Error calling MealDB API (getAvailableCuisines): " + e.getMessage());
-        }
-
-        return cuisines;
     }
 }

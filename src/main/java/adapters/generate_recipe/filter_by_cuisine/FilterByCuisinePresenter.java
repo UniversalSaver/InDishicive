@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("checkstyle:ClassCanBeRecord")
 public class FilterByCuisinePresenter implements FilterByCuisineOutputBoundary {
 
     private static final int PAGE_SIZE = 3;
@@ -35,16 +36,7 @@ public class FilterByCuisinePresenter implements FilterByCuisineOutputBoundary {
             if (!previous.equals(base)) {
                 viewModel.resetTitles(base);
             }
-            List<String> page = viewModel.getNextPage(PAGE_SIZE);
-            if (page.isEmpty()) {
-                viewModel.setErrorMessage("No more recipes to show.");
-                viewModel.setState(List.of());
-                viewModel.firePropertyChange("error");
-            } else {
-                viewModel.setErrorMessage("");
-                viewModel.setState(page);
-                viewModel.firePropertyChange("recipes");
-            }
+            showNextPageOrError();
             return;
         }
 
@@ -78,6 +70,10 @@ public class FilterByCuisinePresenter implements FilterByCuisineOutputBoundary {
         if (!previous.equals(filtered)) {
             viewModel.resetTitles(filtered);
         }
+        showNextPageOrError();
+    }
+
+    private void showNextPageOrError() {
         List<String> page = viewModel.getNextPage(PAGE_SIZE);
         if (page.isEmpty()) {
             viewModel.setErrorMessage("No more recipes to show.");
