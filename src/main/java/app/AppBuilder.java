@@ -1,7 +1,6 @@
 package app;
 
 import java.awt.CardLayout;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -67,7 +66,6 @@ import adapters.user_recipe.view_recipes.view_detailed_recipe.ViewUserRecipeDeta
 import databases.dietary_restriction.DietResDataAccessObject;
 import databases.dietary_restriction.MealDbIngredientGateway;
 import databases.favorites.FavoriteDataAccessObject;
-import databases.generate_recipe.InventoryReaderFromInventory;
 import databases.generate_recipe.MealDbRandomRecipeGateway;
 import databases.generate_recipe.MealDbRecipeByIngredientsGateway;
 import databases.generate_recipe.MealDbRecipeDetailsGateway;
@@ -75,7 +73,6 @@ import databases.generate_recipe.MealDbRecipeGateway;
 import databases.inventory.InventoryDataAccessObject;
 import databases.inventory.MealDbIngredientDataAccess;
 import databases.user_recipe.FileDataAccessObject;
-import entity.Inventory;
 import logic.dietary_restriction.DietaryRestrictionChecker;
 import logic.dietary_restriction.DietaryRestrictionCheckerInterface;
 import logic.dietary_restriction.add_restrictions.AddDietResInteractor;
@@ -177,7 +174,7 @@ public class AppBuilder {
      */
 
     private InventoryView inventoryView;
-    private final Inventory inventory = new Inventory(new ArrayList<>());
+    private final InventoryDataAccessObject inventoryDao = new InventoryDataAccessObject();
     private final SearchIngredientsViewModel searchIngredientsViewModel = new SearchIngredientsViewModel();
     private final AddIngredientViewModel addIngredientViewModel = new AddIngredientViewModel();
     private final RemoveIngredientViewModel removeIngredientViewModel = new RemoveIngredientViewModel();
@@ -505,7 +502,6 @@ public class AppBuilder {
      */
     public AppBuilder addInventoryView() {
         final MealDbIngredientDataAccess dataAccess = new MealDbIngredientDataAccess();
-        final InventoryDataAccessObject inventoryDataObject = new InventoryDataAccessObject();
 
         final SearchIngredientsPresenter searchPresenter =
                 new SearchIngredientsPresenter(searchIngredientsViewModel);
@@ -516,17 +512,17 @@ public class AppBuilder {
 
         final AddIngredientPresenter addPresenter = new AddIngredientPresenter(addIngredientViewModel);
         final AddIngredientInteractor addInteractor =
-                new AddIngredientInteractor(addPresenter, inventoryDataObject);
+                new AddIngredientInteractor(addPresenter, inventoryDao);
         final AddIngredientController addController = new AddIngredientController(addInteractor);
 
         final RemoveIngredientPresenter removePresenter =
                 new RemoveIngredientPresenter(removeIngredientViewModel);
         final RemoveIngredientInteractor removeInteractor =
-                new RemoveIngredientInteractor(removePresenter, inventoryDataObject);
+                new RemoveIngredientInteractor(removePresenter, inventoryDao);
         final RemoveIngredientController removeController = new RemoveIngredientController(removeInteractor);
 
         inventoryView = new InventoryView(searchController, addController, removeController,
-                searchIngredientsViewModel, inventoryDataObject);
+                searchIngredientsViewModel, inventoryDao);
 
         mainView.addInventoryTab(inventoryView);
 
@@ -763,15 +759,12 @@ public class AppBuilder {
         final MealDbRecipeGateway recipeGateway = new MealDbRecipeGateway();
         recipeGateway.preloadAllRecipes();
 
-        final InventoryReaderFromInventory inventoryReader =
-                new InventoryReaderFromInventory(this.inventory);
-
         final GenerateWithInventoryViewModel generateWithInventoryViewModel =
                 new GenerateWithInventoryViewModel();
 
         final GenerateByInventoryPanel panel = getGenerateByInventoryPanel(
                 generateWithInventoryViewModel,
-                inventoryReader,
+                inventoryDao,
                 recipeGateway
         );
 
@@ -815,7 +808,6 @@ public class AppBuilder {
      * @return this AppBuilder instance for method chaining
      */
     public AppBuilder addMissingIngredientsUseCase() {
-        final InventoryDataAccessObject inventoryDao = new InventoryDataAccessObject();
         final MissingIngredientsPresenter presenter = new MissingIngredientsPresenter(recipeDetailsWindow);
         final MissingIngredientsInteractor interactor = new MissingIngredientsInteractor(inventoryDao, presenter);
         missingIngredientsController = new MissingIngredientsController(interactor);

@@ -5,13 +5,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import entity.Ingredient;
+import logic.generate_recipe.generate_with_inventory.InventoryReader;
 import logic.inventory.add_ingredient.InventoryDataAccessInterface;
 import logic.inventory.missing_ingredients.InventoryReaderInterface;
 import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
@@ -21,7 +24,7 @@ import logic.inventory.remove_ingredient.RemoveIngredientDataAccessInterface;
  * Stores inventory in a JSON file and automatically saves on add/remove operations.
  */
 public class InventoryDataAccessObject implements InventoryDataAccessInterface,
-        RemoveIngredientDataAccessInterface, InventoryReaderInterface {
+        RemoveIngredientDataAccessInterface, InventoryReaderInterface, InventoryReader {
 
     private static final int JSON_INDENT = 4;
 
@@ -58,9 +61,9 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
 
     @Override
     public boolean removeIngredient(Ingredient ingredient) {
-        final boolean removed = ingredients.removeIf(existing ->
-                existing.getName().equalsIgnoreCase(ingredient.getName())
-        );
+        final boolean removed = ingredients.removeIf(existing -> {
+            return existing.getName().equalsIgnoreCase(ingredient.getName());
+        });
 
         if (removed) {
             saveInventoryToFile();
@@ -85,37 +88,44 @@ public class InventoryDataAccessObject implements InventoryDataAccessInterface,
         return new ArrayList<>(ingredients);
     }
 
+    @Override
+    public Set<String> getAll() {
+        final Set<String> names = new HashSet<>();
+        for (Ingredient ingredient : ingredients) {
+            if (ingredient != null && ingredient.getName() != null) {
+                final String name = ingredient.getName().trim().toLowerCase();
+                if (!name.isEmpty()) {
+                    names.add(name);
+                }
+            }
+        }
+        return names;
+    }
+
     /**
      * Loads inventory from the JSON file.
      * If the file doesn't exist, starts with an empty inventory.
      */
     private void loadInventory() {
         final File file = new File(filePath);
+        ingredients = new ArrayList<>();
 
-        if (!file.exists()) {
-            ingredients = new ArrayList<>();
-            return;
-        }
+        if (file.exists()) {
+            try {
+                final String jsonContent = Files.readString(file.toPath());
 
-        try {
-            final String jsonContent = Files.readString(file.toPath());
+                if (!jsonContent.isBlank()) {
+                    final JSONArray jsonArray = new JSONArray(jsonContent);
 
-            if (jsonContent.isBlank()) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        final JSONObject ingredientJson = jsonArray.getJSONObject(i);
+                        ingredients.add(jsonToIngredient(ingredientJson));
+                    }
+                }
+            }
+            catch (IOException | JSONException ex) {
                 ingredients = new ArrayList<>();
-                return;
             }
-
-            final JSONArray jsonArray = new JSONArray(jsonContent);
-            ingredients = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                final JSONObject ingredientJson = jsonArray.getJSONObject(i);
-                ingredients.add(jsonToIngredient(ingredientJson));
-            }
-
-        }
-        catch (IOException | JSONException ex) {
-            ingredients = new ArrayList<>();
         }
     }
 
